@@ -6,6 +6,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.SKOS.Test", "RDFSharp.Semantics.Extensions.SKOS.Test\RDFSharp.Semantics.Extensions.SKOS.Test.csproj", "{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B656B531-182C-4899-8E42-84BF1E798706}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {B656B531-182C-4899-8E42-84BF1E798706}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADD2B7E0-5BC5-4636-997B-778F43D467E8}
