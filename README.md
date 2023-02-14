@@ -1,6 +1,6 @@
 # RDFSharp.Semantics.Extensions [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp.Semantics.Extensions/branch/master/graph/badge.svg?token=ToNB0SAtVt)](https://codecov.io/gh/mdesalvo/RDFSharp.Semantics.Extensions)
 
-This is a set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics">RDFSharp.Semantics</a> extensions suited for easily working with the following supported domain-specific ontologies: 
+This is a set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics">RDFSharp.Semantics</a> extensions suited for easily working with the following domain-specific ontologies: 
 
 
 |Ontology|Description|NuGet|
