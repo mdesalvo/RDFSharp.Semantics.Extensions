@@ -3,7 +3,7 @@
 This is a set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics">RDFSharp.Semantics</a> extensions suited for easily working with the following supported domain-specific ontologies: 
 
 
-|Ontology|Description|NuGet|CodeCov|
+|Ontology|Description|NuGet|
 |---|---|---|
 |SKOS|Model [organized taxonomies of concepts](https://www.w3.org/TR/skos-primer/)|[![NuGet Badge](https://buildstats.info/nuget/RDFSharp.Semantics.Extensions.SKOS)](https://www.nuget.org/packages/RDFSharp.Semantics.Extensions.SKOS)|
 |GeoSPARQL|Model and query [geospatial data](https://www.ogc.org/standards/geosparql)|work in progress (2023)|
