@@ -22,9 +22,9 @@ using System;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEOCoordinateConverter in an helper for converting geometries between different coordinate systems
+    /// GEOConverter is an helper for converting geometries between different coordinate systems
     /// </summary>
-    internal static class GEOCoordinateConverter
+    internal static class GEOConverter
     {
         #region Methods
         /// <summary>
@@ -34,8 +34,19 @@ namespace RDFSharp.Semantics.Extensions.GEO
         {
             ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
                 GeographicCoordinateSystem.WGS84, ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2));
-            Geometry projectedGeometry = Transform(wgs84Geometry, coordinateTransformation.MathTransform);
-            return projectedGeometry;
+            Geometry utmGeometry = Transform(wgs84Geometry, coordinateTransformation.MathTransform);
+            return utmGeometry;
+        }
+
+        /// <summary>
+        /// Projects the given UTM geometry to an equivalent WGS84 geometry
+        /// </summary>
+        internal static Geometry GetWGS84GeometryFromUTM(Geometry utmGeometry, (int, bool) utmZone)
+        {
+            ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
+                ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2), GeographicCoordinateSystem.WGS84);
+            Geometry wgs84Geometry = Transform(utmGeometry, coordinateTransformation.MathTransform);
+            return wgs84Geometry;
         }
 
         /// <summary>

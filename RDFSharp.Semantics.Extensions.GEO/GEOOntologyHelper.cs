@@ -66,8 +66,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(pointUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PointGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int,bool) utmFromWGS84 = GEOCoordinateConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
-            Point utmPoint = (Point)GEOCoordinateConverter.GetUTMGeometryFromWGS84(wgs84Point, utmFromWGS84);
+            (int,bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
+            Point utmPoint = (Point)GEOConverter.GetUTMGeometryFromWGS84(wgs84Point, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(pointUri.ToString()))
                 geoOntology.Geometries.Add(pointUri.ToString(), (wgs84Point, utmPoint));
 
@@ -110,8 +110,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(lineStringUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84LineStringGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int,bool) utmFromWGS84 = GEOCoordinateConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
-            LineString utmLineString = (LineString)GEOCoordinateConverter.GetUTMGeometryFromWGS84(wgs84LineString, utmFromWGS84);
+            (int,bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
+            LineString utmLineString = (LineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84LineString, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(lineStringUri.ToString()))
                 geoOntology.Geometries.Add(lineStringUri.ToString(), (wgs84LineString, utmLineString));
 
@@ -159,8 +159,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(polygonUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PolygonGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOCoordinateConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
-            Polygon utmPolygon = (Polygon)GEOCoordinateConverter.GetUTMGeometryFromWGS84(wgs84Polygon, utmFromWGS84);
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
+            Polygon utmPolygon = (Polygon)GEOConverter.GetUTMGeometryFromWGS84(wgs84Polygon, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(polygonUri.ToString()))
                 geoOntology.Geometries.Add(polygonUri.ToString(), (wgs84Polygon, utmPolygon));
 
