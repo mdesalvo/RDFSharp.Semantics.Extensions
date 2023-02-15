@@ -15,7 +15,9 @@
 */
 
 using NetTopologySuite.Geometries;
+using RDFSharp.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
@@ -40,6 +42,32 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometries = new Dictionary<string, (Geometry, Geometry)>();
             Model = GEOOntologyLoader.BuildGEOModel();
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gets a spatial ontology representation from the given graph
+        /// </summary>
+        public static new GEOOntology FromRDFGraph(RDFGraph graph)
+            => FromRDFGraph(graph, OWLOntologyLoaderOptions.DefaultOptions);
+
+        /// <summary>
+        /// Gets a spatial ontology representation from the given graph (applying the given loader options)
+        /// </summary>
+        public static new GEOOntology FromRDFGraph(RDFGraph graph, OWLOntologyLoaderOptions loaderOptions)
+            => GEOOntologyLoader.FromRDFGraph(graph, loaderOptions);
+
+        /// <summary>
+        /// Asynchronously gets a spatial ontology representation from the given graph
+        /// </summary>
+        public static new Task<GEOOntology> FromRDFGraphAsync(RDFGraph graph)
+            => Task.Run(() => FromRDFGraph(graph));
+
+        /// <summary>
+        /// Asynchronously gets a spatial ontology representation from the given graph (applying the given loader options)
+        /// </summary>
+        public static new Task<GEOOntology> FromRDFGraphAsync(RDFGraph graph, OWLOntologyLoaderOptions loaderOptions)
+            => Task.Run(() => FromRDFGraph(graph, loaderOptions));
         #endregion
     }
 }

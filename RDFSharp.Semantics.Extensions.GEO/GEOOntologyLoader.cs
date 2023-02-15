@@ -14,7 +14,12 @@
    limitations under the License.
 */
 
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using NetTopologySuite.IO.GML2;
 using RDFSharp.Model;
+using RDFSharp.Query;
+using System.Linq;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
@@ -32,12 +37,49 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (graph == null)
                 throw new OWLSemanticsException("Cannot get GEO ontology from RDFGraph because given \"graph\" parameter is null");
 
-            //Get OWL ontology with spatial extension points
+            //Get OWL ontology with GEO extension points
             OWLOntology ontology = OWLOntologyLoader.FromRDFGraph(graph, loaderOptions,
                classModelExtensionPoint: GEOClassModelExtensionPoint,
                propertyModelExtensionPoint: GEOPropertyModelExtensionPoint);
 
-            return (GEOOntology)ontology;
+            //Build GEO ontology from OWL ontology
+            GEOOntology geoOntology = new GEOOntology(ontology.ToString()) { Model = ontology.Model, Data = ontology.Data, OBoxGraph = ontology.OBoxGraph };
+
+            //Detect spatial entities
+            WKTReader wktReader = new WKTReader();
+            GMLReader gmlReader = new GMLReader();
+            foreach (RDFResource spatialObject in geoOntology.Data.GetIndividualsOf(geoOntology.Model, RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT))
+            {
+                Geometry spatialObjectGeometry = null;
+
+                //Try detect by WKT representation
+                RDFPatternMember asWKTObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_WKT, null, null].FirstOrDefault()?.Object;
+                if (asWKTObject is RDFTypedLiteral asWKTTypedLiteral && asWKTTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                    spatialObjectGeometry = wktReader.Read(asWKTTypedLiteral.Value);
+                if (spatialObject == null)
+                {
+                    //Try detect by GML representation
+                    RDFPatternMember asGMLObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_GML, null, null].FirstOrDefault()?.Object;
+                    if (asGMLObject is RDFTypedLiteral asGMLTypedLiteral && asGMLTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
+                        spatialObjectGeometry = gmlReader.Read(asGMLTypedLiteral.Value);
+                }
+
+                //Declare spatial entity
+                if (spatialObjectGeometry != null)
+                {
+                    //sf:Point
+                    if (spatialObjectGeometry is Point spatialObjectGeometryPoint)
+                        geoOntology.DeclarePoint(spatialObject, spatialObjectGeometryPoint.Coordinate.X, spatialObjectGeometryPoint.Coordinate.Y);
+                    //sf:LineString
+                    else if (spatialObjectGeometry is LineString spatialObjectGeometryLineString)
+                        geoOntology.DeclareLineString(spatialObject, spatialObjectGeometryLineString.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                    //sf:Polygon
+                    else if (spatialObjectGeometry is Polygon spatialObjectGeometryPolygon)
+                        geoOntology.DeclarePolygon(spatialObject, spatialObjectGeometryPolygon.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                }
+            }
+
+            return geoOntology;
         }
         #endregion
 
