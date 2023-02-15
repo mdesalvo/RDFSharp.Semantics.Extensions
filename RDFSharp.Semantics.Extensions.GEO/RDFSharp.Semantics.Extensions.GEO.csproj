@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyTitle>RDFSharp.Semantics.Extensions.GEO</AssemblyTitle>
+    <AssemblyName>RDFSharp.Semantics.Extensions.GEO</AssemblyName>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <Version>3.3.2</Version>
+    <Authors>Marco De Salvo</Authors>
+    <Copyright>Marco De Salvo</Copyright>
+    <Description>RDFSharp.Semantics extensions for modeling and querying geospatial data (GeoSPARQL)</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <Product>RDFSharp.Semantics</Product>
+    <PackageId>RDFSharp.Semantics.Extensions.GEO</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <PackageTags>rdfs owl owl-dl owl2 geosparql ontology reasoner swrl semantic-web linked-data</PackageTags>
+    <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp.Semantics.Extensions</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.Semantics.Extensions.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\RDFSharp.Semantics.Extensions.GEO.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\$(TargetFramework)\RDFSharp.Semantics.Extensions.GEO.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
+    <PackageReference Include="ProjNet" Version="2.0.0" />
+    <PackageReference Include="RDFSharp" Version="3.3.2" />
+	<PackageReference Include="RDFSharp.Semantics" Version="3.3.2" />
+  </ItemGroup>
+</Project>

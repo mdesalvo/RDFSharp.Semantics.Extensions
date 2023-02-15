@@ -2,6 +2,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.GEO", "RDFSharp.Semantics.Extensions.GEO\RDFSharp.Semantics.Extensions.GEO.csproj", "{2BBA1BB8-A981-4A4A-833E-FBEB9F9906FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.GEO.Test", "RDFSharp.Semantics.Extensions.GEO.Test\RDFSharp.Semantics.Extensions.GEO.Test.csproj", "{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.SKOS", "RDFSharp.Semantics.Extensions.SKOS\RDFSharp.Semantics.Extensions.SKOS.csproj", "{2ABA1BB8-A981-4A4A-833E-FBEB9F9906FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.SKOS.Test", "RDFSharp.Semantics.Extensions.SKOS.Test\RDFSharp.Semantics.Extensions.SKOS.Test.csproj", "{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}"
@@ -18,16 +22,25 @@ Global
 		{2ABA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ABA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ABA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BBA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BBA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BBA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BBA1BB8-A981-4A4A-833E-FBEB9F9906FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {B656B531-182C-4899-8E42-84BF1E798706}
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {B656B531-182C-4899-8E42-84BF1E798706}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADD2B7E0-5BC5-4636-997B-778F43D467E8}
