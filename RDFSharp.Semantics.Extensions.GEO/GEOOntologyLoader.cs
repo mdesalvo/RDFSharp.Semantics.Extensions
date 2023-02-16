@@ -20,6 +20,7 @@ using NetTopologySuite.IO.GML2;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RDFSharp.Semantics.Extensions.GEO
@@ -35,6 +36,53 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// </summary>
         internal static GEOOntology FromRDFGraph(RDFGraph graph, OWLOntologyLoaderOptions loaderOptions)
         {
+            #region WKT/GML
+            List<(RDFResource,Geometry)> DetectWKTGeometries(GEOOntology geoOnt)
+            {
+                List<(RDFResource,Geometry)> wktGeoms = new List<(RDFResource,Geometry)>();
+
+                //Detect gemetries by exploiting geosparql:asWKT datatype property
+                WKTReader wktReader = new WKTReader();
+                foreach (RDFTriple wktTriple in geoOnt.Data.ABoxGraph[null, RDFVocabulary.GEOSPARQL.AS_WKT, null, null])
+                {
+                    try
+                    {
+                        if (wktTriple.Object is RDFTypedLiteral wktTypedLiteral && wktTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                            wktGeoms.Add(((RDFResource)wktTriple.Subject, wktReader.Read(wktTypedLiteral.Value)));
+                    }
+                    catch (Exception ex)
+                    {
+                        //We may encounter bad geometries at raw RDF triples, so we must raise an error when trying getting them into OWL/GEO semantics
+                        throw new OWLSemanticsException($"Cannot read spatial entity '{wktTriple.Subject}' from graph because it's not a well-formed WKT geometry.", ex);
+                    }
+                }
+
+                return wktGeoms;
+            }
+            List<(RDFResource,Geometry)> DetectGMLGeometries(GEOOntology geoOnt)
+            {
+                List<(RDFResource,Geometry)> gmlGeoms = new List<(RDFResource,Geometry)>();
+
+                //Detect gemetries by exploiting geosparql:asGML datatype property
+                GMLReader gmlReader = new GMLReader();
+                foreach (RDFTriple gmlTriple in geoOnt.Data.ABoxGraph[null, RDFVocabulary.GEOSPARQL.AS_GML, null, null])
+                {
+                    try
+                    {
+                        if (gmlTriple.Object is RDFTypedLiteral gmlTypedLiteral && gmlTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
+                            gmlGeoms.Add(((RDFResource)gmlTriple.Subject, gmlReader.Read(gmlTypedLiteral.Value)));
+                    }
+                    catch (Exception ex)
+                    {
+                        //We may encounter bad geometries at raw RDF triples, so we must raise an error when trying getting them into OWL/GEO semantics
+                        throw new OWLSemanticsException($"Cannot read spatial entity '{gmlTriple.Subject}' from graph because it's not a well-formed GML geometry.", ex);
+                    }
+                }
+
+                return gmlGeoms;
+            }
+            #endregion
+
             if (graph == null)
                 throw new OWLSemanticsException("Cannot get GEO ontology from RDFGraph because given \"graph\" parameter is null");
 
@@ -47,45 +95,19 @@ namespace RDFSharp.Semantics.Extensions.GEO
             GEOOntology geoOntology = new GEOOntology(ontology.ToString()) { Model = ontology.Model, Data = ontology.Data, OBoxGraph = ontology.OBoxGraph };
 
             //Detect spatial entities
-            WKTReader wktReader = new WKTReader();
-            GMLReader gmlReader = new GMLReader();
-            foreach (RDFResource spatialObject in geoOntology.Data.GetIndividualsOf(geoOntology.Model, RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT))
+            List<(RDFResource,Geometry)> wktGeometries = DetectWKTGeometries(geoOntology);
+            List<(RDFResource,Geometry)> gmlGeometries = DetectGMLGeometries(geoOntology);
+            foreach ((RDFResource,Geometry) geometry in wktGeometries.Union(gmlGeometries))
             {
-                Geometry spatialObjectGeometry = null;
-
-                try
-                {
-                    //Try detect by WKT representation
-                    RDFPatternMember asWKTObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_WKT, null, null].FirstOrDefault()?.Object;
-                    if (asWKTObject is RDFTypedLiteral asWKTTypedLiteral && asWKTTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
-                        spatialObjectGeometry = wktReader.Read(asWKTTypedLiteral.Value);
-                    if (spatialObjectGeometry == null)
-                    {
-                        //Try detect by GML representation
-                        RDFPatternMember asGMLObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_GML, null, null].FirstOrDefault()?.Object;
-                        if (asGMLObject is RDFTypedLiteral asGMLTypedLiteral && asGMLTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
-                            spatialObjectGeometry = gmlReader.Read(asGMLTypedLiteral.Value);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //We may encounter bad geometries at raw RDF triples, so we must raise an error when trying getting them into OWL/GEO semantics
-                    throw new OWLSemanticsException($"Cannot read spatial entity '{spatialObject}' from graph because it's not a well-formed geometry.", ex);
-                }
-
-                //Declare spatial entity
-                if (spatialObjectGeometry != null)
-                {
-                    //sf:Point
-                    if (spatialObjectGeometry is Point spatialObjectGeometryPoint)
-                        geoOntology.DeclarePoint(spatialObject, spatialObjectGeometryPoint.Coordinate.X, spatialObjectGeometryPoint.Coordinate.Y);
-                    //sf:LineString
-                    else if (spatialObjectGeometry is LineString spatialObjectGeometryLineString)
-                        geoOntology.DeclareLineString(spatialObject, spatialObjectGeometryLineString.Coordinates.Select(c => (c.X, c.Y)).ToList());
-                    //sf:Polygon
-                    else if (spatialObjectGeometry is Polygon spatialObjectGeometryPolygon)
-                        geoOntology.DeclarePolygon(spatialObject, spatialObjectGeometryPolygon.Coordinates.Select(c => (c.X, c.Y)).ToList());
-                }
+                //sf:Point
+                if (geometry.Item2 is Point geometryPoint)
+                    geoOntology.DeclarePoint(geometry.Item1, geometryPoint.Coordinate.X, geometryPoint.Coordinate.Y);
+                //sf:LineString
+                else if (geometry.Item2 is LineString geometryLineString)
+                    geoOntology.DeclareLineString(geometry.Item1, geometryLineString.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                //sf:Polygon
+                else if (geometry.Item2 is Polygon geometryPolygon)
+                    geoOntology.DeclarePolygon(geometry.Item1, geometryPolygon.Coordinates.Select(c => (c.X, c.Y)).ToList());
             }
 
             return geoOntology;
