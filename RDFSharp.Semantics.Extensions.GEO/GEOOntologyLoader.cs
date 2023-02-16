@@ -19,6 +19,7 @@ using NetTopologySuite.IO;
 using NetTopologySuite.IO.GML2;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using System;
 using System.Linq;
 
 namespace RDFSharp.Semantics.Extensions.GEO
@@ -52,16 +53,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
             {
                 Geometry spatialObjectGeometry = null;
 
-                //Try detect by WKT representation
-                RDFPatternMember asWKTObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_WKT, null, null].FirstOrDefault()?.Object;
-                if (asWKTObject is RDFTypedLiteral asWKTTypedLiteral && asWKTTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
-                    spatialObjectGeometry = wktReader.Read(asWKTTypedLiteral.Value);
-                if (spatialObject == null)
+                try
                 {
-                    //Try detect by GML representation
-                    RDFPatternMember asGMLObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_GML, null, null].FirstOrDefault()?.Object;
-                    if (asGMLObject is RDFTypedLiteral asGMLTypedLiteral && asGMLTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
-                        spatialObjectGeometry = gmlReader.Read(asGMLTypedLiteral.Value);
+                    //Try detect by WKT representation
+                    RDFPatternMember asWKTObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_WKT, null, null].FirstOrDefault()?.Object;
+                    if (asWKTObject is RDFTypedLiteral asWKTTypedLiteral && asWKTTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                        spatialObjectGeometry = wktReader.Read(asWKTTypedLiteral.Value);
+                    if (spatialObjectGeometry == null)
+                    {
+                        //Try detect by GML representation
+                        RDFPatternMember asGMLObject = geoOntology.Data.ABoxGraph[spatialObject, RDFVocabulary.GEOSPARQL.AS_GML, null, null].FirstOrDefault()?.Object;
+                        if (asGMLObject is RDFTypedLiteral asGMLTypedLiteral && asGMLTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
+                            spatialObjectGeometry = gmlReader.Read(asGMLTypedLiteral.Value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //We may encounter bad geometries at raw RDF triples, so we must raise an error when trying getting them into OWL/GEO semantics
+                    throw new OWLSemanticsException($"Cannot read spatial entity '{spatialObject}' from graph because it's not a well-formed geometry.", ex);
                 }
 
                 //Declare spatial entity
