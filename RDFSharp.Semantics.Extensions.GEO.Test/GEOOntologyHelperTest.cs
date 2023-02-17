@@ -160,6 +160,50 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseInvalideLongitude()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1), (2, 2) }));
+
+        //sf:MultiPoint
+        [TestMethod]
+        public void ShouldDeclareMultiPoint()
+        {
+            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
+            geoOnt.DeclareMultiPoint(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
+                (9.188540, 45.464664), (12.496365, 41.902782) });
+
+            //Test evolution of GEO knowledge
+            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRome")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+
+            //Test geometries
+            Assert.IsTrue(geoOnt.Geometries.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(null, new List<(double, double)>() { (0, 0), (1, 1) }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullPoints()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseLessThan2Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
         #endregion
     }
 }

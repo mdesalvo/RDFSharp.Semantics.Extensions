@@ -108,6 +108,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 //sf:Polygon
                 else if (geometry.Item2 is Polygon geometryPolygon)
                     geoOntology.DeclarePolygon(geometry.Item1, geometryPolygon.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                //sf:MultiPoint
+                else if (geometry.Item2 is MultiPoint geometryMultiPoint)
+                    geoOntology.DeclareMultiPoint(geometry.Item1, geometryMultiPoint.Coordinates.Select(c => (c.X, c.Y)).ToList());
             }
 
             return geoOntology;

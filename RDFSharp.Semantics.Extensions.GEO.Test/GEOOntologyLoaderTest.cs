@@ -63,7 +63,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.POLYGON));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
-
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:milanrome_mpt"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:milanrome_mpt"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:milanrome_mpt"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
 
             //LOAD OWL+GEO
             GEOOntology geoOntology = GEOOntologyLoader.FromRDFGraph(graph, null);
@@ -73,8 +75,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
             Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
             Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
-            Assert.IsTrue(geoOntology.Data.IndividualsCount == 5);
-            Assert.IsTrue(geoOntology.Geometries.Count == 5);
+            Assert.IsTrue(geoOntology.Data.IndividualsCount == 6);
+            Assert.IsTrue(geoOntology.Geometries.Count == 6);
             Assert.IsTrue(geoOntology.Geometries.ContainsKey("ex:milan"));
             Assert.IsTrue(geoOntology.Geometries["ex:milan"].Item1.EqualsTopologically(new Point(9.18854, 45.464664)));
             Assert.IsTrue(geoOntology.Geometries["ex:milan"].Item2.EqualsTopologically(new Point(514739.23764243146, 5034588.076214247)));
@@ -90,6 +92,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOntology.Geometries.ContainsKey("ex:milanromenaples"));
             Assert.IsTrue(geoOntology.Geometries["ex:milanromenaples"].Item1.EqualsTopologically(new Polygon(new LinearRing(new Coordinate[] { new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782), new Coordinate(14.2681244, 40.8517746), new Coordinate(9.18854, 45.464664) }))));
             Assert.IsTrue(geoOntology.Geometries["ex:milanromenaples"].Item2.EqualsTopologically(new Polygon(new LinearRing(new Coordinate[] { new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826), new Coordinate(944139.3677008688, 4535678.997426257), new Coordinate(514739.23764243146, 5034588.076214247) }))));
+            Assert.IsTrue(geoOntology.Geometries.ContainsKey("ex:milanrome_mpt"));
+            Assert.IsTrue(geoOntology.Geometries["ex:milanrome_mpt"].Item1.EqualsTopologically(new MultiPoint(new Point[] { new Point(9.18854, 45.464664), new Point(12.496365, 41.902782) })));
+            Assert.IsTrue(geoOntology.Geometries["ex:milanrome_mpt"].Item2.EqualsTopologically(new MultiPoint(new Point[] { new Point(514739.23764243146, 5034588.076214247), new Point(790020.659168055, 4644896.163254826) })));
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
             Assert.IsTrue(geoOntology.Data.CheckHasDatatypeAssertion(new RDFResource("ex:milan"), new RDFResource("ex:hasName"), new RDFPlainLiteral("Milano", "it-IT")));
