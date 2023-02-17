@@ -22,40 +22,40 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// RDFGeographyDistanceExpression represents geof:distance function to be applied on a query results table. It is expressed in meters.
+    /// RDFGeoDistanceExpression represents "geof:distance" geographic function to be applied on a query results table. Result is expressed in meters.
     /// </summary>
-    public class RDFGeographyDistanceExpression : RDFGeographyExpression
+    public class RDFGeoDistanceExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeographyDistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces

@@ -28,9 +28,9 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// RDFGeographyExpression represents a geographic expression to be applied on a query results table.
+    /// RDFGeoExpression represents a geographic expression to be applied on a query results table.
     /// </summary>
-    public abstract class RDFGeographyExpression : RDFExpression
+    public abstract class RDFGeoExpression : RDFExpression
     {
         #region Properties
         /// <summary>
@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+        public RDFGeoExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -61,7 +61,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFExpression leftArgument, RDFVariable rightArgument)
+        public RDFGeoExpression(RDFExpression leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -74,7 +74,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument)
+        public RDFGeoExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -90,7 +90,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFVariable leftArgument, RDFExpression rightArgument)
+        public RDFGeoExpression(RDFVariable leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -103,7 +103,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFVariable leftArgument, RDFVariable rightArgument)
+        public RDFGeoExpression(RDFVariable leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -116,7 +116,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeographyExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument)
+        public RDFGeoExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -173,7 +173,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                        && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) || 
                             rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
                 {
-                    //Parse WKT/GML spatial representations
+                    //Parse WGS84 WKT/GML geometries
                     Geometry leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
                         WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
                     Geometry rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
@@ -186,7 +186,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     Geometry rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
 
                     //Execute GeoSPARQL functions on UTM geometries
-                    if (this is RDFGeographyDistanceExpression)
+                    if (this is RDFGeoDistanceExpression)
                         expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                 }
                 #endregion

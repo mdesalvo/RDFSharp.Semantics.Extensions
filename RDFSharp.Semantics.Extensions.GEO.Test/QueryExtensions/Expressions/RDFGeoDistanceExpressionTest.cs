@@ -24,13 +24,13 @@ using System.Data;
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
     [TestClass]
-    public class RDFGeographyDistanceExpressionTest
+    public class RDFGeoDistanceExpressionTest
     {
         #region Tests
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithExpressions()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?V")),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
@@ -44,7 +44,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithExpressionAndVariable()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFVariable("?V"));
 
@@ -58,7 +58,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithExpressionAndTypedLiteral()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (2 2)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
@@ -72,7 +72,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithVariableAndExpression()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V"),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
@@ -86,7 +86,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithVariables()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V1"),
                 new RDFVariable("?V2"));
 
@@ -100,7 +100,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldCreateGeographyDistanceExpressionWithVariableAndTypedLiteral()
         {
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V"),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
@@ -113,59 +113,59 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariable, new RDFVariable("?V")));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFVariable("?V")));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariable("?V"), null as RDFVariable));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFVariable));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeographyDistanceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
         public void ShouldApplyExpressionWithEEAndCalculateResult()
@@ -179,7 +179,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -200,7 +200,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFVariable("?ROME"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -221,7 +221,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFTypedLiteral("POINT (12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -242,7 +242,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -263,7 +263,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFVariable("?ROME"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -284,7 +284,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeographyDistanceExpression expression = new RDFGeographyDistanceExpression(
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -293,22 +293,21 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
-        /*
-         [TestMethod]
+        [TestMethod]
         public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownLeftExpression()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
-                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFVariableExpression(new RDFVariable("?NAPLES")),
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);
@@ -318,39 +317,79 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownRightExpression()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")));
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
+                new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotNumericRightExpression()
+        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotGeographicLeftExpression()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            table.Columns.Add("?C", typeof(string));
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            row["?C"] = new RDFResource("ex:subj").ToString();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFVariableExpression(new RDFVariable("?C")));
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFVariableExpression(new RDFVariable("?ROME")),
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotGeographicRightExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
+            DataRow row = table.NewRow();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
+                new RDFVariableExpression(new RDFVariable("?ROME")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnboundLeftExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
+            table.Columns.Add("?NAPLES", typeof(string));
+            DataRow row = table.NewRow();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            row["?NAPLES"] = null;
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFVariableExpression(new RDFVariable("?NAPLES")),
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);
@@ -360,264 +399,23 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnboundRightExpression()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            table.Columns.Add("?C", typeof(string));
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
+            table.Columns.Add("?NAPLES", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            row["?C"] = null;
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            row["?NAPLES"] = null;
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFVariableExpression(new RDFVariable("?C")));
+            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+                new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
+                new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);
         }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownLeftExpression()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
-                new RDFVariable("?A"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownRightExpression()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFVariable("?Z"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithETAndNotCalculateResultBecauseUnknownExpression()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(
-                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
-                new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownLeftColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownRightColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?Z"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceLeftColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFResource("ex:subj").ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralLeftColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("55").ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericLeftColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceRightColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(); 
-            row["?B"] = new RDFResource("ex:subj").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralRightColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row["?B"] = new RDFPlainLiteral("55").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericRightColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            row["?B"] = new RDFTypedLiteral("05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullLeftColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = null;
-            row["?B"] = new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullRightColumn()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
-            row["?B"] = null;
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B"));
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNull(expressionResult);
-        }
-         */
         #endregion
     }
 }
