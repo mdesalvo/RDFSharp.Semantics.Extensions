@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
-using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
