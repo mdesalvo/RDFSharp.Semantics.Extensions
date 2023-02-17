@@ -57,17 +57,17 @@ namespace RDFSharp.Semantics.Extensions.GEO
             bool isNorth = wgs84Latitude >= 0;
 
             // Special Cases for Norway & Svalbard
-            if (wgs84Latitude > 55d && wgs84Latitude < 64d && wgs84Longitude > 2d && wgs84Longitude < 6d)
+            if (wgs84Latitude > 55 && wgs84Latitude < 64 && wgs84Longitude > 2 && wgs84Longitude < 6)
                 return (32, isNorth);
-            if (wgs84Latitude > 71d && wgs84Longitude >= 6d && wgs84Longitude < 9d)
+            if (wgs84Latitude > 71 && wgs84Longitude >= 6 && wgs84Longitude < 9)
                 return (31, isNorth);
-            if (wgs84Latitude > 71d && ((wgs84Longitude >= 9d && wgs84Longitude < 12d) || (wgs84Longitude >= 18d && wgs84Longitude < 21d)))
+            if (wgs84Latitude > 71 && ((wgs84Longitude >= 9 && wgs84Longitude < 12) || (wgs84Longitude >= 18 && wgs84Longitude < 21)))
                 return (33, isNorth);
-            if (wgs84Latitude > 71d && ((wgs84Longitude >= 21d && wgs84Longitude < 24d) || (wgs84Longitude >= 30d && wgs84Longitude < 33d)))
+            if (wgs84Latitude > 71 && ((wgs84Longitude >= 21 && wgs84Longitude < 24) || (wgs84Longitude >= 30 && wgs84Longitude < 33)))
                 return (35, isNorth);
 
             // Rest of the world
-            int utmZone = (int)(Math.Floor((wgs84Longitude + 180d) / 6d) % 60d) + 1;
+            int utmZone = (int)(Math.Floor((wgs84Longitude + 180) / 6) % 60) + 1;
             return (utmZone, isNorth);
         }
         #endregion
