@@ -130,6 +130,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             graph.AddTriple(new RDFTriple(new RDFResource("ex:naples"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.POINT));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanrome"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.LINESTRING));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.POLYGON));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:milanrome_mpt"), RDFVocabulary.RDF.TYPE, RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
 
             //LOAD OWL+GEO
             GEOOntology geoOntology = GEOOntologyLoader.FromRDFGraph(graph, null);
@@ -139,7 +140,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
             Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
             Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
-            Assert.IsTrue(geoOntology.Data.IndividualsCount == 5);
+            Assert.IsTrue(geoOntology.Data.IndividualsCount == 6);
             Assert.IsTrue(geoOntology.Geometries.Count == 0);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
