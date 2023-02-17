@@ -82,15 +82,15 @@ namespace RDFSharp.Semantics.Extensions.GEO
         public static GEOOntology DeclareLineString(this GEOOntology geoOntology, RDFResource lineStringUri, List<(double,double)> wgs84LineString)
         {
             if (lineStringUri == null)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"multiPolygonUri\" parameter is null");
             if (wgs84LineString == null)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter is null");
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84Polygon\" parameter is null");
             if (wgs84LineString.Count < 2)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains less than 2 points");
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84Polygon\" parameter contains less than 2 points");
             if (wgs84LineString.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains a point with invalid longitude for WGS84");
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84Polygon\" parameter contains a point with invalid longitude for WGS84");
             if (wgs84LineString.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains a point with invalid latitude for WGS84");
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84Polygon\" parameter contains a point with invalid latitude for WGS84");
 
             //Build sf:LineString instance
             return DeclareLineStringInternal(geoOntology, lineStringUri, new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
@@ -179,7 +179,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         public static GEOOntology DeclareMultiPoint(this GEOOntology geoOntology, RDFResource multiPointUri, List<(double,double)> wgs84MultiPoint)
         {
             if (multiPointUri == null)
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"multiPolygonUri\" parameter is null");
             if (wgs84MultiPoint == null)
                 throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter is null");
             if (wgs84MultiPoint.Count < 2)
@@ -225,19 +225,19 @@ namespace RDFSharp.Semantics.Extensions.GEO
         public static GEOOntology DeclareMultiLineString(this GEOOntology geoOntology, RDFResource multiLineStringUri, List<List<(double,double)>> wgs84MultiLineString)
         {
             if (multiLineStringUri == null)
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"multiPolygonUri\" parameter is null");
             if (wgs84MultiLineString == null)
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter is null");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter is null");
             if (wgs84MultiLineString.Any(ls => ls == null))
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a null linestring");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a null linestring");
             if (wgs84MultiLineString.Count < 2)
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains less than 2 linestrings");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains less than 2 linestrings");
             if (wgs84MultiLineString.Any(ls => ls.Count < 2))
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring with less than 2 points");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a linestring with less than 2 points");
             if (wgs84MultiLineString.Any(ls => ls.Any(pt => pt.Item1 < -180 || pt.Item1 > 180)))
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring having point with invalid longitude for WGS84");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a linestring having point with invalid longitude for WGS84");
             if (wgs84MultiLineString.Any(ls => ls.Any(pt => pt.Item2 < -90 || pt.Item2 > 90)))
-                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring having point with invalid latitude for WGS84");
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a linestring having point with invalid latitude for WGS84");
 
             //Build sf:MultiLineString instance
             List<LineString> wgs84LineStrings = new List<LineString>();
@@ -270,6 +270,67 @@ namespace RDFSharp.Semantics.Extensions.GEO
             MultiLineString utmMultiLineString = (MultiLineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiLineString, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(multiLineStringUri.ToString()))
                 geoOntology.Geometries.Add(multiLineStringUri.ToString(), (wgs84MultiLineString, utmMultiLineString));
+
+            return geoOntology;
+        }
+
+        /// <summary>
+        /// Declares the given sf:MultiPolygon instance to the spatial ontology (polygons must be WGS84 Lon/Lat)
+        /// </summary>
+        public static GEOOntology DeclareMultiPolygon(this GEOOntology geoOntology, RDFResource multiPolygonUri, List<List<(double, double)>> wgs84MultiPolygon)
+        {
+            if (multiPolygonUri == null)
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"multiPolygonUri\" parameter is null");
+            if (wgs84MultiPolygon == null)
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter is null");
+            if (wgs84MultiPolygon.Any(pl => pl == null))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a null polygon");
+            if (wgs84MultiPolygon.Count < 2)
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains less than 2 polygons");
+            if (wgs84MultiPolygon.Any(pl => pl.Count < 3))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a polygon with less than 3 points");
+            if (wgs84MultiPolygon.Any(pl => pl.Any(pt => pt.Item1 < -180 || pt.Item1 > 180)))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a polygon having point with invalid longitude for WGS84");
+            if (wgs84MultiPolygon.Any(pl => pl.Any(pt => pt.Item2 < -90 || pt.Item2 > 90)))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPolygon instance to the spatial ontology because given \"wgs84MultiPolygon\" parameter contains a polygon having point with invalid latitude for WGS84");
+
+            //Build sf:MultiPolygon instance
+            List<Polygon> wgs84Polygons = new List<Polygon>();
+            foreach (List<(double, double)> wgs84Polygon in wgs84MultiPolygon)
+            {
+                //Automatically close polygon (if needed)
+                if (wgs84Polygon[0].Item1 != wgs84Polygon[wgs84Polygon.Count - 1].Item1
+                     && wgs84Polygon[0].Item2 != wgs84Polygon[wgs84Polygon.Count - 1].Item2)
+                    wgs84Polygon.Add(wgs84Polygon[0]);
+                wgs84Polygons.Add(new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())));
+            }
+
+            //Build sf:MultiPolygon serializations
+            return DeclareMultiPolygonInternal(geoOntology, multiPolygonUri, new MultiPolygon(wgs84Polygons.ToArray()));
+        }
+        internal static GEOOntology DeclareMultiPolygonInternal(this GEOOntology geoOntology, RDFResource multiPolygonUri, MultiPolygon wgs84MultiPolygon)
+        {
+            //Build sf:MultiPolygon serializations
+            string wgs84MultiPolygonWKT = new WKTWriter().Write(wgs84MultiPolygon);
+            string wgs84MultiPolygonGML = null;
+            using (XmlReader gmlReader = new GML3Writer().Write(wgs84MultiPolygon))
+            {
+                XmlDocument gmlDocument = new XmlDocument();
+                gmlDocument.Load(gmlReader);
+                wgs84MultiPolygonGML = gmlDocument.OuterXml;
+            }
+
+            //Add knowledge to the A-BOX
+            geoOntology.Data.DeclareIndividual(multiPolygonUri);
+            geoOntology.Data.DeclareIndividualType(multiPolygonUri, RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON);
+            geoOntology.Data.DeclareDatatypeAssertion(multiPolygonUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84MultiPolygonWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            geoOntology.Data.DeclareDatatypeAssertion(multiPolygonUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiPolygonGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
+
+            //Add geometry to the spatial ontology (along with its UTM projection)
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiPolygon.Coordinates[0].X, wgs84MultiPolygon.Coordinates[0].Y);
+            MultiPolygon utmMultiPolygon = (MultiPolygon)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiPolygon, utmFromWGS84);
+            if (!geoOntology.Geometries.ContainsKey(multiPolygonUri.ToString()))
+                geoOntology.Geometries.Add(multiPolygonUri.ToString(), (wgs84MultiPolygon, utmMultiPolygon));
 
             return geoOntology;
         }

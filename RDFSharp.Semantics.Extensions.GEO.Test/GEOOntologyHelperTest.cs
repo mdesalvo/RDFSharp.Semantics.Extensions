@@ -265,6 +265,65 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseInvalideLongitude()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (181, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
+
+        //sf:MultiPolygon
+        [TestMethod]
+        public void ShouldDeclareMultiPolygon()
+        {
+            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
+            geoOnt.DeclareMultiPolygon(new RDFResource("ex:MilanRomeNaples"), new List<List<(double, double)>>() {
+                new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
+                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) } });
+
+            //Test evolution of GEO knowledge
+            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaples")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOLYGON (((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiSurface xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+
+            //Test geometries
+            Assert.IsTrue(geoOnt.Geometries.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(null, new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullPolygons()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseLessThan2Polygons()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) } }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingNullPolygon()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+                null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingPolygonWithLessThan3Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (2, 2) } }));
         #endregion
     }
 }

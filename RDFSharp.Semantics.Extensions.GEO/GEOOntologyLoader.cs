@@ -115,6 +115,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 //sf:MultiLineString
                 else if (geometry.Item2 is MultiLineString multiLineString)
                     geoOntology.DeclareMultiLineStringInternal(geometry.Item1, multiLineString);
+                //sf:MultiPolygon
+                else if (geometry.Item2 is MultiPolygon multiPolygon)
+                    geoOntology.DeclareMultiPolygonInternal(geometry.Item1, multiPolygon);
             }
 
             return geoOntology;
