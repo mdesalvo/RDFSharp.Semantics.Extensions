@@ -116,6 +116,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 //sf:MultiPolygon
                 else if (geometry.Item2 is MultiPolygon multiPolygon)
                     geoOntology.DeclareMultiPolygonInternal(geometry.Item1, multiPolygon);
+                //sf:GeometryCollection
+                else if (geometry.Item2 is GeometryCollection geometryCollection)
+                    geoOntology.DeclareGeometryCollectionInternal(geometry.Item1, geometryCollection);
             }
 
             return geoOntology;

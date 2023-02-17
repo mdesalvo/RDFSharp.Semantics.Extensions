@@ -324,6 +324,185 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLongitude()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (2, 2) } }));
+
+        //sf:GeometryCollection
+        [TestMethod]
+        public void ShouldDeclareGeometryCollection()
+        {
+            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
+            geoOnt.DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (9.188540, 45.464664) },
+                    { (12.496365, 41.902782) },
+                    { (14.2681244, 40.8517746) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782) },
+                    new List<(double, double)>() { (14.2681244, 40.8517746), (9.188540, 45.464664) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
+					new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) }
+                });
+
+            //Test evolution of GEO knowledge
+            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GC")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.SF.GEOMETRY_COLLECTION));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("GEOMETRYCOLLECTION (POINT (9.18854 45.464664), POINT (12.496365 41.902782), POINT (14.2681244 40.8517746), LINESTRING (9.18854 45.464664, 12.496365 41.902782), LINESTRING (14.2681244 40.8517746, 9.18854 45.464664), POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), POLYGON ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiGeometry xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:geometryMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>14.2681244 40.8517746</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember></gml:MultiGeometry>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+
+            //Test geometries
+            Assert.IsTrue(geoOnt.Geometries.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(null,
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+               new List<(double, double)>() {
+                    { (0, 91) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (181, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullLineString()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    null, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithLessThan2Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 91), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (181, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullPolygon()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithLessThan3Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }));
         #endregion
     }
 }
