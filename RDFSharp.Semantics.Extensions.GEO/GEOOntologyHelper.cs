@@ -47,8 +47,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 throw new OWLSemanticsException("Cannot declare sf:Point instance to the spatial ontology because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
                         
             //Build sf:Point instance
-            Point wgs84Point = new Point(wgs84Lon, wgs84Lat);
-            
+            return DeclarePointInternal(geoOntology, pointUri, new Point(wgs84Lon, wgs84Lat));
+        }
+        internal static GEOOntology DeclarePointInternal(this GEOOntology geoOntology, RDFResource pointUri, Point wgs84Point)
+        {
             //Build sf:Point serializations
             string wgs84PointWKT = new WKTWriter().Write(wgs84Point);
             string wgs84PointGML = null;
@@ -66,7 +68,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(pointUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PointGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int,bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Point.X, wgs84Point.Y);
             Point utmPoint = (Point)GEOConverter.GetUTMGeometryFromWGS84(wgs84Point, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(pointUri.ToString()))
                 geoOntology.Geometries.Add(pointUri.ToString(), (wgs84Point, utmPoint));
@@ -77,22 +79,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Declares the given sf:LineString instance to the spatial ontology (points must be WGS84 Lon/Lat)
         /// </summary>
-        public static GEOOntology DeclareLineString(this GEOOntology geoOntology, RDFResource lineStringUri, List<(double,double)> wgs84LonLatPoints)
+        public static GEOOntology DeclareLineString(this GEOOntology geoOntology, RDFResource lineStringUri, List<(double,double)> wgs84LineString)
         {
             if (lineStringUri == null)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"multiPointUri\" parameter is null");
-            if (wgs84LonLatPoints == null)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter is null");
-            if (wgs84LonLatPoints.Count < 2)
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains less than 2 points");
-            if (wgs84LonLatPoints.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid longitude for WGS84");
-            if (wgs84LonLatPoints.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
-                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid latitude for WGS84");
-            
-            //Build sf:LineString instance
-            LineString wgs84LineString = new LineString(wgs84LonLatPoints.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray());
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+            if (wgs84LineString == null)
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter is null");
+            if (wgs84LineString.Count < 2)
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains less than 2 points");
+            if (wgs84LineString.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains a point with invalid longitude for WGS84");
+            if (wgs84LineString.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
+                throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84LineString\" parameter contains a point with invalid latitude for WGS84");
 
+            //Build sf:LineString instance
+            return DeclareLineStringInternal(geoOntology, lineStringUri, new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+        }
+        internal static GEOOntology DeclareLineStringInternal(this GEOOntology geoOntology, RDFResource lineStringUri, LineString wgs84LineString)
+        {
             //Build sf:LineString serializations
             string wgs84LineStringWKT = new WKTWriter().Write(wgs84LineString);
             string wgs84LineStringGML = null;
@@ -110,7 +114,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(lineStringUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84LineStringGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int,bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LineString.Coordinates[0].X, wgs84LineString.Coordinates[0].Y);
             LineString utmLineString = (LineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84LineString, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(lineStringUri.ToString()))
                 geoOntology.Geometries.Add(lineStringUri.ToString(), (wgs84LineString, utmLineString));
@@ -121,27 +125,29 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Declares the given sf:Polygon instance to the spatial ontology (points must be WGS84 Lon/Lat)
         /// </summary>
-        public static GEOOntology DeclarePolygon(this GEOOntology geoOntology, RDFResource polygonUri, List<(double,double)> wgs84LonLatPoints)
+        public static GEOOntology DeclarePolygon(this GEOOntology geoOntology, RDFResource polygonUri, List<(double,double)> wgs84Polygon)
         {
             if (polygonUri == null)
                 throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"polygonUri\" parameter is null");
-            if (wgs84LonLatPoints == null)
-                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter is null");
-            if (wgs84LonLatPoints.Count < 3)
-                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains less than 3 points");
-            if (wgs84LonLatPoints.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
-                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid longitude for WGS84");
-            if (wgs84LonLatPoints.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
-                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid latitude for WGS84");
+            if (wgs84Polygon == null)
+                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84Polygon\" parameter is null");
+            if (wgs84Polygon.Count < 3)
+                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84Polygon\" parameter contains less than 3 points");
+            if (wgs84Polygon.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
+                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84Polygon\" parameter contains a point with invalid longitude for WGS84");
+            if (wgs84Polygon.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
+                throw new OWLSemanticsException("Cannot declare sf:Polygon instance to the spatial ontology because given \"wgs84Polygon\" parameter contains a point with invalid latitude for WGS84");
 
             //Automatically close polygon (if needed)
-            if (wgs84LonLatPoints[0].Item1 != wgs84LonLatPoints[wgs84LonLatPoints.Count-1].Item1
-                 && wgs84LonLatPoints[0].Item2 != wgs84LonLatPoints[wgs84LonLatPoints.Count-1].Item2)
-                wgs84LonLatPoints.Add(wgs84LonLatPoints[0]);
+            if (wgs84Polygon[0].Item1 != wgs84Polygon[wgs84Polygon.Count-1].Item1
+                 && wgs84Polygon[0].Item2 != wgs84Polygon[wgs84Polygon.Count-1].Item2)
+                wgs84Polygon.Add(wgs84Polygon[0]);
 
             //Build sf:Polygon instance
-            Polygon wgs84Polygon = new Polygon(new LinearRing(wgs84LonLatPoints.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
-
+            return DeclarePolygonInternal(geoOntology, polygonUri, new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())));
+        }
+        internal static GEOOntology DeclarePolygonInternal(this GEOOntology geoOntology, RDFResource polygonUri, Polygon wgs84Polygon)
+        {
             //Build sf:Polygon serializations
             string wgs84PolygonWKT = new WKTWriter().Write(wgs84Polygon);
             string wgs84PolygonGML = null;
@@ -159,7 +165,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(polygonUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PolygonGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Polygon.Coordinates[0].X, wgs84Polygon.Coordinates[0].Y);
             Polygon utmPolygon = (Polygon)GEOConverter.GetUTMGeometryFromWGS84(wgs84Polygon, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(polygonUri.ToString()))
                 geoOntology.Geometries.Add(polygonUri.ToString(), (wgs84Polygon, utmPolygon));
@@ -170,22 +176,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Declares the given sf:MultiPoint instance to the spatial ontology (points must be WGS84 Lon/Lat)
         /// </summary>
-        public static GEOOntology DeclareMultiPoint(this GEOOntology geoOntology, RDFResource multiPointUri, List<(double,double)> wgs84LonLatPoints)
+        public static GEOOntology DeclareMultiPoint(this GEOOntology geoOntology, RDFResource multiPointUri, List<(double,double)> wgs84MultiPoint)
         {
             if (multiPointUri == null)
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"multiPointUri\" parameter is null");
-            if (wgs84LonLatPoints == null)
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter is null");
-            if (wgs84LonLatPoints.Count < 2)
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains less than 2 points");
-            if (wgs84LonLatPoints.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid longitude for WGS84");
-            if (wgs84LonLatPoints.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
-                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84LatLonPoints\" parameter contains a point with invalid latitude for WGS84");
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+            if (wgs84MultiPoint == null)
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter is null");
+            if (wgs84MultiPoint.Count < 2)
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter contains less than 2 points");
+            if (wgs84MultiPoint.Any(pt => pt.Item1 < -180 || pt.Item1 > 180))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter contains a point with invalid longitude for WGS84");
+            if (wgs84MultiPoint.Any(pt => pt.Item2 < -90 || pt.Item2 > 90))
+                throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter contains a point with invalid latitude for WGS84");
 
             //Build sf:MultiPoint instance
-            MultiPoint wgs84MultiPoint = new MultiPoint(wgs84LonLatPoints.Select(wgs84Point => new Point(wgs84Point.Item1, wgs84Point.Item2)).ToArray());
-
+            return DeclareMultiPointInternal(geoOntology, multiPointUri, new MultiPoint(wgs84MultiPoint.Select(wgs84Point => new Point(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+        }
+        internal static GEOOntology DeclareMultiPointInternal(this GEOOntology geoOntology, RDFResource multiPointUri, MultiPoint wgs84MultiPoint)
+        {
             //Build sf:MultiPoint serializations
             string wgs84MultiPointWKT = new WKTWriter().Write(wgs84MultiPoint);
             string wgs84MultiPointGML = null;
@@ -203,10 +211,65 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(multiPointUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiPointGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLatPoints[0].Item1, wgs84LonLatPoints[0].Item2);
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiPoint.Coordinates[0].X, wgs84MultiPoint.Coordinates[0].Y);
             MultiPoint utmMultiPoint = (MultiPoint)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiPoint, utmFromWGS84);
             if (!geoOntology.Geometries.ContainsKey(multiPointUri.ToString()))
                 geoOntology.Geometries.Add(multiPointUri.ToString(), (wgs84MultiPoint, utmMultiPoint));
+
+            return geoOntology;
+        }
+
+        /// <summary>
+        /// Declares the given sf:MultiLineString instance to the spatial ontology (linestrings must be WGS84 Lon/Lat)
+        /// </summary>
+        public static GEOOntology DeclareMultiLineString(this GEOOntology geoOntology, RDFResource multiLineStringUri, List<List<(double,double)>> wgs84MultiLineString)
+        {
+            if (multiLineStringUri == null)
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"multiLineStringUri\" parameter is null");
+            if (wgs84MultiLineString == null)
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter is null");
+            if (wgs84MultiLineString.Any(ls => ls == null))
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a null linestring");
+            if (wgs84MultiLineString.Count < 2)
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains less than 2 linestrings");
+            if (wgs84MultiLineString.Any(ls => ls.Count < 2))
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring with less than 2 points");
+            if (wgs84MultiLineString.Any(ls => ls.Any(pt => pt.Item1 < -180 || pt.Item1 > 180)))
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring having point with invalid longitude for WGS84");
+            if (wgs84MultiLineString.Any(ls => ls.Any(pt => pt.Item2 < -90 || pt.Item2 > 90)))
+                throw new OWLSemanticsException("Cannot declare sf:MultiLineString instance to the spatial ontology because given \"wgs84MultiLineString\" parameter contains a linestring having point with invalid latitude for WGS84");
+
+            //Build sf:MultiLineString instance
+            List<LineString> wgs84LineStrings = new List<LineString>();
+            foreach (List<(double, double)> wgs84LineString in wgs84MultiLineString)
+                wgs84LineStrings.Add(new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+
+            //Build sf:MultiLineString serializations
+            return DeclareMultiLineStringInternal(geoOntology, multiLineStringUri, new MultiLineString(wgs84LineStrings.ToArray()));
+        }
+        internal static GEOOntology DeclareMultiLineStringInternal(this GEOOntology geoOntology, RDFResource multiLineStringUri, MultiLineString wgs84MultiLineString)
+        {
+            //Build sf:MultiLineString serializations
+            string wgs84MultiLineStringWKT = new WKTWriter().Write(wgs84MultiLineString);
+            string wgs84MultiLineStringGML = null;
+            using (XmlReader gmlReader = new GML3Writer().Write(wgs84MultiLineString))
+            {
+                XmlDocument gmlDocument = new XmlDocument();
+                gmlDocument.Load(gmlReader);
+                wgs84MultiLineStringGML = gmlDocument.OuterXml;
+            }
+
+            //Add knowledge to the A-BOX
+            geoOntology.Data.DeclareIndividual(multiLineStringUri);
+            geoOntology.Data.DeclareIndividualType(multiLineStringUri, RDFVocabulary.GEOSPARQL.SF.MULTI_LINESTRING);
+            geoOntology.Data.DeclareDatatypeAssertion(multiLineStringUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84MultiLineStringWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            geoOntology.Data.DeclareDatatypeAssertion(multiLineStringUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiLineStringGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
+
+            //Add geometry to the spatial ontology (along with its UTM projection)
+            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiLineString.Coordinates[0].X, wgs84MultiLineString.Coordinates[0].Y);
+            MultiLineString utmMultiLineString = (MultiLineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiLineString, utmFromWGS84);
+            if (!geoOntology.Geometries.ContainsKey(multiLineStringUri.ToString()))
+                geoOntology.Geometries.Add(multiLineStringUri.ToString(), (wgs84MultiLineString, utmMultiLineString));
 
             return geoOntology;
         }

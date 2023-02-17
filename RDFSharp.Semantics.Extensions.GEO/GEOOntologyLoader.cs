@@ -22,6 +22,7 @@ using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
@@ -100,17 +101,20 @@ namespace RDFSharp.Semantics.Extensions.GEO
             foreach ((RDFResource,Geometry) geometry in wktGeometries.Union(gmlGeometries))
             {
                 //sf:Point
-                if (geometry.Item2 is Point geometryPoint)
-                    geoOntology.DeclarePoint(geometry.Item1, geometryPoint.Coordinate.X, geometryPoint.Coordinate.Y);
+                if (geometry.Item2 is Point point)
+                    geoOntology.DeclarePointInternal(geometry.Item1, point);
                 //sf:LineString
-                else if (geometry.Item2 is LineString geometryLineString)
-                    geoOntology.DeclareLineString(geometry.Item1, geometryLineString.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                else if (geometry.Item2 is LineString lineString)
+                    geoOntology.DeclareLineStringInternal(geometry.Item1, lineString);
                 //sf:Polygon
-                else if (geometry.Item2 is Polygon geometryPolygon)
-                    geoOntology.DeclarePolygon(geometry.Item1, geometryPolygon.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                else if (geometry.Item2 is Polygon polygon)
+                    geoOntology.DeclarePolygonInternal(geometry.Item1, polygon);
                 //sf:MultiPoint
-                else if (geometry.Item2 is MultiPoint geometryMultiPoint)
-                    geoOntology.DeclareMultiPoint(geometry.Item1, geometryMultiPoint.Coordinates.Select(c => (c.X, c.Y)).ToList());
+                else if (geometry.Item2 is MultiPoint multiPoint)
+                    geoOntology.DeclareMultiPointInternal(geometry.Item1, multiPoint);
+                //sf:MultiLineString
+                else if (geometry.Item2 is MultiLineString multiLineString)
+                    geoOntology.DeclareMultiLineStringInternal(geometry.Item1, multiLineString);
             }
 
             return geoOntology;
