@@ -94,7 +94,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.AcceptChanges();
 
             RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
-                new RDFVariable("?ROME"), 150);
+                new RDFVariable("?ROME"), 150); //150mt buffering
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
