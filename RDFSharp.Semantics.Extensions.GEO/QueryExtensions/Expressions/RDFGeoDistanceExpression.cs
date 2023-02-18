@@ -30,32 +30,62 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            if (!rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)
+                 && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
+        }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
 
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            if (!rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)
+                 && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
+        }
         #endregion
 
         #region Interfaces

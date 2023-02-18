@@ -17,13 +17,12 @@
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using NetTopologySuite.IO.GML2;
+using NetTopologySuite.IO.GML3;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Text;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
@@ -39,94 +38,37 @@ namespace RDFSharp.Semantics.Extensions.GEO
         protected WKTReader WKTReader { get; set; }
 
         /// <summary>
+        /// Writer for WKT spatial representation
+        /// </summary>
+        protected WKTWriter WKTWriter { get; set; }
+
+        /// <summary>
         /// Reader for GML spatial representation
         /// </summary>
         protected GMLReader GMLReader { get; set; }
+
+        /// <summary>
+        /// Writer for GML spatial representation
+        /// </summary>
+        protected GMLWriter GMLWriter { get; set; }
+
+        /// <summary>
+        /// Answers if this is a geographic expression using right argument
+        /// </summary>
+        protected bool HasRightArgument => RightArgument != null;
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeoExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+        public RDFGeoExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
             : base(leftArgument, rightArgument)
         {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-
             WKTReader = new WKTReader();
+            WKTWriter = new WKTWriter();
             GMLReader = new GMLReader();
-        }
-
-        /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
-        /// </summary>
-        public RDFGeoExpression(RDFExpression leftArgument, RDFVariable rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-
-            WKTReader = new WKTReader();
-            GMLReader = new GMLReader();
-        }
-
-        /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
-        /// </summary>
-        public RDFGeoExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-            if (!rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)
-                 && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
-
-            WKTReader = new WKTReader();
-            GMLReader = new GMLReader();
-        }
-
-        /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
-        /// </summary>
-        public RDFGeoExpression(RDFVariable leftArgument, RDFExpression rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-
-            WKTReader = new WKTReader();
-            GMLReader = new GMLReader();
-        }
-
-        /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
-        /// </summary>
-        public RDFGeoExpression(RDFVariable leftArgument, RDFVariable rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-
-            WKTReader = new WKTReader();
-            GMLReader = new GMLReader();
-        }
-
-        /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
-        /// </summary>
-        public RDFGeoExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-            if (!rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)
-                 && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
-
-            WKTReader = new WKTReader();
-            GMLReader = new GMLReader();
+            GMLWriter = new GML3Writer(); 
         }
         #endregion
 
@@ -166,28 +108,46 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 #endregion
 
                 #region Calculate Result
+                Geometry leftGeometry = null;
+                Geometry leftGeometryUTM = null;
+                Geometry rightGeometry = null;
+                Geometry rightGeometryUTM = null;
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && (leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) || 
-                          leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
-                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                       && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) || 
-                            rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                          leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
                 {
-                    //Parse WGS84 WKT/GML geometries
-                    Geometry leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+                    //Parse WGS84 WKT/GML left geometry
+                    leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
                         WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
-                    Geometry rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+
+                    //Project left geometry from WGS84 to UTM
+                    (int, bool) utmFromWGS84LeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
+                    leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmFromWGS84LeftGeometry);
+
+                    //Determine if GeoSPARQL function requires right geometry
+                    if (HasRightArgument
+                         && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
+                          && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ||
+                               rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                    {
+                        //Parse WGS84 WKT/GML right geometry
+                        rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
                         WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
 
-                    //Project geometries from WGS84 to UTM
-                    (int, bool) utmFromWGS84LeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
-                    Geometry leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmFromWGS84LeftGeometry);
-                    (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
-                    Geometry rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
+                        //Project right geometry from WGS84 to UTM
+                        (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
+                        rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
+                    }
 
                     //Execute GeoSPARQL functions on UTM geometries
                     if (this is RDFGeoDistanceExpression)
                         expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    else if (this is RDFGeoBufferExpression geobufexp)
+                    {
+                        Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
+                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
                 }
                 #endregion
             }

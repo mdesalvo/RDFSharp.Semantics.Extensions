@@ -15,7 +15,6 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetTopologySuite.Geometries;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithExpressions()
+        public void ShouldCreateGeoDistanceExpressionWithExpressions()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?V")),
@@ -42,7 +41,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithExpressionAndVariable()
+        public void ShouldCreateGeoDistanceExpressionWithExpressionAndVariable()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
@@ -56,7 +55,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithExpressionAndTypedLiteral()
+        public void ShouldCreateGeoDistanceExpressionWithExpressionAndTypedLiteral()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (2 2)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
@@ -70,7 +69,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithVariableAndExpression()
+        public void ShouldCreateGeoDistanceExpressionWithVariableAndExpression()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V"),
@@ -84,7 +83,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithVariables()
+        public void ShouldCreateGeoDistanceExpressionWithVariables()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V1"),
@@ -98,7 +97,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeographyDistanceExpressionWithVariableAndTypedLiteral()
+        public void ShouldCreateGeoDistanceExpressionWithVariableAndTypedLiteral()
         {
             RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
                 new RDFVariable("?V"),
