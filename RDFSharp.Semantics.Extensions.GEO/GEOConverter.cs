@@ -35,6 +35,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
                 GeographicCoordinateSystem.WGS84, ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2));
             Geometry utmGeometry = Transform(wgs84Geometry, coordinateTransformation.MathTransform);
+            utmGeometry.SRID = Convert.ToInt32(coordinateTransformation.TargetCS.AuthorityCode);
             return utmGeometry;
         }
 
@@ -46,6 +47,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
                 ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2), GeographicCoordinateSystem.WGS84);
             Geometry wgs84Geometry = Transform(utmGeometry, coordinateTransformation.MathTransform);
+            wgs84Geometry.SRID = Convert.ToInt32(coordinateTransformation.TargetCS.AuthorityCode);
             return wgs84Geometry;
         }
 
