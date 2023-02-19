@@ -24,7 +24,8 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table. Result is a polygon expressed in WGS84 Lon/Lat.
+    /// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is a WKT typed literal representing a sf:Polygon expressed in WGS84 Lon/Lat.
     /// </summary>
     public class GEOBufferExpression : GEOExpression
     {

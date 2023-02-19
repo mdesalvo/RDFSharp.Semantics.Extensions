@@ -22,34 +22,34 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEODistanceExpression represents "geof:distance" geographic function to be applied on a query results table.<br/>
-    /// The result of this function is a numeric typed literal representing distance expressed in meters.
+    /// GEOIntersectionExpression represents "geof:intersection" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is a WKT typed literal representing a geosparql:Geometry expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class GEODistanceExpression : GEOExpression
+    public class GEOIntersectionExpression : GEOExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -59,27 +59,27 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:distance function with given arguments
+        /// Default-ctor to build a geof:intersection function with given arguments
         /// </summary>
-        public GEODistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public GEOIntersectionExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -91,7 +91,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the geof:distance function
+        /// Gives the string representation of the geof:intersection function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -99,8 +99,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
         {
             StringBuilder sb = new StringBuilder();
 
-            //(geof:distance(L,R))
-            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.DISTANCE, prefixes)}(");
+            //(geof:intersection(L,R))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.INTERSECTION, prefixes)}(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
