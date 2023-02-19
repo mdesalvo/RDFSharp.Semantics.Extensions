@@ -27,9 +27,9 @@ using System.Globalization;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// RDFGeoExpression represents a geographic expression to be applied on a query results table.
+    /// GEOExpression represents a geographic expression to be applied on a query results table.
     /// </summary>
-    public abstract class RDFGeoExpression : RDFExpression
+    public abstract class GEOExpression : RDFExpression
     {
         #region Properties
         /// <summary>
@@ -62,7 +62,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeoExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
+        public GEOExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
             : base(leftArgument, rightArgument)
         {
             WKTReader = new WKTReader();
@@ -140,9 +140,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
 
                     //Execute GeoSPARQL functions on UTM geometries
-                    if (this is RDFGeoDistanceExpression)
+                    if (this is GEODistanceExpression)
                         expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    else if (this is RDFGeoBufferExpression geobufexp)
+                    else if (this is GEOBufferExpression geobufexp)
                     {
                         Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);

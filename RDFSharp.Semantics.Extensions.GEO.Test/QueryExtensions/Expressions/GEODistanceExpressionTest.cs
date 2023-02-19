@@ -23,13 +23,13 @@ using System.Data;
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
     [TestClass]
-    public class RDFGeoDistanceExpressionTest
+    public class GEODistanceExpressionTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithExpressions()
+        public void ShouldCreateGEODistanceExpressionWithExpressions()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?V")),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
@@ -41,9 +41,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithExpressionAndVariable()
+        public void ShouldCreateGEODistanceExpressionWithExpressionAndVariable()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFVariable("?V"));
 
@@ -55,9 +55,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithExpressionAndTypedLiteral()
+        public void ShouldCreateGEODistanceExpressionWithExpressionAndTypedLiteral()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (2 2)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
@@ -69,9 +69,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithVariableAndExpression()
+        public void ShouldCreateGEODistanceExpressionWithVariableAndExpression()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?V"),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
@@ -83,9 +83,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithVariables()
+        public void ShouldCreateGEODistanceExpressionWithVariables()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?V1"),
                 new RDFVariable("?V2"));
 
@@ -97,9 +97,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoDistanceExpressionWithVariableAndTypedLiteral()
+        public void ShouldCreateGEODistanceExpressionWithVariableAndTypedLiteral()
         {
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?V"),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
@@ -111,60 +111,60 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithEEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithEEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithEVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithEVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithEVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithETBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithETBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithETBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithETBecauseNotGeographicRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFVariable("?V")));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariable, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariable("?V"), null as RDFVariable));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVTBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVTBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDistanceExpressionWithVTBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDistanceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        public void ShouldThrowExceptionOnCreatingGEODistanceExpressionWithVTBecauseNotGeographicRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEODistanceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
         public void ShouldApplyExpressionWithEEAndCalculateResult()
@@ -178,7 +178,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -199,7 +199,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFVariable("?ROME"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -220,7 +220,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")),
                 new RDFTypedLiteral("POINT (12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -241,7 +241,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -262,7 +262,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFVariable("?ROME"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -283,7 +283,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -304,7 +304,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?NAPLES")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -324,7 +324,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -344,7 +344,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?ROME")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -364,7 +364,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -386,7 +386,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFVariableExpression(new RDFVariable("?NAPLES")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -408,7 +408,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoDistanceExpression expression = new RDFGeoDistanceExpression(
+            GEODistanceExpression expression = new GEODistanceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);

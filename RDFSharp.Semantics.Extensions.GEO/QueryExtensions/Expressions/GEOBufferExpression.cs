@@ -24,9 +24,9 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// RDFGeoBufferExpression represents "geof:buffer" geographic function to be applied on a query results table. Result is a polygon expressed in WGS84 Lon/Lat.
+    /// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table. Result is a polygon expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class RDFGeoBufferExpression : RDFGeoExpression
+    public class GEOBufferExpression : GEOExpression
     {
         #region Properties
         /// <summary>
@@ -39,13 +39,13 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:buffer function with given arguments
         /// </summary>
-        public RDFGeoBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
+        public GEOBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;
 
         /// <summary>
         /// Default-ctor to build a geof:buffer function with given arguments
         /// </summary>
-        public RDFGeoBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
+        public GEOBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;
         #endregion
 

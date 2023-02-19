@@ -15,7 +15,6 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetTopologySuite.Geometries;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
@@ -24,13 +23,13 @@ using System.Data;
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
     [TestClass]
-    public class RDFGeoBufferExpressionTest
+    public class GEOBufferExpressionTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateGeoBufferExpressionWithExpression()
+        public void ShouldCreateGEOBufferExpressionWithExpression()
         {
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariableExpression(new RDFVariable("?V")), 150); //150mt buffering
 
             Assert.IsNotNull(expression);
@@ -41,9 +40,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldCreateGeoBufferExpressionWithVariable()
+        public void ShouldCreateGEOBufferExpressionWithVariable()
         {
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariable("?V"), 150); //150mt buffering
 
             Assert.IsNotNull(expression);
@@ -54,12 +53,12 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingBufferExpressionWithEXPBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoBufferExpression(null as RDFVariableExpression, 150));
+        public void ShouldThrowExceptionOnCreatingGEOBufferExpressionWithEXPBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOBufferExpression(null as RDFVariableExpression, 150));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingBufferExpressionWithVARBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoBufferExpression(null as RDFVariable, 150));
+        public void ShouldThrowExceptionOnCreatingGEOBufferExpressionWithVARBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOBufferExpression(null as RDFVariable, 150));
 
         [TestMethod]
         public void ShouldApplyExpressionWithEXPAndCalculateResult()
@@ -73,7 +72,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariableExpression(new RDFVariable("?MILAN")), 1000); //1000mt buffering
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -93,7 +92,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariable("?ROME"), 150); //150mt buffering
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -113,7 +112,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariable("?NAPLES"), 150);
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -132,7 +131,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariableExpression(new RDFVariable("?ROME")), 150);
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -153,7 +152,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            GEOBufferExpression expression = new GEOBufferExpression(
                 new RDFVariableExpression(new RDFVariable("?NAPLES")), 150);
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 

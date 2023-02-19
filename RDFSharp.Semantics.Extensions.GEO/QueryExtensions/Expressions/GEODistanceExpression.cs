@@ -22,15 +22,15 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// RDFGeoDistanceExpression represents "geof:distance" geographic function to be applied on a query results table. Result is expressed in meters.
+    /// GEODistanceExpression represents "geof:distance" geographic function to be applied on a query results table. Result is distance expressed in meters.
     /// </summary>
-    public class RDFGeoDistanceExpression : RDFGeoExpression
+    public class GEODistanceExpression : GEOExpression
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -60,7 +60,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -69,7 +69,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -78,7 +78,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Default-ctor to build a geof:distance function with given arguments
         /// </summary>
-        public RDFGeoDistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public GEODistanceExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
