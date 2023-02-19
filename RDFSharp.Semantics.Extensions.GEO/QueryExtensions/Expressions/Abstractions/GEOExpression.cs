@@ -140,14 +140,21 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
 
                     //Execute GeoSPARQL functions on UTM geometries
-                    if (this is GEODistanceExpression)
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    else if (this is GEOBufferExpression geobufexp)
+                    if (this is GEOBufferExpression geobufexp)
                     {
                         Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOConvexHullExpression)
+                    {
+                        Geometry bufferGeometryUTM = leftGeometryUTM.ConvexHull();
+                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
+                    else if (this is GEODistanceExpression)
+                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+
                 }
                 #endregion
             }
