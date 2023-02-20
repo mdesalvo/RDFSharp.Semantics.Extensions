@@ -125,22 +125,29 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     (int, bool) utmFromWGS84LeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
                     leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmFromWGS84LeftGeometry);
 
-                    //Determine if GeoSPARQL function requires right geometry
-                    if (HasRightArgument
-                         && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                          && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ||
-                               rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                    //Determine if requested GEO function needs right geometry
+                    if (HasRightArgument)
                     {
-                        //Parse WGS84 WKT/GML right geometry
-                        rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
-                            WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
+                        //If so, it must be a well-formed GEO literal (WKT/GML)
+                        if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
+                             && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) 
+                                  || rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                        {
+                            //Parse WGS84 WKT/GML right geometry
+                            rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+                                WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
 
-                        //Project right geometry from WGS84 to UTM
-                        (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
-                        rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
+                            //Project right geometry from WGS84 to UTM
+                            (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
+                            rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
+                        }
+
+                        //Otherwise, return null to signal binding error
+                        else
+                            return expressionResult;
                     }
 
-                    //Execute GeoSPARQL functions on UTM geometries
+                    //Execute GEO functions on UTM geometries
                     if (this is GEOBufferExpression geobufexp)
                     {
                         Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
@@ -162,6 +169,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry intersectionGeometryUTM = leftGeometryUTM.Intersection(rightGeometryUTM);
                         Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(intersectionGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
+                    else if (this is GEOUnionExpression)
+                    {
+                        Geometry unionGeometryUTM = leftGeometryUTM.Union(rightGeometryUTM);
+                        Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(unionGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                 }
                 #endregion
