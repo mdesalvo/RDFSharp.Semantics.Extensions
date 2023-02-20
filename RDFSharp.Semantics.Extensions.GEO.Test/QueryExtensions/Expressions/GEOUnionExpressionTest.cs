@@ -428,6 +428,46 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             Assert.IsNull(expressionResult);
         }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownLeftVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
+            DataRow row = table.NewRow();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            GEOUnionExpression expression = new GEOUnionExpression(
+                new RDFVariable("?NAPLES"),
+                new RDFVariable("?MILAN"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownRightVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?MILAN", typeof(string));
+            table.Columns.Add("?ROME", typeof(string));
+            DataRow row = table.NewRow();
+            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            GEOUnionExpression expression = new GEOUnionExpression(
+                new RDFVariable("?MILAN"),
+                new RDFVariable("?NAPLES"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
         #endregion
     }
 }
