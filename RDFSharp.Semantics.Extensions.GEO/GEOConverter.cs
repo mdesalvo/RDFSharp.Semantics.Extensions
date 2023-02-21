@@ -93,11 +93,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
             {
                 double x = coordinateSequence.GetX(index);
                 double y = coordinateSequence.GetY(index);
-                double z = coordinateSequence.GetZ(index);
-                _mathTransform.Transform(ref x, ref y, ref z);
+                _mathTransform.Transform(ref x, ref y);
                 coordinateSequence.SetX(index, Math.Round(x, 15));
                 coordinateSequence.SetY(index, Math.Round(y, 15));
-                coordinateSequence.SetZ(index, Math.Round(z, 15));
             }
         }
         #endregion
