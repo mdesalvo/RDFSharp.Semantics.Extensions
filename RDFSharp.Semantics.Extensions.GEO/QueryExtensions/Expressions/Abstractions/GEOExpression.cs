@@ -160,6 +160,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEODifferenceExpression)
+                    {
+                        Geometry differenceGeometryUTM = leftGeometryUTM.Difference(rightGeometryUTM);
+                        Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(differenceGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
                     else if (this is GEODistanceExpression)
                     { 
                         expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
