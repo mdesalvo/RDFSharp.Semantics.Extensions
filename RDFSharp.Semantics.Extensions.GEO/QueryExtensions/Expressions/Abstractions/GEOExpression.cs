@@ -173,6 +173,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(differenceGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEODisjointExpression)
+                    {
+                        bool sfDisjoint = leftGeometryUTM.Disjoint(rightGeometryUTM);
+                        expressionResult = sfDisjoint ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEODistanceExpression)
                     {
                         double distanceMeters = leftGeometryUTM.Distance(rightGeometryUTM);
