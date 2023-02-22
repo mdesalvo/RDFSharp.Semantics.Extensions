@@ -156,9 +156,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
                     else if (this is GEOConvexHullExpression)
                     {
-                        Geometry bufferGeometryUTM = leftGeometryUTM.ConvexHull();
-                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        Geometry convexHullGeometryUTM = leftGeometryUTM.ConvexHull();
+                        Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(convexHullGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODifferenceExpression)
                     {
@@ -167,8 +167,15 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODistanceExpression)
-                    { 
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    {
+                        double distanceMeters = leftGeometryUTM.Distance(rightGeometryUTM);
+                        expressionResult = new RDFTypedLiteral(Convert.ToString(distanceMeters, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    }
+                    else if (this is GEOEnvelopeExpression)
+                    {
+                        Geometry envelopeGeometryUTM = leftGeometryUTM.Envelope;
+                        Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(envelopeGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOIntersectionExpression)
                     {
