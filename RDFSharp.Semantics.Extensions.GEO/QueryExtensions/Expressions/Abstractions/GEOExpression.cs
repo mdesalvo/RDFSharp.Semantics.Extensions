@@ -204,6 +204,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(intersectionGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOIntersectsExpression)
+                    {
+                        bool sfIntersects = leftGeometryUTM.Intersects(rightGeometryUTM);
+                        expressionResult = sfIntersects ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOSymDifferenceExpression)
                     {
                         Geometry symDifferenceGeometryUTM = leftGeometryUTM.SymmetricDifference(rightGeometryUTM);
