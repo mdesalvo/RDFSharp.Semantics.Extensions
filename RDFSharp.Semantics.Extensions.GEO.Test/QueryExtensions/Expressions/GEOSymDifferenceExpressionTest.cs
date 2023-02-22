@@ -23,148 +23,148 @@ using System.Data;
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
     [TestClass]
-    public class GEODifferenceExpressionTest
+    public class GEOSymDifferenceExpressionTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithExpressions()
+        public void ShouldCreateGEOSymDifferenceExpressionWithExpressions()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?V")),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
         }
 
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithExpressionAndVariable()
+        public void ShouldCreateGEOSymDifferenceExpressionWithExpressionAndVariable()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFVariable("?V"));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V))"));
         }
 
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithExpressionAndTypedLiteral()
+        public void ShouldCreateGEOSymDifferenceExpressionWithExpressionAndTypedLiteral()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (2 2)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
         }
 
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithVariableAndExpression()
+        public void ShouldCreateGEOSymDifferenceExpressionWithVariableAndExpression()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?V"),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
         }
 
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithVariables()
+        public void ShouldCreateGEOSymDifferenceExpressionWithVariables()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?V1"),
                 new RDFVariable("?V2"));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(?V1, ?V2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(?V1, ?V2))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(?V1, ?V2))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(?V1, ?V2))"));
         }
 
         [TestMethod]
-        public void ShouldCreateGEODifferenceExpressionWithVariableAndTypedLiteral()
+        public void ShouldCreateGEOSymDifferenceExpressionWithVariableAndTypedLiteral()
         {
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?V"),
                 new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:difference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geof:symDifference(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithEEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithEEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithEVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithEVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithETBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithETBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithETBecauseNotGeographicRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVEBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVEBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVVBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariable, new RDFVariable("?V")));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariable, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVVBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariable("?V"), null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariable("?V"), null as RDFVariable));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVTBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVTBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNotGeographicRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new GEODifferenceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        public void ShouldThrowExceptionOnCreatingGEOSymDifferenceExpressionWithVTBecauseNotGeographicRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new GEOSymDifferenceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         [TestMethod]
         public void ShouldApplyExpressionWithEEAndCalculateResult()
@@ -176,7 +176,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?MPT")),
                 new RDFConstantExpression(new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -189,21 +189,21 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldApplyExpressionWithEEAndCalculateResult2()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?MILAN", typeof(string));
-            table.Columns.Add("?ROME", typeof(string));
+            table.Columns.Add("?PL1", typeof(string));
+            table.Columns.Add("?PL2", typeof(string));
             DataRow row = table.NewRow();
-            row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            row["?PL1"] = new RDFTypedLiteral("POLYGON((9.188690185546873 45.46590974421454,7.667083740234373 45.056061242744164,8.916778564453123 44.406316252661384,9.188690185546873 45.46590974421454))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?PL2"] = new RDFTypedLiteral("POLYGON((8.212581852537832 44.9137259976078,9.157406071287832 45.189259240893335,9.701229313475332 45.06135959832709,8.212581852537832 44.9137259976078))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
-                new RDFVariableExpression(new RDFVariable("?MILAN")),
-                new RDFVariableExpression(new RDFVariable("?ROME")));
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
+                new RDFVariableExpression(new RDFVariable("?PL1")),
+                new RDFVariableExpression(new RDFVariable("?PL2")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOLYGON (((9.068132712442614 45.00103738061904, 8.916778564453123 44.406316252661384, 7.667083740233879 45.056061242743695, 9.188690185546873 45.46590974421454, 9.113443673087797 45.17667036910182, 8.212581852537799 44.91372599760778, 9.068132712442614 45.00103738061904)), ((9.068132712442614 45.00103738061904, 9.113443673087797 45.17667036910182, 9.157406071287832 45.189259240893335, 9.701229313475352 45.061359598327066, 9.068132712442614 45.00103738061904)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -218,7 +218,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?LS")),
                 new RDFVariable("?PT"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -237,7 +237,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?PL")),
                 new RDFTypedLiteral("POLYGON((8.488311767578123 45.13361760070825,8.205413818359371 44.8947957646979,8.592681884765623 44.90841397875738,8.488311767578123 45.13361760070825))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -258,7 +258,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?MILANANDROME"),
                 new RDFVariableExpression(new RDFVariable("?MILAN")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -277,7 +277,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?MILAN"),
                 new RDFVariable("?MILAN"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -296,13 +296,13 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariable("?LS"),
                 new RDFTypedLiteral("LINESTRING (9.18854 45, 9.18854 49)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("LINESTRING (9.18854 45, 9.18854 54)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTILINESTRING ((9.18854 45, 9.18854 54), (9.18854 45, 9.18854 49))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -317,7 +317,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?NAPLES")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -337,7 +337,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -357,7 +357,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?ROME")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -377,7 +377,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?ROME")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -399,7 +399,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFVariableExpression(new RDFVariable("?NAPLES")),
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -421,7 +421,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            GEODifferenceExpression expression = new GEODifferenceExpression(
+            GEOSymDifferenceExpression expression = new GEOSymDifferenceExpression(
                 new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
                 new RDFVariableExpression(new RDFVariable("?NAPLES")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
