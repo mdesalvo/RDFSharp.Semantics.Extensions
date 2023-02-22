@@ -22,26 +22,26 @@ using System.Text;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEOEnvelopeExpression represents "geof:envelope" geographic function to be applied on a query results table.<br/>
+    /// GEOBoundaryExpression represents "geof:boundary" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a WKT typed literal representing a sf:Geometry expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class GEOEnvelopeExpression : GEOExpression
+    public class GEOBoundaryExpression : GEOExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:envelope function with given arguments
+        /// Default-ctor to build a geof:boundary function with given arguments
         /// </summary>
-        public GEOEnvelopeExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
+        public GEOBoundaryExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geof:envelope function with given arguments
+        /// Default-ctor to build a geof:boundary function with given arguments
         /// </summary>
-        public GEOEnvelopeExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
+        public GEOBoundaryExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the geof:envelope function
+        /// Gives the string representation of the geof:boundary function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -49,8 +49,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
         {
             StringBuilder sb = new StringBuilder();
 
-            //(geof:envelope(L))
-            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.ENVELOPE, prefixes)}(");
+            //(geof:boundary(L))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BOUNDARY, prefixes)}(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else

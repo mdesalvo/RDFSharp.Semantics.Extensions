@@ -148,7 +148,13 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
 
                     //Execute GEO functions on UTM geometries
-                    if (this is GEOBufferExpression geobufexp)
+                    if (this is GEOBoundaryExpression)
+                    {
+                        Geometry boundaryGeometryUTM = leftGeometryUTM.Boundary;
+                        Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(boundaryGeometryUTM, utmFromWGS84LeftGeometry);
+                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(boundaryGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
+                    else if (this is GEOBufferExpression geobufexp)
                     {
                         Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
