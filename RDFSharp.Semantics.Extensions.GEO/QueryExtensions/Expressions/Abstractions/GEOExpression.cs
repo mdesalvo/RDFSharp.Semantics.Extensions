@@ -14,12 +14,10 @@
    limitations under the License.
 */
 
-using NetTopologySuite;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using NetTopologySuite.IO.GML2;
 using NetTopologySuite.IO.GML3;
-using ProjNet.CoordinateSystems;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
@@ -185,6 +183,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry envelopeGeometryUTM = leftGeometryUTM.Envelope;
                         Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(envelopeGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                    }
+                    else if (this is GEOEqualsExpression)
+                    {
+                        bool sfEquals = leftGeometryUTM.EqualsTopologically(rightGeometryUTM);
+                        expressionResult = sfEquals ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOGetSRIDExpression)
                     {
