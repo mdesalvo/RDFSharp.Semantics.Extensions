@@ -121,6 +121,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     //Parse WGS84 WKT/GML left geometry
                     leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
                         WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
+                    leftGeometry.SRID = 4326;
 
                     //Project left geometry from WGS84 to UTM
                     (int, bool) utmFromWGS84LeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
@@ -137,6 +138,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                             //Parse WGS84 WKT/GML right geometry
                             rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
                                 WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
+                            rightGeometry.SRID = 4326;
 
                             //Project right geometry from WGS84 to UTM
                             (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
@@ -186,8 +188,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
                     else if (this is GEOGetSRIDExpression)
                     {
-                        //Our input/output spatial reference system is WGS84 (EPSG:4326) 
-                        expressionResult = new RDFTypedLiteral("http://www.opengis.net/def/crs/EPSG/0/4326", RDFModelEnums.RDFDatatypes.XSD_ANYURI);
+                        expressionResult = new RDFTypedLiteral($"http://www.opengis.net/def/crs/EPSG/0/{leftGeometry.SRID}", RDFModelEnums.RDFDatatypes.XSD_ANYURI);
                     }
                     else if (this is GEOIntersectionExpression)
                     {
