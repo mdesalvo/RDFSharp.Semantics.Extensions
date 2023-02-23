@@ -161,6 +161,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOContainsExpression)
+                    {
+                        bool sfContains = leftGeometryUTM.Contains(rightGeometryUTM);
+                        expressionResult = sfContains ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOConvexHullExpression)
                     {
                         Geometry convexHullGeometryUTM = leftGeometryUTM.ConvexHull();
