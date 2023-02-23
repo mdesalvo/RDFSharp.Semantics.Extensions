@@ -231,6 +231,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(unionGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOWithinExpression)
+                    {
+                        bool sfWithin = leftGeometryUTM.Within(rightGeometryUTM);
+                        expressionResult = sfWithin ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                 }
                 #endregion
             }
