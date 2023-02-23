@@ -155,9 +155,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(boundaryGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(boundaryGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
-                    else if (this is GEOBufferExpression geobufexp)
+                    else if (this is GEOBufferExpression geoBufferExpression)
                     {
-                        Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geobufexp.BufferMeters);
+                        Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geoBufferExpression.BufferMeters);
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
@@ -223,6 +223,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         bool sfOverlaps = leftGeometryUTM.Overlaps(rightGeometryUTM);
                         expressionResult = sfOverlaps ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
+                    else if (this is GEORelateExpression sfRelateExpression)
+                    {
+                        bool sfRelate = leftGeometryUTM.Relate(rightGeometryUTM, sfRelateExpression.DE9IMRelation);
+                        expressionResult = sfRelate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOSymDifferenceExpression)
                     {
