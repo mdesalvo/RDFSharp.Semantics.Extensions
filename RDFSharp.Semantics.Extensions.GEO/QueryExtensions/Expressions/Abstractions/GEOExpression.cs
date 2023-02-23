@@ -215,6 +215,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(symDifferenceGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOTouchesExpression)
+                    {
+                        bool sfTouches = leftGeometryUTM.Touches(rightGeometryUTM);
+                        expressionResult = sfTouches ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOUnionExpression)
                     {
                         Geometry unionGeometryUTM = leftGeometryUTM.Union(rightGeometryUTM);
