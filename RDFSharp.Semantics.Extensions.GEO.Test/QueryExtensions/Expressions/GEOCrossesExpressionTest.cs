@@ -191,17 +191,17 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldApplyExpressionWithEVAndCalculateResult()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("?ROMEPESCARA", typeof(string));
-            table.Columns.Add("?MILANNAPLES", typeof(string));
+            table.Columns.Add("?LS", typeof(string));
+            table.Columns.Add("?PL", typeof(string));
             DataRow row = table.NewRow();
-            row["?ROMEPESCARA"] = new RDFTypedLiteral("LINESTRING(12.477708549146879 41.89533014955101,14.202562064771879 42.44900130085177)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-            row["?MILANNAPLES"] = new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45 14.2681244 40.8517746</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            row["?LS"] = new RDFTypedLiteral("LINESTRING(12.903879633928094 42.03221630181674,12.934607020402703 42.01901819975981)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
+            row["?PL"] = new RDFTypedLiteral("POLYGON((12.909372797990594 42.03846372300497,12.938040247941766 42.03846372300497,12.938040247941766 42.02099490155432,12.909372797990594 42.02099490155432,12.909372797990594 42.03846372300497))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
             GEOCrossesExpression expression = new GEOCrossesExpression(
-                new RDFVariableExpression(new RDFVariable("?ROMEPESCARA")),
-                new RDFVariable("?MILANNAPLES"));
+                new RDFVariableExpression(new RDFVariable("?LS")),
+                new RDFVariable("?PL"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
