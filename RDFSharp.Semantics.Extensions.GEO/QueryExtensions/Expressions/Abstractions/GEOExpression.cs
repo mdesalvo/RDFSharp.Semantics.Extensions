@@ -219,6 +219,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         bool sfIntersects = leftGeometryUTM.Intersects(rightGeometryUTM);
                         expressionResult = sfIntersects ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
+                    else if (this is GEOOverlapsExpression)
+                    {
+                        bool sfOverlaps = leftGeometryUTM.Overlaps(rightGeometryUTM);
+                        expressionResult = sfOverlaps ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOSymDifferenceExpression)
                     {
                         Geometry symDifferenceGeometryUTM = leftGeometryUTM.SymmetricDifference(rightGeometryUTM);
