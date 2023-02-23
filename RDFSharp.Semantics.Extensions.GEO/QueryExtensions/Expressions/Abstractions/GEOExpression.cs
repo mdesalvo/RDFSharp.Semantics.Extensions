@@ -167,6 +167,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(convexHullGeometryUTM, utmFromWGS84LeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
+                    else if (this is GEOCrossesExpression)
+                    {
+                        bool sfCrosses = leftGeometryUTM.Crosses(rightGeometryUTM);
+                        expressionResult = sfCrosses ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEODifferenceExpression)
                     {
                         Geometry differenceGeometryUTM = leftGeometryUTM.Difference(rightGeometryUTM);
