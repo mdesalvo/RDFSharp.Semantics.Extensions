@@ -122,8 +122,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     leftGeometry.SRID = 4326;
 
                     //Project left geometry from WGS84 to UTM
-                    (int, bool) utmFromWGS84LeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
-                    leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmFromWGS84LeftGeometry);
+                    (int, bool) utmZoneOfLeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
+                    leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmZoneOfLeftGeometry);
 
                     //Determine if requested GEO function needs right geometry
                     if (HasRightArgument)
@@ -139,8 +139,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                             rightGeometry.SRID = 4326;
 
                             //Project right geometry from WGS84 to UTM
-                            (int, bool) utmFromWGS84RightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
-                            rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmFromWGS84RightGeometry);
+                            (int, bool) utmZoneOfRightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
+                            rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmZoneOfRightGeometry);
                         }
 
                         //Otherwise, return null to signal binding error
@@ -152,13 +152,13 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     if (this is GEOBoundaryExpression)
                     {
                         Geometry boundaryGeometryUTM = leftGeometryUTM.Boundary;
-                        Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(boundaryGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(boundaryGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(boundaryGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOBufferExpression geoBufferExpression)
                     {
                         Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geoBufferExpression.BufferMeters);
-                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOContainsExpression)
@@ -169,7 +169,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEOConvexHullExpression)
                     {
                         Geometry convexHullGeometryUTM = leftGeometryUTM.ConvexHull();
-                        Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(convexHullGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(convexHullGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOCrossesExpression)
@@ -180,7 +180,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEODifferenceExpression)
                     {
                         Geometry differenceGeometryUTM = leftGeometryUTM.Difference(rightGeometryUTM);
-                        Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(differenceGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(differenceGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODisjointExpression)
@@ -230,7 +230,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEOEnvelopeExpression)
                     {
                         Geometry envelopeGeometryUTM = leftGeometryUTM.Envelope;
-                        Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(envelopeGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(envelopeGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOEqualsExpression)
@@ -245,7 +245,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEOIntersectionExpression)
                     {
                         Geometry intersectionGeometryUTM = leftGeometryUTM.Intersection(rightGeometryUTM);
-                        Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(intersectionGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(intersectionGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOIntersectsExpression)
@@ -298,7 +298,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEOSymDifferenceExpression)
                     {
                         Geometry symDifferenceGeometryUTM = leftGeometryUTM.SymmetricDifference(rightGeometryUTM);
-                        Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(symDifferenceGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(symDifferenceGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOTouchesExpression)
@@ -309,7 +309,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     else if (this is GEOUnionExpression)
                     {
                         Geometry unionGeometryUTM = leftGeometryUTM.Union(rightGeometryUTM);
-                        Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(unionGeometryUTM, utmFromWGS84LeftGeometry);
+                        Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(unionGeometryUTM, utmZoneOfLeftGeometry);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOWithinExpression)

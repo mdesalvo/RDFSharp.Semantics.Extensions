@@ -15,9 +15,8 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NetTopologySuite.Geometries;
 using RDFSharp.Model;
-using RDFSharp.Semantics.Extensions.GEO;
-using RDFSharp.Semantics;
 using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.Extensions.GEO.Test
@@ -25,7 +24,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
     [TestClass]
     public class GEOOntologyHelperTest
     {
-        #region Tests
+        #region Tests (Declarer)
         //geosparql:Feature
         [TestMethod]
         public void ShouldDeclareFeature()
@@ -551,6 +550,45 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
                 }));
+        #endregion
+
+        #region Tests (Analyzer)
+        [TestMethod]
+        public void ShouldGetDefaultGeometryOfFeatureFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326  && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
+            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+        }
+
+        [TestMethod]
+        public void ShouldGetDefaultGeometryOfFeatureFromGML()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            geoOntology.Data.ABoxGraph.RemoveTriplesBySubjectPredicate(new RDFResource("ex:milanGeom"), RDFVocabulary.GEOSPARQL.AS_WKT);
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326 && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
+            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetDefaultGeometryOfFeature()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeatQQ"));
+
+            Assert.IsNull(milanDefaultGeometry.Item1);
+            Assert.IsNull(milanDefaultGeometry.Item2);
+        }
         #endregion
     }
 }

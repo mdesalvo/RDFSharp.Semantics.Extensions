@@ -16,8 +16,11 @@
 
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using NetTopologySuite.IO.GML2;
 using NetTopologySuite.IO.GML3;
 using RDFSharp.Model;
+using RDFSharp.Query;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -425,6 +428,70 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(geometryCollectionUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84GeometryCollectionGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
             return geoOntology;
+        }
+        #endregion
+
+        #region Analyzer
+        /// <summary>
+        /// Gets the default sf:Geometry assigned to the given sf:Feature, represented in (WGS84,UTM)
+        /// </summary>
+        internal static (Geometry,Geometry) GetDefaultGeometryOfFeature(this GEOOntology geoOntology, RDFResource featureUri)
+        {
+            //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's default geometry
+            RDFSelectQuery selectQuery = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFVariable("?DEFGEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?DEFGEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?DEFGEOMGML")).Optional())
+                    .AddFilter(new RDFBooleanOrFilter(
+                        new RDFBooleanAndFilter(new RDFBoundFilter(new RDFVariable("?DEFGEOMWKT")), new RDFDatatypeFilter(new RDFVariable("?DEFGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
+                        new RDFBooleanAndFilter(new RDFBoundFilter(new RDFVariable("?DEFGEOMGML")), new RDFDatatypeFilter(new RDFVariable("?DEFGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))))
+                .AddProjectionVariable(new RDFVariable("?DEFGEOMWKT"))
+                .AddProjectionVariable(new RDFVariable("?DEFGEOMGML"))
+                .AddModifier(new RDFLimitModifier(1));
+            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
+
+            //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
+            if (selectQueryResult.SelectResultsCount > 0)
+            {
+                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?DEFGEOMWKT"))
+                {
+                    try
+                    {
+                        //Parse default geometry from WKT
+                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?DEFGEOMWKT"].ToString());
+                        Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project default geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        return (wgs84Geometry, utmGeometry);
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+
+                //Parse default geometry from retrieved GML
+                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?DEFGEOMGML"))
+                {
+                    try
+                    {
+                        //Parse default geometry from GML
+                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?DEFGEOMGML"].ToString());
+                        Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project default geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        return (wgs84Geometry, utmGeometry);
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+            }
+            return (null, null);
         }
         #endregion
     }
