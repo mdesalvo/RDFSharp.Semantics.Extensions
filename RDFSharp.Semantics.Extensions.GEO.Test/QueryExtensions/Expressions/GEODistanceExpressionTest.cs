@@ -184,7 +184,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
@@ -205,7 +205,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
@@ -226,7 +226,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
@@ -247,7 +247,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
@@ -268,7 +268,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
@@ -289,7 +289,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254953", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("451197.909254951", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]

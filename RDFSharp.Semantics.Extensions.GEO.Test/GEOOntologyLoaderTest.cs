@@ -86,48 +86,6 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
             Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 9);
-            Assert.IsTrue(geoOntology.SerializedGeometries.Count == 9);
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milan"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milan"].Item1.EqualsTopologically(new Point(9.18854, 45.464664)));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milan"].Item2.EqualsTopologically(new Point(514739.23764243146, 5034588.076214247)));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:rome"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:rome"].Item1.EqualsTopologically(new Point(12.496365, 41.902782)));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:rome"].Item2.EqualsTopologically(new Point(292332.3514461573, 4642013.586099927)));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:naples"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:naples"].Item1.EqualsTopologically(new Point(14.2681244, 40.8517746)));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:naples"].Item2.EqualsTopologically(new Point(438310.2105054362, 4522560.57431237)));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milanrome"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanrome"].Item1.EqualsTopologically(new LineString(new Coordinate[] { new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782) })));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanrome"].Item2.EqualsTopologically(new LineString(new Coordinate[] { new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826) })));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milanromenaples"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples"].Item1.EqualsTopologically(new Polygon(new LinearRing(new Coordinate[] { new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782), new Coordinate(14.2681244, 40.8517746), new Coordinate(9.18854, 45.464664) }))));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples"].Item2.EqualsTopologically(new Polygon(new LinearRing(new Coordinate[] { new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826), new Coordinate(944139.3677008688, 4535678.997426257), new Coordinate(514739.23764243146, 5034588.076214247) }))));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milanrome_mpt"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanrome_mpt"].Item1.EqualsTopologically(new MultiPoint(new Point[] { 
-                new Point(9.18854, 45.464664), new Point(12.496365, 41.902782) })));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanrome_mpt"].Item2.EqualsTopologically(new MultiPoint(new Point[] { 
-                new Point(514739.23764243146, 5034588.076214247), new Point(790020.659168055, 4644896.163254826) })));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milanromenaples_mls"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples_mls"].Item1.EqualsTopologically(new MultiLineString(new LineString[] {
-                new LineString(new Coordinate[] { new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782) }),
-                new LineString(new Coordinate[] { new Coordinate(12.496365, 41.902782), new Coordinate(14.2681244, 40.8517746) })
-            })));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples_mls"].Item2.EqualsTopologically(new MultiLineString(new LineString[] {
-                new LineString(new Coordinate[] { new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826) }),
-                new LineString(new Coordinate[] { new Coordinate(790020.659168055, 4644896.163254826), new Coordinate(944139.3677008688, 4535678.997426257) })
-            })));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:milanromenaples_mpl"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples_mpl"].Item1.EqualsTopologically(new MultiPolygon(new Polygon[] { 
-                new Polygon(new LinearRing(new Coordinate[] { new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782), new Coordinate(14.2681244, 40.8517746), new Coordinate(9.18854, 45.464664) })),
-                new Polygon(new LinearRing(new Coordinate[] { new Coordinate(12.496365, 41.902782), new Coordinate(14.2681244, 40.8517746), new Coordinate(9.18854, 45.464664), new Coordinate(12.496365, 41.902782) }))
-            })));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:milanromenaples_mpl"].Item2.EqualsTopologically(new MultiPolygon(new Polygon[] { 
-                new Polygon(new LinearRing(new Coordinate[] { new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826), new Coordinate(944139.3677008688, 4535678.997426257), new Coordinate(514739.23764243146, 5034588.076214247) })),
-                new Polygon(new LinearRing(new Coordinate[] { new Coordinate(790020.659168055, 4644896.163254826), new Coordinate(944139.3677008688, 4535678.997426257), new Coordinate(514739.23764243146, 5034588.076214247), new Coordinate(790020.659168055, 4644896.163254826) }))
-            })));
-            Assert.IsTrue(geoOntology.SerializedGeometries.ContainsKey("ex:geometrycollection"));
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:geometrycollection"].Item1.OgcGeometryType == OgcGeometryType.GeometryCollection);
-            Assert.IsTrue(geoOntology.SerializedGeometries["ex:geometrycollection"].Item2.OgcGeometryType == OgcGeometryType.GeometryCollection);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
             Assert.IsTrue(geoOntology.Data.CheckHasDatatypeAssertion(new RDFResource("ex:milan"), new RDFResource("ex:hasName"), new RDFPlainLiteral("Milano", "it-IT")));
@@ -177,7 +135,6 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
             Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 9);
-            Assert.IsTrue(geoOntology.SerializedGeometries.Count == 0);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
             Assert.IsTrue(geoOntology.Data.CheckHasDatatypeAssertion(new RDFResource("ex:milan"), new RDFResource("ex:hasName"), new RDFPlainLiteral("Milano", "it-IT")));

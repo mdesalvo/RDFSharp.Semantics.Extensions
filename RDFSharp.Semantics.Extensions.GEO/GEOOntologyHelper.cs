@@ -116,12 +116,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(pointUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84PointWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(pointUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PointGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Point.X, wgs84Point.Y);
-            Point utmPoint = (Point)GEOConverter.GetUTMGeometryFromWGS84(wgs84Point, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(pointUri.ToString()))
-                geoOntology.SerializedGeometries.Add(pointUri.ToString(), (wgs84Point, utmPoint));
-
             return geoOntology;
         }
 
@@ -161,12 +155,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividualType(lineStringUri, RDFVocabulary.GEOSPARQL.SF.LINESTRING);
             geoOntology.Data.DeclareDatatypeAssertion(lineStringUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84LineStringWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(lineStringUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84LineStringGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
-
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LineString.Coordinates[0].X, wgs84LineString.Coordinates[0].Y);
-            LineString utmLineString = (LineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84LineString, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(lineStringUri.ToString()))
-                geoOntology.SerializedGeometries.Add(lineStringUri.ToString(), (wgs84LineString, utmLineString));
 
             return geoOntology;
         }
@@ -213,12 +201,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareDatatypeAssertion(polygonUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84PolygonWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(polygonUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84PolygonGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
 
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Polygon.Coordinates[0].X, wgs84Polygon.Coordinates[0].Y);
-            Polygon utmPolygon = (Polygon)GEOConverter.GetUTMGeometryFromWGS84(wgs84Polygon, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(polygonUri.ToString()))
-                geoOntology.SerializedGeometries.Add(polygonUri.ToString(), (wgs84Polygon, utmPolygon));
-
             return geoOntology;
         }
 
@@ -258,12 +240,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividualType(multiPointUri, RDFVocabulary.GEOSPARQL.SF.MULTI_POINT);
             geoOntology.Data.DeclareDatatypeAssertion(multiPointUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84MultiPointWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(multiPointUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiPointGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
-
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiPoint.Coordinates[0].X, wgs84MultiPoint.Coordinates[0].Y);
-            MultiPoint utmMultiPoint = (MultiPoint)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiPoint, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(multiPointUri.ToString()))
-                geoOntology.SerializedGeometries.Add(multiPointUri.ToString(), (wgs84MultiPoint, utmMultiPoint));
 
             return geoOntology;
         }
@@ -313,12 +289,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividualType(multiLineStringUri, RDFVocabulary.GEOSPARQL.SF.MULTI_LINESTRING);
             geoOntology.Data.DeclareDatatypeAssertion(multiLineStringUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84MultiLineStringWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(multiLineStringUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiLineStringGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
-
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiLineString.Coordinates[0].X, wgs84MultiLineString.Coordinates[0].Y);
-            MultiLineString utmMultiLineString = (MultiLineString)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiLineString, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(multiLineStringUri.ToString()))
-                geoOntology.SerializedGeometries.Add(multiLineStringUri.ToString(), (wgs84MultiLineString, utmMultiLineString));
 
             return geoOntology;
         }
@@ -374,12 +344,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividualType(multiPolygonUri, RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON);
             geoOntology.Data.DeclareDatatypeAssertion(multiPolygonUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84MultiPolygonWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(multiPolygonUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84MultiPolygonGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
-
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84MultiPolygon.Coordinates[0].X, wgs84MultiPolygon.Coordinates[0].Y);
-            MultiPolygon utmMultiPolygon = (MultiPolygon)GEOConverter.GetUTMGeometryFromWGS84(wgs84MultiPolygon, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(multiPolygonUri.ToString()))
-                geoOntology.SerializedGeometries.Add(multiPolygonUri.ToString(), (wgs84MultiPolygon, utmMultiPolygon));
 
             return geoOntology;
         }
@@ -459,12 +423,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividualType(geometryCollectionUri, RDFVocabulary.GEOSPARQL.SF.GEOMETRY_COLLECTION);
             geoOntology.Data.DeclareDatatypeAssertion(geometryCollectionUri, RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral(wgs84GeometryCollectionWKT, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
             geoOntology.Data.DeclareDatatypeAssertion(geometryCollectionUri, RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral(wgs84GeometryCollectionGML, RDFModelEnums.RDFDatatypes.GEOSPARQL_GML));
-
-            //Add geometry to the spatial ontology (along with its UTM projection)
-            (int, bool) utmFromWGS84 = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84GeometryCollection.Coordinates[0].X, wgs84GeometryCollection.Coordinates[0].Y);
-            GeometryCollection utmGeometryCollection = (GeometryCollection)GEOConverter.GetUTMGeometryFromWGS84(wgs84GeometryCollection, utmFromWGS84);
-            if (!geoOntology.SerializedGeometries.ContainsKey(geometryCollectionUri.ToString()))
-                geoOntology.SerializedGeometries.Add(geometryCollectionUri.ToString(), (wgs84GeometryCollection, utmGeometryCollection));
 
             return geoOntology;
         }

@@ -26,22 +26,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
     /// </summary>
     public class GEOOntology : OWLOntology
     {
-        #region Properties
-        /// <summary>
-        /// Dictionary of geometries formally serialized into the ontology data (WGS84,UTM)
-        /// </summary>
-        internal Dictionary<string, (Geometry, Geometry)> SerializedGeometries { get; set; } 
-        #endregion
-
         #region Ctors
         /// <summary>
         /// Builds a spatial ontology with the given URI (internal T-BOX is initialized with GeoSPARQL ontology)
         /// </summary>
         public GEOOntology(string geoOntologyURI) : base(geoOntologyURI)
-        {
-            SerializedGeometries = new Dictionary<string, (Geometry, Geometry)>();
-            Model = GEOOntologyLoader.BuildGEOModel();
-        }
+            => Model = GEOOntologyLoader.BuildGEOModel();
         #endregion
 
         #region Methods

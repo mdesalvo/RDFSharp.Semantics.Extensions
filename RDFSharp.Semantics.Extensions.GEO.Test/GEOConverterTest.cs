@@ -27,25 +27,23 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldGetUTMGeometryFromWGS84()
         {
-            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePointGeometry(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(geoOnt.SerializedGeometries["ex:Milan"].Item1, (32, true));
+            Geometry milanWGS84 = new Point(9.188540, 45.464664);
+            Geometry milanUTM32N = GEOConverter.GetUTMGeometryFromWGS84(milanWGS84, (32, true));
 
-            Assert.IsNotNull(utmGeometry);
-            Assert.IsTrue(utmGeometry.EqualsTopologically(geoOnt.SerializedGeometries["ex:Milan"].Item2));
+            Assert.IsNotNull(milanUTM32N);
+            Assert.IsTrue(string.Equals(milanUTM32N.ToText(), "POINT (514739.23764243 5034588.07621425)"));
+            Assert.IsTrue(milanUTM32N.SRID == 32632);
         }
 
         [TestMethod]
         public void ShouldGetWGS84GeometryFromUTM()
         {
-            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePointGeometry(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            Geometry wgs84Geometry = GEOConverter.GetWGS84GeometryFromUTM(geoOnt.SerializedGeometries["ex:Milan"].Item2, (32, true));
+            Geometry milanUTM32N = GEOConverter.GetUTMGeometryFromWGS84(new Point(9.188540, 45.464664), (32, true));
+            Geometry milanWGS84 = GEOConverter.GetWGS84GeometryFromUTM(milanUTM32N, (32, true));
 
-            Assert.IsNotNull(wgs84Geometry);
-            //Must test this way since IEEE754 floating-point errors makes EqualsTopologically strictly unfeasible
-            Assert.IsTrue(wgs84Geometry.Coordinate.X >= 9.188540 && wgs84Geometry.Coordinate.X <= 9.188541);
-            Assert.IsTrue(wgs84Geometry.Coordinate.Y >= 45.464664 && wgs84Geometry.Coordinate.Y <= 45.464665);
+            Assert.IsNotNull(milanWGS84);
+            Assert.IsTrue(string.Equals(milanWGS84.ToText(), "POINT (9.18854 45.464664)"));
+            Assert.IsTrue(milanWGS84.SRID == 4326);
         }
 
         [TestMethod]
