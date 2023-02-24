@@ -18,52 +18,51 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEOEgenhoferExpression represents "geof:eh*" geographic function to be applied on a query results table.<br/>
+    /// GEORCC8Expression represents "geof:rcc8*" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class GEOEgenhoferExpression : GEOExpression
+    public class GEORCC8Expression : GEOExpression
     {
         #region Properties
         /// <summary>
-        /// Egenhofer relation checked by this expression
+        /// RCC8 relation checked by this expression
         /// </summary>
-        internal GEOEnums.GEOEgenhoferRelations EgenhoferRelation { get; set; }
+        internal GEOEnums.GEORCC8Relations RCC8Relation { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFExpression leftArgument, RDFExpression rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFExpression leftArgument, RDFExpression rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
 
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFExpression leftArgument, RDFVariable rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFExpression leftArgument, RDFVariable rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
 
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFExpression leftArgument, RDFTypedLiteral rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -72,37 +71,37 @@ namespace RDFSharp.Semantics.Extensions.GEO
                  && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
 
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFVariable leftArgument, RDFExpression rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFVariable leftArgument, RDFExpression rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
 
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFVariable leftArgument, RDFVariable rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFVariable leftArgument, RDFVariable rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
 
         /// <summary>
         /// Default-ctor to build a geof:eh* function with given arguments
         /// </summary>
-        public GEOEgenhoferExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument, GEOEnums.GEOEgenhoferRelations egenhoferRelation)
+        public GEORCC8Expression(RDFVariable leftArgument, RDFTypedLiteral rightArgument, GEOEnums.GEORCC8Relations rcc8Relation)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -111,7 +110,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                  && !rightArgument.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
 
-            EgenhoferRelation = egenhoferRelation;
+            RCC8Relation = rcc8Relation;
         }
         #endregion
 
@@ -125,8 +124,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
         {
             StringBuilder sb = new StringBuilder();
 
-            //(geof:eh*(L,R))
-            sb.Append($"({RDFQueryPrinter.PrintPatternMember(GetEgenhoferFunction(), prefixes)}(");
+            //(geof:rcc8*(L,R))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(GetRCC8Function(), prefixes)}(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -144,28 +143,28 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Utilities
         /// <summary>
-        /// Gets the Egenhofer function corresponding to this expression
+        /// Gets the RCC8 function corresponding to this expression
         /// </summary>
-        internal RDFResource GetEgenhoferFunction()
+        internal RDFResource GetRCC8Function()
         {
-            switch (EgenhoferRelation)
+            switch (RCC8Relation)
             {
-                case GEOEnums.GEOEgenhoferRelations.Contains:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_CONTAINS;
-                case GEOEnums.GEOEgenhoferRelations.CoveredBy:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_COVERED_BY;
-                case GEOEnums.GEOEgenhoferRelations.Covers:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_COVERS;
-                case GEOEnums.GEOEgenhoferRelations.Disjoint:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_DISJOINT;
-                case GEOEnums.GEOEgenhoferRelations.Equals:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_EQUALS;
-                case GEOEnums.GEOEgenhoferRelations.Inside:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_INSIDE;
-                case GEOEnums.GEOEgenhoferRelations.Meet:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_MEET;
-                case GEOEnums.GEOEgenhoferRelations.Overlap:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_OVERLAP;
+                case GEOEnums.GEORCC8Relations.RCC8DC:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8DC;
+                case GEOEnums.GEORCC8Relations.RCC8EC:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8EC;
+                case GEOEnums.GEORCC8Relations.RCC8EQ:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8EQ;
+                case GEOEnums.GEORCC8Relations.RCC8NTPP:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPP;
+                case GEOEnums.GEORCC8Relations.RCC8NTPPI:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPPI;
+                case GEOEnums.GEORCC8Relations.RCC8PO:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8PO;
+                case GEOEnums.GEORCC8Relations.RCC8TPP:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8TPP;
+                case GEOEnums.GEORCC8Relations.RCC8TPPI:
+                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8TPPI;
                 default: return null;
             }
         }

@@ -258,6 +258,38 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         bool sfOverlaps = leftGeometryUTM.Overlaps(rightGeometryUTM);
                         expressionResult = sfOverlaps ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
+                    else if (this is GEORCC8Expression geoRCC8Expression)
+                    {
+                        bool sfRCSS8Relate = false;
+                        switch (geoRCC8Expression.RCC8Relation)
+                        {
+                            case GEOEnums.GEORCC8Relations.RCC8DC:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "FFTFFTTTT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8EC:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "FFTFTTTTT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8EQ:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFFTFFFT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8NTPP:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFTFFTTT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8NTPPI:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTFFTFFT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8PO:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTTTTTTT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8TPP:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFTTFTTT");
+                                break;
+                            case GEOEnums.GEORCC8Relations.RCC8TPPI:
+                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTFTTFFT");
+                                break;
+                        }
+                        expressionResult = sfRCSS8Relate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEORelateExpression geoRelateExpression)
                     {
                         bool sfRelate = leftGeometryUTM.Relate(rightGeometryUTM, geoRelateExpression.DE9IMRelation);
