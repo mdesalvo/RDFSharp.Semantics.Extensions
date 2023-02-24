@@ -85,7 +85,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Declares the given sf:Point instance to the spatial ontology
+        /// Declares the given sf:Point instance to the spatial ontology (coordinates must be WGS84 Lon/Lat)
         /// </summary>
         public static GEOOntology DeclarePointGeometry(this GEOOntology geoOntology, RDFResource pointUri, double wgs84Lon, double wgs84Lat)
         {
