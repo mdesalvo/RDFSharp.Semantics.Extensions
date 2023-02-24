@@ -110,7 +110,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 sb.Append(expRightArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-            sb.Append("))");
+            sb.Append($", {RDFQueryPrinter.PrintPatternMember(new RDFResource("http://www.opengis.net/def/uom/OGC/1.0/metre"), prefixes)}))");
 
             return sb.ToString();
         }
