@@ -193,6 +193,40 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         double distanceMeters = leftGeometryUTM.Distance(rightGeometryUTM);
                         expressionResult = new RDFTypedLiteral(Convert.ToString(distanceMeters, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                     }
+                    else if (this is GEOEgenhoferExpression geoEgenhoferExpression)
+                    {
+                        bool sfEgenhoferRelate = false;
+                        switch (geoEgenhoferExpression.EgenhoferRelation)
+                        {
+                            case GEOEnums.GEOEgenhoferRelations.Contains:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*TFF*FF*");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.CoveredBy:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFF*TFT**");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Covers:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*TFT*FF*");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Disjoint:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "FF*FF****");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Equals:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFFTFFFT");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Inside:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFF*FFT**");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Meet:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "FT*******")
+                                                     || leftGeometryUTM.Relate(rightGeometryUTM, "F**T*****")
+                                                      || leftGeometryUTM.Relate(rightGeometryUTM, "F***T****");
+                                break;
+                            case GEOEnums.GEOEgenhoferRelations.Overlap:
+                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*T***T**");
+                                break;
+                        }
+                        expressionResult = sfEgenhoferRelate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOEnvelopeExpression)
                     {
                         Geometry envelopeGeometryUTM = leftGeometryUTM.Envelope;
@@ -224,9 +258,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         bool sfOverlaps = leftGeometryUTM.Overlaps(rightGeometryUTM);
                         expressionResult = sfOverlaps ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
-                    else if (this is GEORelateExpression sfRelateExpression)
+                    else if (this is GEORelateExpression geoRelateExpression)
                     {
-                        bool sfRelate = leftGeometryUTM.Relate(rightGeometryUTM, sfRelateExpression.DE9IMRelation);
+                        bool sfRelate = leftGeometryUTM.Relate(rightGeometryUTM, geoRelateExpression.DE9IMRelation);
                         expressionResult = sfRelate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOSymDifferenceExpression)
