@@ -100,25 +100,25 @@ namespace RDFSharp.Semantics.Extensions.GEO
             {
                 //sf:Point
                 if (geometry.Item2 is Point point)
-                    geoOntology.DeclarePointInternal(geometry.Item1, point);
+                    geoOntology.DeclarePointGeometryInternal(geometry.Item1, point);
                 //sf:LineString
                 else if (geometry.Item2 is LineString lineString)
-                    geoOntology.DeclareLineStringInternal(geometry.Item1, lineString);
+                    geoOntology.DeclareLineStringGeometryInternal(geometry.Item1, lineString);
                 //sf:Polygon
                 else if (geometry.Item2 is Polygon polygon)
-                    geoOntology.DeclarePolygonInternal(geometry.Item1, polygon);
+                    geoOntology.DeclarePolygonGeometryInternal(geometry.Item1, polygon);
                 //sf:MultiPoint
                 else if (geometry.Item2 is MultiPoint multiPoint)
-                    geoOntology.DeclareMultiPointInternal(geometry.Item1, multiPoint);
+                    geoOntology.DeclareMultiPointGeometryInternal(geometry.Item1, multiPoint);
                 //sf:MultiLineString
                 else if (geometry.Item2 is MultiLineString multiLineString)
-                    geoOntology.DeclareMultiLineStringInternal(geometry.Item1, multiLineString);
+                    geoOntology.DeclareMultiLineStringGeometryInternal(geometry.Item1, multiLineString);
                 //sf:MultiPolygon
                 else if (geometry.Item2 is MultiPolygon multiPolygon)
-                    geoOntology.DeclareMultiPolygonInternal(geometry.Item1, multiPolygon);
+                    geoOntology.DeclareMultiPolygonGeometryInternal(geometry.Item1, multiPolygon);
                 //sf:GeometryCollection
                 else if (geometry.Item2 is GeometryCollection geometryCollection)
-                    geoOntology.DeclareGeometryCollectionInternal(geometry.Item1, geometryCollection);
+                    geoOntology.DeclareCollectionGeometryInternal(geometry.Item1, geometryCollection);
             }
 
             return geoOntology;

@@ -28,19 +28,19 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldGetUTMGeometryFromWGS84()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePoint(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(geoOnt.Geometries["ex:Milan"].Item1, (32, true));
+            geoOnt.DeclarePointGeometry(new RDFResource("ex:Milan"), 9.188540, 45.464664);
+            Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(geoOnt.SerializedGeometries["ex:Milan"].Item1, (32, true));
 
             Assert.IsNotNull(utmGeometry);
-            Assert.IsTrue(utmGeometry.EqualsTopologically(geoOnt.Geometries["ex:Milan"].Item2));
+            Assert.IsTrue(utmGeometry.EqualsTopologically(geoOnt.SerializedGeometries["ex:Milan"].Item2));
         }
 
         [TestMethod]
         public void ShouldGetWGS84GeometryFromUTM()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePoint(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            Geometry wgs84Geometry = GEOConverter.GetWGS84GeometryFromUTM(geoOnt.Geometries["ex:Milan"].Item2, (32, true));
+            geoOnt.DeclarePointGeometry(new RDFResource("ex:Milan"), 9.188540, 45.464664);
+            Geometry wgs84Geometry = GEOConverter.GetWGS84GeometryFromUTM(geoOnt.SerializedGeometries["ex:Milan"].Item2, (32, true));
 
             Assert.IsNotNull(wgs84Geometry);
             //Must test this way since IEEE754 floating-point errors makes EqualsTopologically strictly unfeasible

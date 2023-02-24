@@ -28,9 +28,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
     {
         #region Properties
         /// <summary>
-        /// Dictionary of geometries declared to the ontology data (WGS84,UTM)
+        /// Dictionary of geometries formally serialized into the ontology data (WGS84,UTM)
         /// </summary>
-        internal Dictionary<string, (Geometry, Geometry)> Geometries { get; set; } 
+        internal Dictionary<string, (Geometry, Geometry)> SerializedGeometries { get; set; } 
         #endregion
 
         #region Ctors
@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// </summary>
         public GEOOntology(string geoOntologyURI) : base(geoOntologyURI)
         {
-            Geometries = new Dictionary<string, (Geometry, Geometry)>();
+            SerializedGeometries = new Dictionary<string, (Geometry, Geometry)>();
             Model = GEOOntologyLoader.BuildGEOModel();
         }
         #endregion
