@@ -564,6 +564,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
             return secondaryGeometries;
         }
 
+        //SPATIAL ANALYSIS
+
         /// <summary>
         /// Gets the distance, expressed in meters, between the given geosparql:Feature instances
         /// </summary>
