@@ -99,7 +99,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 throw new OWLSemanticsException("Cannot declare sf:Point instance to the spatial ontology because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
                         
             //Build sf:Point instance
-            return DeclarePointInternal(geoOntology, pointUri, new Point(wgs84Lon, wgs84Lat));
+            return DeclarePointInternal(geoOntology, pointUri, new Point(wgs84Lon, wgs84Lat) { SRID = 4326 });
         }
         internal static GEOOntology DeclarePointInternal(this GEOOntology geoOntology, RDFResource pointUri, Point wgs84Point)
         {
@@ -139,7 +139,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 throw new OWLSemanticsException("Cannot declare sf:LineString instance to the spatial ontology because given \"wgs84Polygon\" parameter contains a point with invalid latitude for WGS84");
 
             //Build sf:LineString instance
-            return DeclareLineStringInternal(geoOntology, lineStringUri, new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+            return DeclareLineStringInternal(geoOntology, lineStringUri, new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()) { SRID = 4326 });
         }
         internal static GEOOntology DeclareLineStringInternal(this GEOOntology geoOntology, RDFResource lineStringUri, LineString wgs84LineString)
         {
@@ -184,7 +184,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 wgs84Polygon.Add(wgs84Polygon[0]);
 
             //Build sf:Polygon instance
-            return DeclarePolygonInternal(geoOntology, polygonUri, new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())));
+            return DeclarePolygonInternal(geoOntology, polygonUri, new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())) { SRID = 4326 });
         }
         internal static GEOOntology DeclarePolygonInternal(this GEOOntology geoOntology, RDFResource polygonUri, Polygon wgs84Polygon)
         {
@@ -224,7 +224,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 throw new OWLSemanticsException("Cannot declare sf:MultiPoint instance to the spatial ontology because given \"wgs84MultiPoint\" parameter contains a point with invalid latitude for WGS84");
 
             //Build sf:MultiPoint instance
-            return DeclareMultiPointInternal(geoOntology, multiPointUri, new MultiPoint(wgs84MultiPoint.Select(wgs84Point => new Point(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+            return DeclareMultiPointInternal(geoOntology, multiPointUri, new MultiPoint(wgs84MultiPoint.Select(wgs84Point => new Point(wgs84Point.Item1, wgs84Point.Item2) { SRID = 4326 }).ToArray()) { SRID = 4326 });
         }
         internal static GEOOntology DeclareMultiPointInternal(this GEOOntology geoOntology, RDFResource multiPointUri, MultiPoint wgs84MultiPoint)
         {
@@ -270,7 +270,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Reconstruct sf:MultiLineString
             List<LineString> wgs84LineStrings = new List<LineString>();
             foreach (List<(double, double)> wgs84LineString in wgs84MultiLineString)
-                wgs84LineStrings.Add(new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+                wgs84LineStrings.Add(new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()) { SRID = 4326 });
 
             //Build sf:MultiLineString instance
             return DeclareMultiLineStringInternal(geoOntology, multiLineStringUri, new MultiLineString(wgs84LineStrings.ToArray()));
@@ -324,7 +324,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 if (wgs84Polygon[0].Item1 != wgs84Polygon[wgs84Polygon.Count - 1].Item1
                      && wgs84Polygon[0].Item2 != wgs84Polygon[wgs84Polygon.Count - 1].Item2)
                     wgs84Polygon.Add(wgs84Polygon[0]);
-                wgs84Polygons.Add(new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())));
+                wgs84Polygons.Add(new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())) { SRID = 4326 });
             }
 
             //Build sf:MultiPolygon instance
@@ -383,12 +383,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Reconstruct sf:Point(s)
             List<Point> wgs84CollectionPoints = new List<Point>();
             foreach ((double,double) wgs84Point in wgs84Points)
-                wgs84CollectionPoints.Add(new Point(new Coordinate(wgs84Point.Item1, wgs84Point.Item2)));
+                wgs84CollectionPoints.Add(new Point(wgs84Point.Item1, wgs84Point.Item2) { SRID = 4326 });
 
             //Reconstruct sf:LineString(s)
             List<LineString> wgs84CollectionLineStrings = new List<LineString>();
             foreach (List<(double,double)> wgs84LineString in wgs84LineStrings)
-                wgs84CollectionLineStrings.Add(new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()));
+                wgs84CollectionLineStrings.Add(new LineString(wgs84LineString.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray()) { SRID = 4326 });
 
             //Reconstruct sf:Polygon(s)
             List<Polygon> wgs84CollectionPolygons = new List<Polygon>();
@@ -398,7 +398,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 if (wgs84Polygon[0].Item1 != wgs84Polygon[wgs84Polygon.Count - 1].Item1
                      && wgs84Polygon[0].Item2 != wgs84Polygon[wgs84Polygon.Count - 1].Item2)
                     wgs84Polygon.Add(wgs84Polygon[0]);
-                wgs84CollectionPolygons.Add(new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())));
+                wgs84CollectionPolygons.Add(new Polygon(new LinearRing(wgs84Polygon.Select(wgs84Point => new Coordinate(wgs84Point.Item1, wgs84Point.Item2)).ToArray())) { SRID = 4326 });
             }
 
             //Build sf:GeometryCollection instance
@@ -406,7 +406,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 new GeometryCollection(wgs84CollectionPoints.OfType<Geometry>()
                                         .Union(wgs84CollectionLineStrings.OfType<Geometry>())
                                          .Union(wgs84CollectionPolygons.OfType<Geometry>())
-                                          .ToArray());
+                                          .ToArray()) { SRID = 4326 };
             return DeclareGeometryCollectionInternal(geoOntology, geometryCollectionUri, wgs84GeometryCollection);
         }
         internal static GEOOntology DeclareGeometryCollectionInternal(this GEOOntology geoOntology, RDFResource geometryCollectionUri, GeometryCollection wgs84GeometryCollection)
@@ -440,14 +440,14 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's default geometry
             RDFSelectQuery selectQuery = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFVariable("?DEFGEOM")))
-                    .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?DEFGEOMWKT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?DEFGEOMGML")).Optional())
+                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFVariable("?GEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?GEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?GEOMGML")).Optional())
                     .AddFilter(new RDFBooleanOrFilter(
-                        new RDFDatatypeFilter(new RDFVariable("?DEFGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
-                        new RDFDatatypeFilter(new RDFVariable("?DEFGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
-                .AddProjectionVariable(new RDFVariable("?DEFGEOMWKT"))
-                .AddProjectionVariable(new RDFVariable("?DEFGEOMGML"))
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
+                .AddProjectionVariable(new RDFVariable("?GEOMWKT"))
+                .AddProjectionVariable(new RDFVariable("?GEOMGML"))
                 .AddModifier(new RDFLimitModifier(1));
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
 
@@ -455,12 +455,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (selectQueryResult.SelectResultsCount > 0)
             {
                 //WKT
-                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?DEFGEOMWKT"))
+                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?GEOMWKT"))
                 {
                     try
                     {
                         //Parse default geometry from WKT
-                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?DEFGEOMWKT"].ToString());
+                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?GEOMWKT"].ToString());
                         Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
@@ -474,12 +474,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 }
 
                 //GML
-                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?DEFGEOMGML"))
+                if (!selectQueryResult.SelectResults.Rows[0].IsNull("?GEOMGML"))
                 {
                     try
                     {
                         //Parse default geometry from GML
-                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?DEFGEOMGML"].ToString());
+                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectQueryResult.SelectResults.Rows[0]["?GEOMGML"].ToString());
                         Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
@@ -506,14 +506,14 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's not default geometries
             RDFSelectQuery selectQuery = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFVariable("?HASGEOM")))
-                    .AddPattern(new RDFPattern(new RDFVariable("?HASGEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?HASGEOMWKT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("?HASGEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?HASGEOMGML")).Optional())
+                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFVariable("?GEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?GEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?GEOMGML")).Optional())
                     .AddFilter(new RDFBooleanOrFilter(
-                        new RDFDatatypeFilter(new RDFVariable("?HASGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
-                        new RDFDatatypeFilter(new RDFVariable("?HASGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
-                .AddProjectionVariable(new RDFVariable("?HASGEOMWKT"))
-                .AddProjectionVariable(new RDFVariable("?HASGEOMGML"));
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
+                .AddProjectionVariable(new RDFVariable("?GEOMWKT"))
+                .AddProjectionVariable(new RDFVariable("?GEOMGML"));
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
 
             //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
@@ -522,12 +522,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 bool geometryCollected = false;
 
                 //WKT
-                if (!selectResultsRow.IsNull("?HASGEOMWKT"))
+                if (!selectResultsRow.IsNull("?GEOMWKT"))
                 {
                     try
                     {
                         //Parse geometry from WKT
-                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?HASGEOMWKT"].ToString());
+                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?GEOMWKT"].ToString());
                         Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
@@ -542,12 +542,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 }
 
                 //GML
-                if (!geometryCollected && !selectResultsRow.IsNull("?HASGEOMGML"))
+                if (!geometryCollected && !selectResultsRow.IsNull("?GEOMGML"))
                 {
                     try
                     {
                         //Parse default geometry from GML
-                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?HASGEOMGML"].ToString());
+                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?GEOMGML"].ToString());
                         Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
@@ -599,6 +599,110 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             //Give null in case distance could not be calculated (no available geometries from any sides)
             return featuresDistance == double.MaxValue ? null : featuresDistance;
+        }
+        
+        /// <summary>
+        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given search meters 
+        /// </summary>
+        public static List<RDFResource> GetFeaturesNearPoint(this GEOOntology geoOntology, double wgs84Lon, double wgs84Lat, double searchRadiusMeters)
+        {
+            if (wgs84Lon < -180 || wgs84Lon > 180)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lon\" parameter is not a valid longitude for WGS84");
+            if (wgs84Lat < -90 || wgs84Lat > 90)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
+
+            //Create WGS84 geometry from given center of search
+            Geometry wgs84SearchPoint = new Point(wgs84Lon, wgs84Lat) { SRID = 4326 };
+
+            //Create UTM geometry from given center of search
+            (int,bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
+            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            RDFSelectQuery selectQuery = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?FEATURE"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFVariable("?GEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?GEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?GEOMGML")).Optional())
+                    .AddFilter(new RDFIsUriFilter(new RDFVariable("?FEATURE")))
+                    .AddFilter(new RDFBooleanOrFilter(
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?FEATURE"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFVariable("?GEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?GEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?GEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?GEOMGML")).Optional())
+                    .AddFilter(new RDFIsUriFilter(new RDFVariable("?FEATURE")))
+                    .AddFilter(new RDFBooleanOrFilter(
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?GEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
+                .AddProjectionVariable(new RDFVariable("?FEATURE"))
+                .AddProjectionVariable(new RDFVariable("?GEOMWKT"))
+                .AddProjectionVariable(new RDFVariable("?GEOMGML"));
+            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
+
+            //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = new List<(RDFResource, Geometry, Geometry)>();
+            foreach (DataRow selectResultsRow in selectQueryResult.SelectResults.Rows)
+            {
+                bool geometryCollected = false;
+
+                //WKT
+                if (!selectResultsRow.IsNull("?GEOMWKT"))
+                {
+                    try
+                    {
+                        //Parse feature URI
+                        RDFResource featureUri = (RDFResource)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?FEATURE"].ToString());
+
+                        //Parse geometry from WKT
+                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?GEOMWKT"].ToString());
+                        Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        geometryCollected = true;
+                        featuresWithGeometry.Add((featureUri, wgs84Geometry, utmGeometry));
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+
+                //GML
+                if (!geometryCollected && !selectResultsRow.IsNull("?GEOMGML"))
+                {
+                    try
+                    {
+                        //Parse feature URI
+                        RDFResource featureUri = (RDFResource)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?FEATURE"].ToString());
+
+                        //Parse default geometry from GML
+                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?GEOMGML"].ToString());
+                        Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project default geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        featuresWithGeometry.Add((featureUri, wgs84Geometry, utmGeometry));
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+            }
+
+            //Perform distance analysis between collected geometries:
+            //iterate geometries and collect tones within given radius
+            List<RDFResource> featuresNearPoint = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (featureWithGeometry.Item3.IsWithinDistance(utmSearchPoint, searchRadiusMeters))
+                    featuresNearPoint.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresNearPoint);
         }
         #endregion
     }

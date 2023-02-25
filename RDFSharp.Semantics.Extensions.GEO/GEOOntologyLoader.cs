@@ -98,6 +98,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
             List<(RDFResource,Geometry)> gmlGeometries = DetectGMLGeometries(geoOntology);
             foreach ((RDFResource,Geometry) geometry in wktGeometries.Union(gmlGeometries))
             {
+                geometry.Item2.SRID = 4326;
+
                 //sf:Point
                 if (geometry.Item2 is Point point)
                     geoOntology.DeclarePointInternal(geometry.Item1, point);
