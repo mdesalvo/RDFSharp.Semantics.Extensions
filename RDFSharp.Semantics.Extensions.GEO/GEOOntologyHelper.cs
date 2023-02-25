@@ -21,6 +21,7 @@ using NetTopologySuite.IO.GML3;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Xml;
 
@@ -52,23 +53,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Declares the existence of the given "HasGeometry(featureUri, geometryUri)" relation to the spatial ontology
-        /// </summary>
-        public static GEOOntology DeclareHasGeometry(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri)
-        {
-            if (geometryUri == null)
-                throw new OWLSemanticsException("Cannot declare geosparql:Feature instance to the spatial ontology because given \"geometryUri\" parameter is null");
-
-            //Add knowledge to the A-BOX
-            DeclareFeature(geoOntology, featureUri);
-            geoOntology.Data.DeclareIndividual(geometryUri);
-            geoOntology.Data.DeclareIndividualType(geometryUri, RDFVocabulary.GEOSPARQL.GEOMETRY);
-            geoOntology.Data.DeclareObjectAssertion(featureUri, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometryUri);
-
-            return geoOntology;
-        }
-
-        /// <summary>
         /// Declares the existence of the given "DefaultGeometry(featureUri, geometryUri)" relation to the spatial ontology
         /// </summary>
         public static GEOOntology DeclareDefaultGeometry(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri)
@@ -81,6 +65,23 @@ namespace RDFSharp.Semantics.Extensions.GEO
             geoOntology.Data.DeclareIndividual(geometryUri);
             geoOntology.Data.DeclareIndividualType(geometryUri, RDFVocabulary.GEOSPARQL.GEOMETRY);
             geoOntology.Data.DeclareObjectAssertion(featureUri, RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, geometryUri);
+
+            return geoOntology;
+        }
+
+        /// <summary>
+        /// Declares the existence of the given "HasGeometry(featureUri, geometryUri)" relation to the spatial ontology
+        /// </summary>
+        public static GEOOntology DeclareSecondaryGeometry(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri)
+        {
+            if (geometryUri == null)
+                throw new OWLSemanticsException("Cannot declare geosparql:Feature instance to the spatial ontology because given \"geometryUri\" parameter is null");
+
+            //Add knowledge to the A-BOX
+            DeclareFeature(geoOntology, featureUri);
+            geoOntology.Data.DeclareIndividual(geometryUri);
+            geoOntology.Data.DeclareIndividualType(geometryUri, RDFVocabulary.GEOSPARQL.GEOMETRY);
+            geoOntology.Data.DeclareObjectAssertion(featureUri, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometryUri);
 
             return geoOntology;
         }
@@ -432,7 +433,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Analyzer
         /// <summary>
-        /// Gets the default sf:Geometry (WGS84,UTM) assigned to the given sf:Feature
+        /// Gets the default geometry (WGS84,UTM) assigned to the given sf:Feature
         /// </summary>
         internal static (Geometry,Geometry) GetDefaultGeometry(this GEOOntology geoOntology, RDFResource featureUri)
         {
@@ -450,7 +451,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 .AddModifier(new RDFLimitModifier(1));
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
 
-            //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
+            //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometry
             if (selectQueryResult.SelectResultsCount > 0)
             {
                 //WKT
@@ -492,6 +493,74 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 }
             }
             return (null, null);
+        }
+
+        /// <summary>
+        /// Gets the list of secondary geometries (WGS84,UTM) assigned to the given sf:Feature
+        /// </summary>
+        internal static List<(Geometry, Geometry)> GetSecondaryGeometries(this GEOOntology geoOntology, RDFResource featureUri)
+        {
+            List<(Geometry, Geometry)> secondaryGeometries = new List<(Geometry, Geometry)>();
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's not default geometries
+            RDFSelectQuery selectQuery = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(featureUri, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFVariable("?HASGEOM")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?HASGEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?HASGEOMWKT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?HASGEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?HASGEOMGML")).Optional())
+                    .AddFilter(new RDFBooleanOrFilter(
+                        new RDFDatatypeFilter(new RDFVariable("?HASGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?HASGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
+                .AddProjectionVariable(new RDFVariable("?HASGEOMWKT"))
+                .AddProjectionVariable(new RDFVariable("?HASGEOMGML"));
+            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
+
+            //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
+            foreach (DataRow selectResultsRow in selectQueryResult.SelectResults.Rows)
+            {
+                bool geometryCollected = false;
+
+                //WKT
+                if (!selectResultsRow.IsNull("?HASGEOMWKT"))
+                {
+                    try
+                    {
+                        //Parse geometry from WKT
+                        RDFTypedLiteral wktGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?HASGEOMWKT"].ToString());
+                        Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        geometryCollected = true;
+                        secondaryGeometries.Add((wgs84Geometry, utmGeometry));
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+
+                //GML
+                if (!geometryCollected && !selectResultsRow.IsNull("?HASGEOMGML"))
+                {
+                    try
+                    {
+                        //Parse default geometry from GML
+                        RDFTypedLiteral gmlGeometryLiteral = (RDFTypedLiteral)RDFQueryUtilities.ParseRDFPatternMember(selectResultsRow["?HASGEOMGML"].ToString());
+                        Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
+                        wgs84Geometry.SRID = 4326;
+
+                        //Project default geometry from WGS84 to UTM
+                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
+                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+
+                        secondaryGeometries.Add((wgs84Geometry, utmGeometry));
+                    }
+                    catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+                }
+            }
+
+            return secondaryGeometries;
         }
         #endregion
     }
