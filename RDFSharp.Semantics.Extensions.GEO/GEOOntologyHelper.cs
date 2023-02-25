@@ -492,15 +492,16 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
             }
-            return (null, null);
+
+            return (null,null);
         }
 
         /// <summary>
         /// Gets the list of secondary geometries (WGS84,UTM) assigned to the given sf:Feature
         /// </summary>
-        internal static List<(Geometry, Geometry)> GetSecondaryGeometries(this GEOOntology geoOntology, RDFResource featureUri)
+        internal static List<(Geometry,Geometry)> GetSecondaryGeometries(this GEOOntology geoOntology, RDFResource featureUri)
         {
-            List<(Geometry, Geometry)> secondaryGeometries = new List<(Geometry, Geometry)>();
+            List<(Geometry,Geometry)> secondaryGeometries = new List<(Geometry,Geometry)>();
 
             //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's not default geometries
             RDFSelectQuery selectQuery = new RDFSelectQuery()
