@@ -433,9 +433,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Analyzer
         /// <summary>
-        /// Gets the default geometry (WGS84,UTM) assigned to the given sf:Feature
+        /// Gets the default geometry (WGS84,UTM) assigned to the given geosparql:Feature instance
         /// </summary>
-        internal static (Geometry,Geometry) GetDefaultGeometry(this GEOOntology geoOntology, RDFResource featureUri)
+        internal static (Geometry,Geometry) GetDefaultGeometryOfFeature(this GEOOntology geoOntology, RDFResource featureUri)
         {
             //Execute SPARQL query to retrieve WKT/GML serialization of the given feature's default geometry
             RDFSelectQuery selectQuery = new RDFSelectQuery()
@@ -497,9 +497,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Gets the list of secondary geometries (WGS84,UTM) assigned to the given sf:Feature
+        /// Gets the list of secondary geometries (WGS84,UTM) assigned to the given geosparql:Feature instance
         /// </summary>
-        internal static List<(Geometry,Geometry)> GetSecondaryGeometries(this GEOOntology geoOntology, RDFResource featureUri)
+        internal static List<(Geometry,Geometry)> GetSecondaryGeometriesOfFeature(this GEOOntology geoOntology, RDFResource featureUri)
         {
             List<(Geometry,Geometry)> secondaryGeometries = new List<(Geometry,Geometry)>();
 
@@ -562,6 +562,43 @@ namespace RDFSharp.Semantics.Extensions.GEO
             }
 
             return secondaryGeometries;
+        }
+
+        /// <summary>
+        /// Gets the distance, expressed in meters, between the given geosparql:Feature instances
+        /// </summary>
+        public static double? GetDistanceBetweenFeatures(this GEOOntology geoOntology, RDFResource fromFeatureUri, RDFResource toFeatureUri)
+        {
+            if (fromFeatureUri == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureUri\" parameter is null");
+            if (toFeatureUri == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureUri\" parameter is null");
+
+            //Collect geometries of "From" feature
+            (Geometry,Geometry) defaultGeometryOfFromFeature = GetDefaultGeometryOfFeature(geoOntology, fromFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfFromFeature = GetSecondaryGeometriesOfFeature(geoOntology, fromFeatureUri);
+            if (defaultGeometryOfFromFeature.Item1 != null && defaultGeometryOfFromFeature.Item2 != null)
+                secondaryGeometriesOfFromFeature.Add(defaultGeometryOfFromFeature);
+
+            //Collect geometries of "To" feature
+            (Geometry,Geometry) defaultGeometryOfToFeature = GetDefaultGeometryOfFeature(geoOntology, toFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfToFeature = GetSecondaryGeometriesOfFeature(geoOntology, toFeatureUri);
+            if (defaultGeometryOfToFeature.Item1 != null && defaultGeometryOfToFeature.Item2 != null)
+                secondaryGeometriesOfToFeature.Add(defaultGeometryOfToFeature);
+
+            //Perform distance analysis between collected geometries:
+            //iterate from/to geometries and calibrate minimal distance
+            double? featuresDistance = double.MaxValue;
+            secondaryGeometriesOfFromFeature.ForEach(fromGeom => {
+                secondaryGeometriesOfToFeature.ForEach(toGeom => {
+                    double tempDistance = fromGeom.Item2.Distance(toGeom.Item2);
+                    if (tempDistance < featuresDistance)
+                        featuresDistance = tempDistance;
+                });
+            });
+
+            //Give null in case distance could not be calculated (no available geometries from any sides)
+            return featuresDistance == double.MaxValue ? null : featuresDistance;
         }
         #endregion
     }

@@ -559,7 +559,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326  && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
             Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
@@ -572,7 +572,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326 && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
             Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
@@ -583,7 +583,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNull(milanDefaultGeometry.Item1);
             Assert.IsNull(milanDefaultGeometry.Item2);
@@ -597,7 +597,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePoint(new RDFResource("ex:milanGeomA"), 9.188540, 45.464664);
             geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"));
             geoOntology.DeclarePoint(new RDFResource("ex:milanGeomB"), 9.588540, 45.864664);
-            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometries(new RDFResource("ex:milanFeat"));
+            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNotNull(milanSecondaryGeometries);
             Assert.IsTrue(milanSecondaryGeometries.Count == 2);
@@ -616,7 +616,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"));
             geoOntology.DeclarePoint(new RDFResource("ex:milanGeomB"), 9.588540, 45.864664);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometries(new RDFResource("ex:milanFeat"));
+            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNotNull(milanSecondaryGeometries);
             Assert.IsTrue(milanSecondaryGeometries.Count == 2);
@@ -631,11 +631,48 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometries(new RDFResource("ex:milanFeat"));
+            List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNotNull(milanSecondaryGeometries);
             Assert.IsTrue(milanSecondaryGeometries.Count == 0);
         }
+
+        [TestMethod]
+        public void ShouldGetDistanceBetweenFeatures()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanDefGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanDefGeom"), 9.188540, 45.464664);
+            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanSecGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanSecGeom"), 9.191934556314395, 45.46420722396936);
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:romeDefGeom"), 12.496365, 41.902782);
+            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:romeSecGeom"), 12.492218708798534, 41.8903301420294);
+            double? milanRomeDistance = geoOntology.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFResource("ex:romeFeat"));
+
+            Assert.IsTrue(milanRomeDistance >= 450000 && milanRomeDistance <= 4800000); //milan-rome should be between 450km and 480km
+         }
+
+        [TestMethod]
+        public void ShouldNotGetDistanceBetweenFeaturesBecauseMissingToGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeGeom"));
+            double? milanRomeDistance = geoOntology.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFResource("ex:romeFeat"));
+
+            Assert.IsNull(milanRomeDistance);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenFeaturesBecauseNullFrom()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetDistanceBetweenFeatures(null, new RDFResource("ex:to")));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenFeaturesBecauseNullTo()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetDistanceBetweenFeatures(new RDFResource("ex:from"), null));
         #endregion
     }
 }
