@@ -432,7 +432,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Analyzer
         /// <summary>
-        /// Gets the default sf:Geometry assigned to the given sf:Feature, represented in (WGS84,UTM)
+        /// Gets the default sf:Geometry (WGS84,UTM) assigned to the given sf:Feature
         /// </summary>
         internal static (Geometry,Geometry) GetDefaultGeometry(this GEOOntology geoOntology, RDFResource featureUri)
         {
@@ -443,8 +443,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFVariable("?DEFGEOMWKT")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("?DEFGEOM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFVariable("?DEFGEOMGML")).Optional())
                     .AddFilter(new RDFBooleanOrFilter(
-                        new RDFBooleanAndFilter(new RDFBoundFilter(new RDFVariable("?DEFGEOMWKT")), new RDFDatatypeFilter(new RDFVariable("?DEFGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)),
-                        new RDFBooleanAndFilter(new RDFBoundFilter(new RDFVariable("?DEFGEOMGML")), new RDFDatatypeFilter(new RDFVariable("?DEFGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))))
+                        new RDFDatatypeFilter(new RDFVariable("?DEFGEOMWKT"), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                        new RDFDatatypeFilter(new RDFVariable("?DEFGEOMGML"), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML))))
                 .AddProjectionVariable(new RDFVariable("?DEFGEOMWKT"))
                 .AddProjectionVariable(new RDFVariable("?DEFGEOMGML"))
                 .AddModifier(new RDFLimitModifier(1));

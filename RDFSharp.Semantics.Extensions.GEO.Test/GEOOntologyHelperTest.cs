@@ -583,8 +583,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeatQQ"));
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
 
             Assert.IsNull(milanDefaultGeometry.Item1);
             Assert.IsNull(milanDefaultGeometry.Item2);
