@@ -50,7 +50,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldDeclareFeatureHasGeometry()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareFeatureHasGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
+            geoOnt.DeclareHasGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
@@ -68,17 +68,17 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringFeatureHasGeometryBecauseNullFeatureUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareFeatureHasGeometry(null, new RDFResource("ex:MilanGeometry")));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareHasGeometry(null, new RDFResource("ex:MilanGeometry")));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringFeatureHasGeometryBecauseNullGeometryUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareFeatureHasGeometry(new RDFResource("ex:MilanFeature"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareHasGeometry(new RDFResource("ex:MilanFeature"), null));
 
         [TestMethod]
         public void ShouldDeclareFeatureHasDefaultGeometry()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
+            geoOnt.DeclareDefaultGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
@@ -96,19 +96,19 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringFeatureHasDefaultGeometryBecauseNullFeatureUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareFeatureHasDefaultGeometry(null, new RDFResource("ex:MilanGeometry")));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareDefaultGeometry(null, new RDFResource("ex:MilanGeometry")));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringFeatureHasDefaultGeometryBecauseNullGeometryUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareFeatureHasDefaultGeometry(new RDFResource("ex:MilanFeature"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareDefaultGeometry(new RDFResource("ex:MilanFeature"), null));
 
         //sf:Point
         [TestMethod]
         public void ShouldDeclarePoint()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePointGeometry(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            geoOnt.DeclarePointGeometry(new RDFResource("ex:Rome"), 12.496365, 41.902782);
+            geoOnt.DeclarePoint(new RDFResource("ex:Milan"), 9.188540, 45.464664);
+            geoOnt.DeclarePoint(new RDFResource("ex:Rome"), 12.496365, 41.902782);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
@@ -130,22 +130,22 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPointBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointGeometry(null, 0, 0));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(null, 0, 0));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPointBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointGeometry(new RDFResource("ex:Milan"), 0, 91));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(new RDFResource("ex:Milan"), 0, 91));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPointBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointGeometry(new RDFResource("ex:Milan"), 181, 0));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(new RDFResource("ex:Milan"), 181, 0));
 
         //sf:LineString
         [TestMethod]
         public void ShouldDeclareLineString()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareLineStringGeometry(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
+            geoOnt.DeclareLineString(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
                 (9.188540, 45.464664), (12.496365, 41.902782) });
 
             //Test evolution of GEO knowledge
@@ -163,30 +163,30 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringLineStringBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineStringGeometry(null, new List<(double, double)>() { (0, 0), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(null, new List<(double, double)>() { (0, 0), (1, 1) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringLineStringBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineStringGeometry(new RDFResource("ex:Milan"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), null));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringLineStringBecauseLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineStringGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringLineStringBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineStringGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringLineStringBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineStringGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
 
         //sf:Polygon
         [TestMethod]
         public void ShouldDeclarePolygon()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePolygonGeometry(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() {
+            geoOnt.DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() {
                 (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }); //This will be closed automatically with 4th point being the 1st
 
             //Test evolution of GEO knowledge
@@ -204,30 +204,30 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygonGeometry(null, new List<(double, double)>() { (0, 0), (1, 1), (2, 2) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(null, new List<(double, double)>() { (0, 0), (1, 1), (2, 2) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygonGeometry(new RDFResource("ex:MilanRomeNaples"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), null));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygonGeometry(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygonGeometry(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (0, 91), (1, 1), (2, 2) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (0, 91), (1, 1), (2, 2) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringPolygonBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygonGeometry(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1), (2, 2) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1), (2, 2) }));
 
         //sf:MultiPoint
         [TestMethod]
         public void ShouldDeclareMultiPoint()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiPointGeometry(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
+            geoOnt.DeclareMultiPoint(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
                 (9.188540, 45.464664), (12.496365, 41.902782) });
 
             //Test evolution of GEO knowledge
@@ -245,30 +245,30 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointGeometry(null, new List<(double, double)>() { (0, 0), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(null, new List<(double, double)>() { (0, 0), (1, 1) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointGeometry(new RDFResource("ex:Milan"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), null));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPointBecauseLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointGeometry(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
 
         //sf:MultiLineString
         [TestMethod]
         public void ShouldDeclareMultiLineString()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiLineStringGeometry(new RDFResource("ex:MilanRomeAndRomeNaples"), new List<List<(double, double)>>() {
+            geoOnt.DeclareMultiLineString(new RDFResource("ex:MilanRomeAndRomeNaples"), new List<List<(double, double)>>() {
                 new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782) },
                 new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746) } });
 
@@ -287,36 +287,36 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(null, new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(null, new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseNullLineStrings()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(new RDFResource("ex:MLS"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), null));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseLessThan2LineStrings()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0), (1, 1) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseHavingNullLineString()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
                 null, new List<(double,double)>() { (1, 1), (2, 2) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseHavingLineStringWithLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(null, new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(null, new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 91), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineStringGeometry(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (181, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
 
         //sf:MultiPolygon
@@ -324,7 +324,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldDeclareMultiPolygon()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiPolygonGeometry(new RDFResource("ex:MilanRomeNaples"), new List<List<(double, double)>>() {
+            geoOnt.DeclareMultiPolygon(new RDFResource("ex:MilanRomeNaples"), new List<List<(double, double)>>() {
                 new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
                 new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) } });
 
@@ -343,36 +343,36 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(null, new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(null, new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullPolygons()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), null));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseLessThan2Polygons()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0), (1, 1), (2, 2) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingNullPolygon()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingPolygonWithLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygonGeometry(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
                 new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (2, 2) } }));
 
         //sf:GeometryCollection
@@ -380,7 +380,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldDeclareGeometryCollection()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            geoOnt.DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (9.188540, 45.464664) },
                     { (12.496365, 41.902782) },
@@ -410,7 +410,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(null,
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(null,
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -423,7 +423,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                new List<(double, double)>() {
                     { (0, 91) }, { (1, 1) }, { (2, 2) }
                 },
@@ -436,7 +436,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (181, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -449,7 +449,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullLineString()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -462,7 +462,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -475,7 +475,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -488,7 +488,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -501,7 +501,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullPolygon()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -514,7 +514,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -527,7 +527,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -540,7 +540,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionGeometry(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -554,37 +554,37 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         #region Tests (Analyzer)
         [TestMethod]
-        public void ShouldGetDefaultGeometryOfFeatureFromWKT()
+        public void ShouldGetDefaultGeometryFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326  && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
             Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
         }
 
         [TestMethod]
-        public void ShouldGetDefaultGeometryOfFeatureFromGML()
+        public void ShouldGetDefaultGeometryFromGML()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
             geoOntology.Data.ABoxGraph.RemoveTriplesBySubjectPredicate(new RDFResource("ex:milanGeom"), RDFVocabulary.GEOSPARQL.AS_WKT);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326 && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
             Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
         }
 
         [TestMethod]
-        public void ShouldNotGetDefaultGeometryOfFeature()
+        public void ShouldNotGetDefaultGeometry()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareFeatureHasDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePointGeometry(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
-            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeatQQ"));
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometry(new RDFResource("ex:milanFeatQQ"));
 
             Assert.IsNull(milanDefaultGeometry.Item1);
             Assert.IsNull(milanDefaultGeometry.Item2);
