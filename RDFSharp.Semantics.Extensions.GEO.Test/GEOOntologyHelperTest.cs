@@ -655,6 +655,18 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
          }
 
         [TestMethod]
+        public void ShouldNotGetDistanceBetweenFeaturesBecauseMissingFromGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeGeom"));
+            geoOntology.DeclarePoint(new RDFResource("ex:romeGeom"), 12.496365, 41.902782);
+            double? milanRomeDistance = geoOntology.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFResource("ex:romeFeat"));
+
+            Assert.IsNull(milanRomeDistance);
+        }
+
+        [TestMethod]
         public void ShouldNotGetDistanceBetweenFeaturesBecauseMissingToGeometries()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
