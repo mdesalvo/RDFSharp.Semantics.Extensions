@@ -701,7 +701,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePoint(new RDFResource("ex:romeSecGeom"), 12.492218708798534, 41.8903301420294);
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint(12.496365, 41.902782, 100000);
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint((12.496365, 41.902782), 100000);
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 2);
@@ -722,7 +722,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint(9.064627221414433, 45.475514057674644, 10000); //10Km around Settimo Milanese
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint((9.064627221414433, 45.475514057674644), 10000); //10Km around Settimo Milanese
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 1);
@@ -741,7 +741,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePoint(new RDFResource("ex:romeSecGeom"), 12.492218708798534, 41.8903301420294);
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint(11.538600883689174, 45.54896859401364, 20000); //20km around Vicenza
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint((11.538600883689174, 45.54896859401364), 20000); //20km around Vicenza
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
@@ -755,7 +755,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"));
             geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"));
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint(11.538600883689174, 45.54896859401364, 20000); //20km around Vicenza
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesNearPoint((11.538600883689174, 45.54896859401364), 20000); //20km around Vicenza
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
@@ -763,11 +763,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesNearPointBecauseInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesNearPoint(-181, 45, 1000));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesNearPoint((-181, 45), 1000));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesNearPointBecauseInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesNearPoint(9, 91, 1000));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesNearPoint((9, 91), 1000));
 
         [TestMethod]
         public void ShouldGetFeaturesWithinBoxFromWKT()
@@ -781,7 +781,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePoint(new RDFResource("ex:romeSecGeom"), 12.492218708798534, 41.8903301420294);
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox(12.42447817, 41.84821607, 12.82959902, 41.98310753);
+            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 2);
@@ -802,7 +802,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox(12.42447817, 41.84821607, 12.82959902, 41.98310753);
+            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 2);
@@ -822,7 +822,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePoint(new RDFResource("ex:romeSecGeom"), 12.492218708798534, 41.8903301420294);
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
             geoOntology.DeclarePoint(new RDFResource("ex:tivoliDefGeom"), 12.799386614751448, 41.9621771776109);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox(12.506875630937513, 41.67714954342952, 12.678537007890638, 41.807283590331984); //Pomezia-Frascati
+            List<RDFResource> featuresWithinSearchBox = geoOntology.GetFeaturesWithinBox((12.506875630937513, 41.67714954342952), (12.678537007890638, 41.807283590331984)); //Pomezia-Frascati
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 0);
@@ -836,7 +836,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"));
             geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"));
             geoOntology.DeclareDefaultGeometry(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"));
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesWithinBox(12.42447817, 41.84821607, 12.82959902, 41.98310753);
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.GetFeaturesWithinBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
@@ -844,27 +844,27 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidLowerLeftLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(-181, 45, 76, 58));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((-181, 45), (76, 58)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidLowerLeftLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(9, 91, 76, 58));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((9, 91), (76, 58)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidUpperRightLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(32, 45, 181, 58));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((32, 45), (181, 58)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidUpperRightLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(9, 45, 76, 91));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((9, 45), (76, 91)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseExceedingLowerLeftLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(81, 45, 76, 58));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((81, 45), (76, 58)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseExceedingLowerLeftLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox(9, 84, 76, 58));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").GetFeaturesWithinBox((9, 84), (76, 58)));
         #endregion
     }
 }

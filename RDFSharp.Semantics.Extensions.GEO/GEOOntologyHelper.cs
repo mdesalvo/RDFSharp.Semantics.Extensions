@@ -691,18 +691,18 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features around the given WGS84 Lon/Lat point in a radius of given search meters 
         /// </summary>
-        public static List<RDFResource> GetFeaturesNearPoint(this GEOOntology geoOntology, double wgs84Lon, double wgs84Lat, double searchRadiusMeters)
+        public static List<RDFResource> GetFeaturesNearPoint(this GEOOntology geoOntology, (double,double) wgs84LonLat, double radiusMeters)
         {
-            if (wgs84Lon < -180 || wgs84Lon > 180)
-                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lon\" parameter is not a valid longitude for WGS84");
-            if (wgs84Lat < -90 || wgs84Lat > 90)
-                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
+            if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
+            if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
             //Create WGS84 geometry from given center of search
-            Geometry wgs84SearchPoint = new Point(wgs84Lon, wgs84Lat) { SRID = 4326 };
+            Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Create UTM geometry from given center of search
-            (int,bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
+            (int,bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat.Item1, wgs84LonLat.Item2);
             Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -711,7 +711,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Perform spatial analysis between collected geometries: iterate geometries and collect those within given radius
             List<RDFResource> featuresNearPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item3.IsWithinDistance(utmSearchPoint, searchRadiusMeters))
+                if (featureWithGeometry.Item3.IsWithinDistance(utmSearchPoint, radiusMeters))
                     featuresNearPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -721,32 +721,32 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features within the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
         /// </summary>
-        public static List<RDFResource> GetFeaturesWithinBox(this GEOOntology geoOntology, double wgs84LonMin, double wgs84LatMin, double wgs84LonMax, double wgs84LatMax)
+        public static List<RDFResource> GetFeaturesWithinBox(this GEOOntology geoOntology, (double,double) wgs84LonLat_LowerLeft, (double,double) wgs84LonLat_UpperRight)
         {
-            if (wgs84LonMin < -180 || wgs84LonMin > 180)
+            if (wgs84LonLat_LowerLeft.Item1 < -180 || wgs84LonLat_LowerLeft.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter is not a valid longitude for WGS84");
-            if (wgs84LatMin < -90 || wgs84LatMin > 90)
+            if (wgs84LonLat_LowerLeft.Item2 < -90 || wgs84LonLat_LowerLeft.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMin\" parameter is not a valid latitude for WGS84");
-            if (wgs84LonMax < -180 || wgs84LonMax > 180)
+            if (wgs84LonLat_UpperRight.Item1 < -180 || wgs84LonLat_UpperRight.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMax\" parameter is not a valid longitude for WGS84");
-            if (wgs84LatMax < -90 || wgs84LatMax > 90)
+            if (wgs84LonLat_UpperRight.Item2 < -90 || wgs84LonLat_UpperRight.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMax\" parameter is not a valid latitude for WGS84");
-            if (wgs84LonMin >= wgs84LonMax)
+            if (wgs84LonLat_LowerLeft.Item1 >= wgs84LonLat_UpperRight.Item1)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter must be lower than given \"wgs84LonMax\" parameter");
-            if (wgs84LatMin >= wgs84LatMax)
+            if (wgs84LonLat_LowerLeft.Item2 >= wgs84LonLat_UpperRight.Item2)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMin\" parameter must be lower than given \"wgs84LatMax\" parameter");
 
             //Create WGS84 geometry from given box corners
             Geometry wgs84SearchBox = new Polygon(new LinearRing(new Coordinate[] { 
-                new Coordinate(wgs84LonMin, wgs84LatMin),
-                new Coordinate(wgs84LonMax, wgs84LatMin),
-                new Coordinate(wgs84LonMax, wgs84LatMax),
-                new Coordinate(wgs84LonMin, wgs84LatMax),
-                new Coordinate(wgs84LonMin, wgs84LatMin)
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2),
+                new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_LowerLeft.Item2),
+                new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_UpperRight.Item2),
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_UpperRight.Item2),
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
             })) { SRID = 4326 };
 
             //Create UTM geometry from given box corners
-            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonMin, wgs84LatMin);
+            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2);
             Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
