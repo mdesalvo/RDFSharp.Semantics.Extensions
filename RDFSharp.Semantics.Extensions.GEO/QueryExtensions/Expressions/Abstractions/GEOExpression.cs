@@ -121,6 +121,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
                     leftGeometry.SRID = 4326;
 
+                    //Short-circuit empty geometry evaluation
+                    if (this is GEOIsEmptyExpression)
+                        return leftGeometry.IsEmpty ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+
                     //Project left geometry from WGS84 to UTM
                     (int, bool) utmZoneOfLeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
                     leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmZoneOfLeftGeometry);
