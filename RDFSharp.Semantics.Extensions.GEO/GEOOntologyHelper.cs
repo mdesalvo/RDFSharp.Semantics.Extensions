@@ -719,6 +719,36 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
+        /// Gets the features located north of the given WGS84 Lon/Lat point
+        /// </summary>
+        public static List<RDFResource> GetFeaturesNorthOfPoint(this GEOOntology geoOntology, (double, double) wgs84LonLat)
+        {
+            if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
+            if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
+
+            //Create WGS84 geometry from given point
+            Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
+
+            //Create UTM geometry from given point
+            (int, bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat.Item1, wgs84LonLat.Item2);
+            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = GetFeaturesWithGeometries(geoOntology);
+
+            //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes higher than given point
+            List<RDFResource> featuresNorthOfPoint = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y > utmSearchPoint.Coordinate.Y))
+                    featuresNorthOfPoint.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresNorthOfPoint);
+        }
+
+        /// <summary>
         /// Gets the features within the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
         /// </summary>
         public static List<RDFResource> GetFeaturesWithinBox(this GEOOntology geoOntology, (double,double) wgs84LonLat_LowerLeft, (double,double) wgs84LonLat_UpperRight)
