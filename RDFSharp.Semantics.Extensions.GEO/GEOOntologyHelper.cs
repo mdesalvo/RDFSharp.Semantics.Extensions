@@ -564,61 +564,12 @@ namespace RDFSharp.Semantics.Extensions.GEO
             return secondaryGeometries;
         }
 
-        //SPATIAL ANALYSIS
-
         /// <summary>
-        /// Gets the distance, expressed in meters, between the given geosparql:Feature instances
+        /// Gets the features having at least one serialized geometry (WGS84,UTM)
         /// </summary>
-        public static double? GetDistanceBetweenFeatures(this GEOOntology geoOntology, RDFResource fromFeatureUri, RDFResource toFeatureUri)
+        internal static List<(RDFResource,Geometry,Geometry)> GetFeaturesWithGeometries(this GEOOntology geoOntology)
         {
-            if (fromFeatureUri == null)
-                throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureUri\" parameter is null");
-            if (toFeatureUri == null)
-                throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureUri\" parameter is null");
-
-            //Collect geometries of "From" feature
-            (Geometry,Geometry) defaultGeometryOfFromFeature = GetDefaultGeometryOfFeature(geoOntology, fromFeatureUri);
-            List<(Geometry,Geometry)> secondaryGeometriesOfFromFeature = GetSecondaryGeometriesOfFeature(geoOntology, fromFeatureUri);
-            if (defaultGeometryOfFromFeature.Item1 != null && defaultGeometryOfFromFeature.Item2 != null)
-                secondaryGeometriesOfFromFeature.Add(defaultGeometryOfFromFeature);
-
-            //Collect geometries of "To" feature
-            (Geometry,Geometry) defaultGeometryOfToFeature = GetDefaultGeometryOfFeature(geoOntology, toFeatureUri);
-            List<(Geometry,Geometry)> secondaryGeometriesOfToFeature = GetSecondaryGeometriesOfFeature(geoOntology, toFeatureUri);
-            if (defaultGeometryOfToFeature.Item1 != null && defaultGeometryOfToFeature.Item2 != null)
-                secondaryGeometriesOfToFeature.Add(defaultGeometryOfToFeature);
-
-            //Perform distance analysis between collected geometries:
-            //iterate from/to geometries and calibrate minimal distance
-            double? featuresDistance = double.MaxValue;
-            secondaryGeometriesOfFromFeature.ForEach(fromGeom => {
-                secondaryGeometriesOfToFeature.ForEach(toGeom => {
-                    double tempDistance = fromGeom.Item2.Distance(toGeom.Item2);
-                    if (tempDistance < featuresDistance)
-                        featuresDistance = tempDistance;
-                });
-            });
-
-            //Give null in case distance could not be calculated (no available geometries from any sides)
-            return featuresDistance == double.MaxValue ? null : featuresDistance;
-        }
-        
-        /// <summary>
-        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given search meters 
-        /// </summary>
-        public static List<RDFResource> GetFeaturesNearPoint(this GEOOntology geoOntology, double wgs84Lon, double wgs84Lat, double searchRadiusMeters)
-        {
-            if (wgs84Lon < -180 || wgs84Lon > 180)
-                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lon\" parameter is not a valid longitude for WGS84");
-            if (wgs84Lat < -90 || wgs84Lat > 90)
-                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
-
-            //Create WGS84 geometry from given center of search
-            Geometry wgs84SearchPoint = new Point(wgs84Lon, wgs84Lat) { SRID = 4326 };
-
-            //Create UTM geometry from given center of search
-            (int,bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
-            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = new List<(RDFResource,Geometry,Geometry)>();
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             RDFSelectQuery selectQuery = new RDFSelectQuery()
@@ -645,7 +596,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToGraph(geoOntology.Data.ABoxGraph);
 
             //Parse retrieved WKT/GML serialization into (WGS84,UTM) result geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = new List<(RDFResource, Geometry, Geometry)>();
             foreach (DataRow selectResultsRow in selectQueryResult.SelectResults.Rows)
             {
                 bool geometryCollected = false;
@@ -696,8 +646,69 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 }
             }
 
-            //Perform distance analysis between collected geometries:
-            //iterate geometries and collect tones within given radius
+            return featuresWithGeometry;
+        }
+
+        //SPATIAL ANALYSIS
+
+        /// <summary>
+        /// Gets the distance, expressed in meters, between the given geosparql:Feature instances
+        /// </summary>
+        public static double? GetDistanceBetweenFeatures(this GEOOntology geoOntology, RDFResource fromFeatureUri, RDFResource toFeatureUri)
+        {
+            if (fromFeatureUri == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureUri\" parameter is null");
+            if (toFeatureUri == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureUri\" parameter is null");
+
+            //Collect geometries of "From" feature
+            (Geometry,Geometry) defaultGeometryOfFromFeature = GetDefaultGeometryOfFeature(geoOntology, fromFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfFromFeature = GetSecondaryGeometriesOfFeature(geoOntology, fromFeatureUri);
+            if (defaultGeometryOfFromFeature.Item1 != null && defaultGeometryOfFromFeature.Item2 != null)
+                secondaryGeometriesOfFromFeature.Add(defaultGeometryOfFromFeature);
+
+            //Collect geometries of "To" feature
+            (Geometry,Geometry) defaultGeometryOfToFeature = GetDefaultGeometryOfFeature(geoOntology, toFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfToFeature = GetSecondaryGeometriesOfFeature(geoOntology, toFeatureUri);
+            if (defaultGeometryOfToFeature.Item1 != null && defaultGeometryOfToFeature.Item2 != null)
+                secondaryGeometriesOfToFeature.Add(defaultGeometryOfToFeature);
+
+            //Perform spatial analysis between collected geometries:
+            //iterate from/to geometries and calibrate minimal distance
+            double? featuresDistance = double.MaxValue;
+            secondaryGeometriesOfFromFeature.ForEach(fromGeom => {
+                secondaryGeometriesOfToFeature.ForEach(toGeom => {
+                    double tempDistance = fromGeom.Item2.Distance(toGeom.Item2);
+                    if (tempDistance < featuresDistance)
+                        featuresDistance = tempDistance;
+                });
+            });
+
+            //Give null in case distance could not be calculated (no available geometries from any sides)
+            return featuresDistance == double.MaxValue ? null : featuresDistance;
+        }
+        
+        /// <summary>
+        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given search meters 
+        /// </summary>
+        public static List<RDFResource> GetFeaturesNearPoint(this GEOOntology geoOntology, double wgs84Lon, double wgs84Lat, double searchRadiusMeters)
+        {
+            if (wgs84Lon < -180 || wgs84Lon > 180)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lon\" parameter is not a valid longitude for WGS84");
+            if (wgs84Lat < -90 || wgs84Lat > 90)
+                throw new OWLSemanticsException("Cannot get features near point because given \"wgs84Lat\" parameter is not a valid latitude for WGS84");
+
+            //Create WGS84 geometry from given center of search
+            Geometry wgs84SearchPoint = new Point(wgs84Lon, wgs84Lat) { SRID = 4326 };
+
+            //Create UTM geometry from given center of search
+            (int,bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Lon, wgs84Lat);
+            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = GetFeaturesWithGeometries(geoOntology);
+
+            //Perform spatial analysis between collected geometries: iterate geometries and collect those within given radius
             List<RDFResource> featuresNearPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
                 if (featureWithGeometry.Item3.IsWithinDistance(utmSearchPoint, searchRadiusMeters))
@@ -705,6 +716,51 @@ namespace RDFSharp.Semantics.Extensions.GEO
             });
 
             return RDFQueryUtilities.RemoveDuplicates(featuresNearPoint);
+        }
+
+        /// <summary>
+        /// Gets the features within the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
+        /// </summary>
+        public static List<RDFResource> GetFeaturesWithinBox(this GEOOntology geoOntology, double wgs84LonMin, double wgs84LatMin, double wgs84LonMax, double wgs84LatMax)
+        {
+            if (wgs84LonMin < -180 || wgs84LonMin > 180)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter is not a valid longitude for WGS84");
+            if (wgs84LatMin < -90 || wgs84LatMin > 90)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMin\" parameter is not a valid latitude for WGS84");
+            if (wgs84LonMax < -180 || wgs84LonMax > 180)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMax\" parameter is not a valid longitude for WGS84");
+            if (wgs84LatMax < -90 || wgs84LatMax > 90)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMax\" parameter is not a valid latitude for WGS84");
+            if (wgs84LonMin >= wgs84LonMax)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter must be lower than given \"wgs84LonMax\" parameter");
+            if (wgs84LatMin >= wgs84LatMax)
+                throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMin\" parameter must be lower than given \"wgs84LatMax\" parameter");
+
+            //Create WGS84 geometry from given box corners
+            Geometry wgs84SearchBox = new Polygon(new LinearRing(new Coordinate[] { 
+                new Coordinate(wgs84LonMin, wgs84LatMin),
+                new Coordinate(wgs84LonMax, wgs84LatMin),
+                new Coordinate(wgs84LonMax, wgs84LatMax),
+                new Coordinate(wgs84LonMin, wgs84LatMax),
+                new Coordinate(wgs84LonMin, wgs84LatMin)
+            })) { SRID = 4326 };
+
+            //Create UTM geometry from given box corners
+            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonMin, wgs84LatMin);
+            Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = GetFeaturesWithGeometries(geoOntology);
+
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those within given box
+            List<RDFResource> featuresWithinBox = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (utmSearchBox.Contains(featureWithGeometry.Item3))
+                    featuresWithinBox.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresWithinBox);
         }
         #endregion
     }

@@ -14,15 +14,14 @@
    limitations under the License.
 */
 
-using NetTopologySuite.Geometries;
 using RDFSharp.Model;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// GEOOntology represents an OWL ontology specialized in describing relations between spatial entities
+    /// GEOOntology represents an OWL ontology specialized in describing relations between spatial entities.<br/>
+    /// It implements "11-052r4 OGC GeoSPARQL" classes and properties.
     /// </summary>
     public class GEOOntology : OWLOntology
     {
