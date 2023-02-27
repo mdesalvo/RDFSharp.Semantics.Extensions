@@ -145,7 +145,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOnt.DeclareAreaFeature(new RDFResource("ex:MilanRomeNaplesFT"), new RDFResource("ex:MilanRomeNaplesGM"), new List<(double, double)>() {
                 (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, true); //This will be closed automatically with 4th point being the 1st
             geoOnt.DeclareAreaFeature(new RDFResource("ex:MilanRomeNaplesBoulogneFT"), new RDFResource("ex:MilanRomeNaplesBoulogneGM"), new List<(double, double)>() {
-                (9.18854, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746), (11.32378846, 44.54794686), (9.18854, 45.464664) }, true);
+                (9.18854, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746), (11.32378846, 44.54794686), (9.18854, 45.464664) }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
@@ -289,7 +289,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT2")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.FEATURE));
-            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:GM2")));
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM2")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.GEOMETRY));
