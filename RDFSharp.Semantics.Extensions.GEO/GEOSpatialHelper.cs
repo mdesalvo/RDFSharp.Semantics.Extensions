@@ -139,7 +139,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features located east of the given WGS84 Lon/Lat point
         /// </summary>
-        public List<RDFResource> GetFeaturesEastOfPoint((double, double) wgs84LonLat)
+        public List<RDFResource> GetFeaturesEastOfPoint((double,double) wgs84LonLat)
         {
             if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features east of point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
@@ -165,7 +165,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features located west of the given WGS84 Lon/Lat point
         /// </summary>
-        public List<RDFResource> GetFeaturesWestOfPoint((double, double) wgs84LonLat)
+        public List<RDFResource> GetFeaturesWestOfPoint((double,double) wgs84LonLat)
         {
             if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features west of point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
