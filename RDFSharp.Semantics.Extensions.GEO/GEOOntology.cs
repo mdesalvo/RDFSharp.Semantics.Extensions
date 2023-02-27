@@ -25,12 +25,22 @@ namespace RDFSharp.Semantics.Extensions.GEO
     /// </summary>
     public class GEOOntology : OWLOntology
     {
+        #region Properties
+        /// <summary>
+        /// Helper for common spatial analysis on features of this ontology
+        /// </summary>
+        public GEOSpatialHelper SpatialHelper { get; internal set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Builds a spatial ontology with the given URI (internal T-BOX is initialized with GeoSPARQL ontology)
         /// </summary>
         public GEOOntology(string geoOntologyURI) : base(geoOntologyURI)
-            => Model = GEOOntologyLoader.BuildGEOModel();
+        {
+            Model = GEOOntologyLoader.BuildGEOModel();
+            SpatialHelper = new GEOSpatialHelper(this);
+        } 
         #endregion
 
         #region Methods

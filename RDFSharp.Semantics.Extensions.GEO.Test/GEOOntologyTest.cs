@@ -17,8 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
-using RDFSharp.Query;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.Extensions.GEO.Test
@@ -33,6 +31,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
 
             Assert.IsNotNull(geoOnt);
+            Assert.IsNotNull(geoOnt.SpatialHelper);
 
             //Test initialization of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
