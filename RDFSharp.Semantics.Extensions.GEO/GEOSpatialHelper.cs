@@ -219,9 +219,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Gets the features within the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
+        /// Gets the features inside the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
         /// </summary>
-        public List<RDFResource> GetFeaturesWithinBox((double,double) wgs84LonLat_LowerLeft, (double,double) wgs84LonLat_UpperRight)
+        public List<RDFResource> GetFeaturesInsideBox((double,double) wgs84LonLat_LowerLeft, (double,double) wgs84LonLat_UpperRight)
         {
             if (wgs84LonLat_LowerLeft.Item1 < -180 || wgs84LonLat_LowerLeft.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter is not a valid longitude for WGS84");
@@ -253,14 +253,59 @@ namespace RDFSharp.Semantics.Extensions.GEO
             List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries:
-            //iterate geometries and collect those within given box
-            List<RDFResource> featuresWithinBox = new List<RDFResource>();
+            //iterate geometries and collect those inside given box
+            List<RDFResource> featuresInsideBox = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
                 if (utmSearchBox.Contains(featureWithGeometry.Item3))
-                    featuresWithinBox.Add(featureWithGeometry.Item1);
+                    featuresInsideBox.Add(featureWithGeometry.Item1);
             });
 
-            return RDFQueryUtilities.RemoveDuplicates(featuresWithinBox);
+            return RDFQueryUtilities.RemoveDuplicates(featuresInsideBox);
+        }
+
+        /// <summary>
+        /// Gets the features outside the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
+        /// </summary>
+        public List<RDFResource> GetFeaturesOutsideBox((double, double) wgs84LonLat_LowerLeft, (double, double) wgs84LonLat_UpperRight)
+        {
+            if (wgs84LonLat_LowerLeft.Item1 < -180 || wgs84LonLat_LowerLeft.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LonMin\" parameter is not a valid longitude for WGS84");
+            if (wgs84LonLat_LowerLeft.Item2 < -90 || wgs84LonLat_LowerLeft.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LatMin\" parameter is not a valid latitude for WGS84");
+            if (wgs84LonLat_UpperRight.Item1 < -180 || wgs84LonLat_UpperRight.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LonMax\" parameter is not a valid longitude for WGS84");
+            if (wgs84LonLat_UpperRight.Item2 < -90 || wgs84LonLat_UpperRight.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LatMax\" parameter is not a valid latitude for WGS84");
+            if (wgs84LonLat_LowerLeft.Item1 >= wgs84LonLat_UpperRight.Item1)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LonMin\" parameter must be lower than given \"wgs84LonMax\" parameter");
+            if (wgs84LonLat_LowerLeft.Item2 >= wgs84LonLat_UpperRight.Item2)
+                throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LatMin\" parameter must be lower than given \"wgs84LatMax\" parameter");
+
+            //Create WGS84 geometry from given box corners
+            Geometry wgs84SearchBox = new Polygon(new LinearRing(new Coordinate[] {
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2),
+                new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_LowerLeft.Item2),
+                new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_UpperRight.Item2),
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_UpperRight.Item2),
+                new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
+            })) { SRID = 4326 };
+
+            //Create UTM geometry from given box corners
+            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2);
+            Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those outside given box
+            List<RDFResource> featuresOutsideBox = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (!utmSearchBox.Contains(featureWithGeometry.Item3))
+                    featuresOutsideBox.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresOutsideBox);
         }
         #endregion
     }

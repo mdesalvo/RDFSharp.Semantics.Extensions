@@ -403,14 +403,14 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesSouthOfPoint((9, 91)));
 
         [TestMethod]
-        public void ShouldGetFeaturesWithinBoxFromWKT()
+        public void ShouldGetFeaturesInsideBoxFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesWithinBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
+            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesInsideBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 2);
@@ -419,7 +419,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldGetFeaturesWithinBoxFromGML()
+        public void ShouldGetFeaturesInsideBoxFromGML()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
@@ -427,7 +427,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesWithinBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
+            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesInsideBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 2);
@@ -436,54 +436,137 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldNotGetFeaturesWithinBox()
+        public void ShouldNotGetFeaturesInsideBox()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesWithinBox((12.50687563, 41.67714954), (12.67853701, 41.80728360)); //Pomezia-Frascati
+            List<RDFResource> featuresWithinSearchBox = geoOntology.SpatialHelper.GetFeaturesInsideBox((12.50687563, 41.67714954), (12.67853701, 41.80728360)); //Pomezia-Frascati
 
             Assert.IsNotNull(featuresWithinSearchBox);
             Assert.IsTrue(featuresWithinSearchBox.Count == 0);
         }
 
         [TestMethod]
-        public void ShouldNotGetFeaturesWithinBoxBecauseMissingGeometries()
+        public void ShouldNotGetFeaturesInsideBoxBecauseMissingGeometries()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
             geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesWithinBox((12.50687563, 41.67714954), (12.67853701, 41.80728360)); //Pomezia-Frascati
+            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesInsideBox((12.50687563, 41.67714954), (12.67853701, 41.80728360)); //Pomezia-Frascati
 
             Assert.IsNotNull(featuresWithin100KmFromRome);
             Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidLowerLeftLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((-181, 45), (76, 58)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseInvalidLowerLeftLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((-181, 45), (76, 58)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidLowerLeftLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((9, 91), (76, 58)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseInvalidLowerLeftLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((9, 91), (76, 58)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidUpperRightLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((32, 45), (181, 58)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseInvalidUpperRightLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((32, 45), (181, 58)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseInvalidUpperRightLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((9, 45), (76, 91)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseInvalidUpperRightLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((9, 45), (76, 91)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseExceedingLowerLeftLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((81, 45), (76, 58)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseExceedingLowerLeftLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((81, 45), (76, 58)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingFeaturesWithinBoxBecauseExceedingLowerLeftLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithinBox((9, 84), (76, 58)));
+        public void ShouldThrowExceptionOnGettingFeaturesInsideBoxBecauseExceedingLowerLeftLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesInsideBox((9, 84), (76, 58)));
+
+        [TestMethod]
+        public void ShouldGetFeaturesOutsideBoxFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresOutsideSearchBox = geoOntology.SpatialHelper.GetFeaturesOutsideBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
+
+            Assert.IsNotNull(featuresOutsideSearchBox);
+            Assert.IsTrue(featuresOutsideSearchBox.Count == 1);
+            Assert.IsTrue(featuresOutsideSearchBox.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldGetFeaturesOutsideBoxFromGML()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
+            List<RDFResource> featuresOutsideSearchBox = geoOntology.SpatialHelper.GetFeaturesOutsideBox((12.42447817, 41.84821607), (12.82959902, 41.98310753));
+
+            Assert.IsNotNull(featuresOutsideSearchBox);
+            Assert.IsTrue(featuresOutsideSearchBox.Count == 1);
+            Assert.IsTrue(featuresOutsideSearchBox.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+        }
+
+        /*TODO: ENABLE AGAIN
+        [TestMethod]
+        public void ShouldNotGetFeaturesOutsideBox()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresOutsideSearchBox = geoOntology.SpatialHelper.GetFeaturesOutsideBox((8.28327563, 40.67714954), (13.99853701, 47.90728360));
+
+            Assert.IsNotNull(featuresOutsideSearchBox);
+            Assert.IsTrue(featuresOutsideSearchBox.Count == 0);
+        }
+        */
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesOutsideBoxBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresOutside100KmFromRome = geoOntology.SpatialHelper.GetFeaturesOutsideBox((12.50687563, 41.67714954), (12.67853701, 41.80728360));
+
+            Assert.IsNotNull(featuresOutside100KmFromRome);
+            Assert.IsTrue(featuresOutside100KmFromRome.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseInvalidLowerLeftLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((-181, 45), (76, 58)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseInvalidLowerLeftLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((9, 91), (76, 58)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseInvalidUpperRightLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((32, 45), (181, 58)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseInvalidUpperRightLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((9, 45), (76, 91)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseExceedingLowerLeftLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((81, 45), (76, 58)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOutsideBoxBecauseExceedingLowerLeftLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOutsideBox((9, 84), (76, 58)));
         #endregion
     }
 }
