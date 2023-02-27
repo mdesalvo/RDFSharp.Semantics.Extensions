@@ -204,6 +204,138 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesNorthOfPoint((9, 91)));
 
         [TestMethod]
+        public void ShouldGetFeaturesEastOfPointFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresEastOfPoint = geoOntology.SpatialHelper.GetFeaturesEastOfPoint((12.396365, 42.902782));
+
+            Assert.IsNotNull(featuresEastOfPoint);
+            Assert.IsTrue(featuresEastOfPoint.Count == 2);
+            Assert.IsTrue(featuresEastOfPoint.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
+            Assert.IsTrue(featuresEastOfPoint.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldGetFeaturesEastOfPointFromGML()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
+            List<RDFResource> featuresEastOfPoint = geoOntology.SpatialHelper.GetFeaturesEastOfPoint((12.396365, 42.902782));
+
+            Assert.IsNotNull(featuresEastOfPoint);
+            Assert.IsTrue(featuresEastOfPoint.Count == 2);
+            Assert.IsTrue(featuresEastOfPoint.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
+            Assert.IsTrue(featuresEastOfPoint.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesEastOfPointFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresEastOfPoint = geoOntology.SpatialHelper.GetFeaturesEastOfPoint((15.80512362, 40.64259592)); //Potenza
+
+            Assert.IsNotNull(featuresEastOfPoint);
+            Assert.IsTrue(featuresEastOfPoint.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesEastOfPointBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresEastOfPoint = geoOntology.SpatialHelper.GetFeaturesEastOfPoint((11.53860090, 45.54896859));
+
+            Assert.IsNotNull(featuresEastOfPoint);
+            Assert.IsTrue(featuresEastOfPoint.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesEastOfPointBecauseInvalidLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesEastOfPoint((-181, 45)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesEastOfPointBecauseInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesEastOfPoint((9, 91)));
+
+        [TestMethod]
+        public void ShouldGetFeaturesWestOfPointFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresWestOfPoint = geoOntology.SpatialHelper.GetFeaturesWestOfPoint((12.396365, 42.902782));
+
+            Assert.IsNotNull(featuresWestOfPoint);
+            Assert.IsTrue(featuresWestOfPoint.Count == 1);
+            Assert.IsTrue(featuresWestOfPoint.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldGetFeaturesWestOfPointFromGML()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
+            List<RDFResource> featuresWestOfPoint = geoOntology.SpatialHelper.GetFeaturesWestOfPoint((12.396365, 42.902782));
+
+            Assert.IsNotNull(featuresWestOfPoint);
+            Assert.IsTrue(featuresWestOfPoint.Count == 1);
+            Assert.IsTrue(featuresWestOfPoint.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWestOfPointFromWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresWestOfPoint = geoOntology.SpatialHelper.GetFeaturesWestOfPoint((8.20958180, 44.90095240)); //Asti
+
+            Assert.IsNotNull(featuresWestOfPoint);
+            Assert.IsTrue(featuresWestOfPoint.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWestOfPointBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresWestOfPoint = geoOntology.SpatialHelper.GetFeaturesWestOfPoint((11.53860090, 45.54896859));
+
+            Assert.IsNotNull(featuresWestOfPoint);
+            Assert.IsTrue(featuresWestOfPoint.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesWestOfPointBecauseInvalidLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWestOfPoint((-181, 45)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesWestOfPointBecauseInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWestOfPoint((9, 91)));
+
+        [TestMethod]
         public void ShouldGetFeaturesSouthOfPointFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");

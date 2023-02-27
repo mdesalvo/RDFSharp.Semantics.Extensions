@@ -123,21 +123,69 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Create WGS84 geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
-            //Create UTM geometry from given point
-            (int, bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat.Item1, wgs84LonLat.Item2);
-            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
-
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes higher than given point
             List<RDFResource> featuresNorthOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y > utmSearchPoint.Coordinate.Y))
+                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.Y > wgs84SearchPoint.Coordinate.Y))
                     featuresNorthOfPoint.Add(featureWithGeometry.Item1);
             });
 
             return RDFQueryUtilities.RemoveDuplicates(featuresNorthOfPoint);
+        }
+
+        /// <summary>
+        /// Gets the features located east of the given WGS84 Lon/Lat point
+        /// </summary>
+        public List<RDFResource> GetFeaturesEastOfPoint((double, double) wgs84LonLat)
+        {
+            if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features east of point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
+            if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features east of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
+
+            //Create WGS84 geometry from given point
+            Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+
+            //Perform spatial analysis between collected geometries: iterate geometries and collect those having longitudes greater than given point
+            List<RDFResource> featuresEastOfPoint = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.X > wgs84SearchPoint.Coordinate.X))
+                    featuresEastOfPoint.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresEastOfPoint);
+        }
+
+        /// <summary>
+        /// Gets the features located west of the given WGS84 Lon/Lat point
+        /// </summary>
+        public List<RDFResource> GetFeaturesWestOfPoint((double, double) wgs84LonLat)
+        {
+            if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
+                throw new OWLSemanticsException("Cannot get features west of point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
+            if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
+                throw new OWLSemanticsException("Cannot get features west of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
+
+            //Create WGS84 geometry from given point
+            Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+
+            //Perform spatial analysis between collected geometries: iterate geometries and collect those having longitudes lower than given point
+            List<RDFResource> featuresWestOfPoint = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.X < wgs84SearchPoint.Coordinate.X))
+                    featuresWestOfPoint.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresWestOfPoint);
         }
 
         /// <summary>
@@ -158,16 +206,16 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes lower than given point
-            List<RDFResource> featuresNorthOfPoint = new List<RDFResource>();
+            List<RDFResource> featuresSouthOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
                 if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y < utmSearchPoint.Coordinate.Y))
-                    featuresNorthOfPoint.Add(featureWithGeometry.Item1);
+                    featuresSouthOfPoint.Add(featureWithGeometry.Item1);
             });
 
-            return RDFQueryUtilities.RemoveDuplicates(featuresNorthOfPoint);
+            return RDFQueryUtilities.RemoveDuplicates(featuresSouthOfPoint);
         }
 
         /// <summary>
