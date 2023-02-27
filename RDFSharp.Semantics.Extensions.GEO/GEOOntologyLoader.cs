@@ -80,6 +80,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
         {
             OWLOntologyClassModel classModel = existingClassModel ?? new OWLOntologyClassModel();
 
+            //W3C GEO
+            classModel.DeclareClass(RDFVocabulary.GEO.SPATIAL_THING);
+            classModel.DeclareClass(RDFVocabulary.GEO.POINT);
+            classModel.DeclareSubClasses(RDFVocabulary.GEO.POINT, RDFVocabulary.GEO.SPATIAL_THING);
+
             //GeoSPARQL
             classModel.DeclareClass(RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT);
             classModel.DeclareClass(RDFVocabulary.GEOSPARQL.GEOMETRY);
@@ -143,6 +148,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static OWLOntologyPropertyModel BuildGEOPropertyModel(OWLOntologyPropertyModel existingPropertyModel = null)
         {
             OWLOntologyPropertyModel propertyModel = existingPropertyModel ?? new OWLOntologyPropertyModel();
+
+            //W3C GEO
+            propertyModel.DeclareDatatypeProperty(RDFVocabulary.GEO.LAT, new OWLOntologyDatatypePropertyBehavior() { Domain = RDFVocabulary.GEO.SPATIAL_THING, Range = RDFVocabulary.XSD.DOUBLE });
+            propertyModel.DeclareDatatypeProperty(RDFVocabulary.GEO.LONG, new OWLOntologyDatatypePropertyBehavior() { Domain = RDFVocabulary.GEO.SPATIAL_THING, Range = RDFVocabulary.XSD.DOUBLE });
+            propertyModel.DeclareDatatypeProperty(RDFVocabulary.GEO.ALT, new OWLOntologyDatatypePropertyBehavior() { Domain = RDFVocabulary.GEO.SPATIAL_THING, Range = RDFVocabulary.XSD.DOUBLE });
 
             //GeoSPARQL
             propertyModel.DeclareObjectProperty(RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new OWLOntologyObjectPropertyBehavior() { Domain = RDFVocabulary.GEOSPARQL.FEATURE, Range = RDFVocabulary.GEOSPARQL.GEOMETRY });

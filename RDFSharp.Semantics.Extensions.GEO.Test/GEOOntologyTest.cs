@@ -35,8 +35,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test initialization of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 0);
         }
 
@@ -80,15 +80,14 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
 
-
             //LOAD OWL+GEO
             GEOOntology geoOntology = GEOOntology.FromRDFGraph(graph);
 
             //Test persistence of OWL+GEO knowledge
             Assert.IsNotNull(geoOntology);
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
-            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
+            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 22);
+            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 39);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 5);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
@@ -136,15 +135,14 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
 
-
             //LOAD OWL+GEO
             GEOOntology geoOntology = await GEOOntology.FromRDFGraphAsync(graph);
 
             //Test persistence of OWL+GEO knowledge
             Assert.IsNotNull(geoOntology);
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
-            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
+            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 22);
+            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 39);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 5);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
@@ -192,15 +190,14 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
             graph.AddTriple(new RDFTriple(new RDFResource("ex:milanromenaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
 
-
             //LOAD OWL+GEO
             GEOOntology geoOntology = await GEOOntology.FromRDFGraphAsync(graph, new OWLOntologyLoaderOptions() { EnableAutomaticEntityDeclaration=true });
 
             //Test persistence of OWL+GEO knowledge
             Assert.IsNotNull(geoOntology);
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
-            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
+            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 22);
+            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 39);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 5);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));

@@ -35,8 +35,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanFT")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -88,8 +88,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeFT")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -149,8 +149,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaplesFT")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -210,8 +210,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeFT")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -273,8 +273,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -351,8 +351,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
@@ -451,8 +451,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
+            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 21);
+            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 37);
             Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
             Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
             Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));

@@ -83,8 +83,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             //Test persistence of OWL+GEO knowledge
             Assert.IsNotNull(geoOntology);
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
-            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
+            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 22);
+            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 39);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 9);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
@@ -132,8 +132,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             //Test persistence of OWL+GEO knowledge
             Assert.IsNotNull(geoOntology);
             Assert.IsTrue(geoOntology.URI.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 20);
-            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 36);
+            Assert.IsTrue(geoOntology.Model.ClassModel.ClassesCount == 22);
+            Assert.IsTrue(geoOntology.Model.PropertyModel.PropertiesCount == 39);
             Assert.IsTrue(geoOntology.Data.IndividualsCount == 9);
             Assert.IsTrue(geoOntology.Model.PropertyModel.CheckHasAnnotation(new RDFResource("ex:connectedToCity"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("two cities are connected each other")));
             Assert.IsTrue(geoOntology.Data.CheckHasObjectAssertion(new RDFResource("ex:milan"), new RDFResource("ex:connectedToCity"), new RDFResource("ex:rome")));
