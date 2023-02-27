@@ -105,19 +105,19 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     geoOntology.DeclarePointInternal(geometry.Item1, point);
                 //sf:LineString
                 else if (geometry.Item2 is LineString lineString)
-                    geoOntology.DeclareLineStringInternal(geometry.Item1, lineString);
+                    geoOntology.DeclareLinearFeatureInternal(geometry.Item1, lineString);
                 //sf:Polygon
                 else if (geometry.Item2 is Polygon polygon)
-                    geoOntology.DeclarePolygonInternal(geometry.Item1, polygon);
+                    geoOntology.DeclareAreaFeatureInternal(geometry.Item1, polygon);
                 //sf:MultiPoint
                 else if (geometry.Item2 is MultiPoint multiPoint)
-                    geoOntology.DeclareMultiPointInternal(geometry.Item1, multiPoint);
+                    geoOntology.DeclareMultiPointFeatureInternal(geometry.Item1, multiPoint);
                 //sf:MultiLineString
                 else if (geometry.Item2 is MultiLineString multiLineString)
-                    geoOntology.DeclareMultiLineStringInternal(geometry.Item1, multiLineString);
+                    geoOntology.DeclareMultiLinearFeatureInternal(geometry.Item1, multiLineString);
                 //sf:MultiPolygon
                 else if (geometry.Item2 is MultiPolygon multiPolygon)
-                    geoOntology.DeclareMultiPolygonInternal(geometry.Item1, multiPolygon);
+                    geoOntology.DeclareMultiAreaFeatureInternal(geometry.Item1, multiPolygon);
                 //sf:GeometryCollection
                 else if (geometry.Item2 is GeometryCollection geometryCollection)
                     geoOntology.DeclareGeometryCollectionInternal(geometry.Item1, geometryCollection);

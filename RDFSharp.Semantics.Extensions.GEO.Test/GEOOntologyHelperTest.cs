@@ -26,362 +26,401 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
     public class GEOOntologyHelperTest
     {
         #region Tests (Declarer)
-        //geosparql:Feature
         [TestMethod]
-        public void ShouldDeclareFeature()
+        public void ShouldDeclarePointFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareFeature(new RDFResource("ex:MilanFeature"));
+            geoOnt.DeclarePointFeature(new RDFResource("ex:MilanFT"), new RDFResource("ex:MilanGM"), (9.188540, 45.464664), true);
+            geoOnt.DeclarePointFeature(new RDFResource("ex:RomeFT"), new RDFResource("ex:RomeGM"), (12.496365, 41.902782), false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanFeature")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.FEATURE));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanFT"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:MilanGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGM"), RDFVocabulary.GEOSPARQL.SF.POINT));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>9.18854 45.464664</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:RomeFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:RomeFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:RomeFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:RomeFT"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:RomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:RomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:RomeGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:RomeGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:RomeGM"), RDFVocabulary.GEOSPARQL.SF.POINT));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:RomeGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POINT (12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:RomeGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringFeatureBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareFeature(null));
+        public void ShouldThrowExceptionOnDeclaringPointFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointFeature(null, new RDFResource("ex:MilanGM"), (0, 0), false));
 
         [TestMethod]
-        public void ShouldDeclareFeatureHasGeometry()
-        {
-            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareSecondaryGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
-
-            //Test evolution of GEO knowledge
-            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 2);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanFeature")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.FEATURE));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanGeometry")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGeometry"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGeometry"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY , new RDFResource("ex:MilanGeometry")));
-        }
+        public void ShouldThrowExceptionOnDeclaringPointFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointFeature(new RDFResource("ex:MilanFT"), null, (0, 0), false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringFeatureHasGeometryBecauseNullFeatureUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareSecondaryGeometry(null, new RDFResource("ex:MilanGeometry")));
+        public void ShouldThrowExceptionOnDeclaringPointFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointFeature(new RDFResource("ex:MilanFT"), new RDFResource("ex:MilanGM"), (0, 91), false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringFeatureHasGeometryBecauseNullGeometryUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareSecondaryGeometry(new RDFResource("ex:MilanFeature"), null));
-
-        [TestMethod]
-        public void ShouldDeclareFeatureHasDefaultGeometry()
-        {
-            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareDefaultGeometry(new RDFResource("ex:MilanFeature"), new RDFResource("ex:MilanGeometry"));
-
-            //Test evolution of GEO knowledge
-            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 2);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanFeature")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.FEATURE));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanGeometry")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGeometry"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGeometry"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanFeature"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:MilanGeometry")));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringFeatureHasDefaultGeometryBecauseNullFeatureUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareDefaultGeometry(null, new RDFResource("ex:MilanGeometry")));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringFeatureHasDefaultGeometryBecauseNullGeometryUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareDefaultGeometry(new RDFResource("ex:MilanFeature"), null));
-
-        //sf:Point
-        [TestMethod]
-        public void ShouldDeclarePoint()
-        {
-            GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePoint(new RDFResource("ex:Milan"), 9.188540, 45.464664);
-            geoOnt.DeclarePoint(new RDFResource("ex:Rome"), 12.496365, 41.902782);
-
-            //Test evolution of GEO knowledge
-            Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
-            Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
-            Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 2);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:Milan")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Milan"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Milan"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Milan"), RDFVocabulary.GEOSPARQL.SF.POINT));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:Milan"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:Milan"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>9.18854 45.464664</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Rome"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Rome"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:Rome"), RDFVocabulary.GEOSPARQL.SF.POINT));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:Rome"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POINT (12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:Rome"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPointBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(null, 0, 0));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPointBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(new RDFResource("ex:Milan"), 0, 91));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPointBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePoint(new RDFResource("ex:Milan"), 181, 0));
+        public void ShouldThrowExceptionOnDeclaringPointFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePointFeature(new RDFResource("ex:MilanFT"), new RDFResource("ex:MilanGM"), (181, 0), false));
 
         //sf:LineString
         [TestMethod]
-        public void ShouldDeclareLineString()
+        public void ShouldDeclareLineFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareLineString(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
-                (9.188540, 45.464664), (12.496365, 41.902782) });
+            geoOnt.DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), new List<(double,double)>() {
+                (9.188540, 45.464664), (12.496365, 41.902782) }, true);
+            geoOnt.DeclareLineFeature(new RDFResource("ex:MilanGenoaFT"), new RDFResource("ex:MilanGenoaGM"), new List<(double, double)>() {
+                (9.188540, 45.464664), (8.9096308, 44.40855119) }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRome")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SF.LINESTRING));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:MilanRomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.SF.LINESTRING));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanGenoaFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGenoaFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGenoaFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanGenoaFT"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:MilanGenoaGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanGenoaGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGenoaGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGenoaGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanGenoaGM"), RDFVocabulary.GEOSPARQL.SF.LINESTRING));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanGenoaGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 8.9096308 44.40855119)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanGenoaGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45.464664 8.9096308 44.40855119</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringLineStringBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(null, new List<(double, double)>() { (0, 0), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(null, new RDFResource("ex:MilanRomeGM"), new List<(double, double)>() { (0, 0), (1, 1) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringLineStringBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), null));
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), null, new List<(double, double)>() { (0, 0), (1, 1) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringLineStringBecauseLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseNullPoints()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), null, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringLineStringBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseLessThan2Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), new List<(double, double)>() { (181, 0) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringLineStringBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineString(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), new List<(double, double)>() { (0, 91), (1, 1) }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringLineFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareLineFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), new List<(double, double)>() { (181, 0), (1, 1) }, false));
 
         //sf:Polygon
         [TestMethod]
-        public void ShouldDeclarePolygon()
+        public void ShouldDeclareAreaFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() {
-                (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }); //This will be closed automatically with 4th point being the 1st
+            geoOnt.DeclareAreaFeature(new RDFResource("ex:MilanRomeNaplesFT"), new RDFResource("ex:MilanRomeNaplesGM"), new List<(double, double)>() {
+                (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, true); //This will be closed automatically with 4th point being the 1st
+            geoOnt.DeclareAreaFeature(new RDFResource("ex:MilanRomeNaplesBoulogneFT"), new RDFResource("ex:MilanRomeNaplesBoulogneGM"), new List<(double, double)>() {
+                (9.18854, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746), (11.32378846, 44.54794686), (9.18854, 45.464664) }, true);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaples")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SF.POLYGON));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaplesFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanRomeNaplesFT"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:MilanRomeNaplesGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaplesGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesGM"), RDFVocabulary.GEOSPARQL.SF.POLYGON));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaplesGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaplesGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaplesBoulogneFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesBoulogneFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesBoulogneFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanRomeNaplesBoulogneFT"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:MilanRomeNaplesBoulogneGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaplesBoulogneGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesBoulogneGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesBoulogneGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaplesBoulogneGM"), RDFVocabulary.GEOSPARQL.SF.POLYGON));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaplesBoulogneGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 11.32378846 44.54794686, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaplesBoulogneGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 11.32378846 44.54794686 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPolygonBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(null, new List<(double, double)>() { (0, 0), (1, 1), (2, 2) }));
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(null, new RDFResource("ex:geom"), new List<(double, double)>() { (0, 0), (1, 1), (2, 2) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPolygonBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), null));
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(new RDFResource("ex:feat"), null, new List<(double, double)>() { (0, 0), (1, 1), (2, 2) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPolygonBecauseLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseNullPoints()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), null, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPolygonBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (0, 91), (1, 1), (2, 2) }));
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseLessThan3Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (45, 0), (1, 1) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringPolygonBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclarePolygon(new RDFResource("ex:MilanRomeNaples"), new List<(double, double)>() { (181, 0), (1, 1), (2, 2) }));
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (0, 91), (1, 1), (2, 2) }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringAreaFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareAreaFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (181, 0), (1, 1), (2, 2) }, false));
 
         //sf:MultiPoint
         [TestMethod]
-        public void ShouldDeclareMultiPoint()
+        public void ShouldDeclareMultiPointFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiPoint(new RDFResource("ex:MilanRome"), new List<(double, double)>() {
-                (9.188540, 45.464664), (12.496365, 41.902782) });
+            geoOnt.DeclareMultiPointFeature(new RDFResource("ex:MilanRomeFT"), new RDFResource("ex:MilanRomeGM"), new List<(double, double)>() {
+                (9.188540, 45.464664), (12.496365, 41.902782) }, true);
+            geoOnt.DeclareMultiPointFeature(new RDFResource("ex:MilanNaplesFT"), new RDFResource("ex:MilanNaplesGM"), new List<(double, double)>() {
+                (9.188540, 45.464664), (14.2681244, 40.8517746) }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRome")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRome"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanRomeFT"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:MilanRomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanNaplesFT")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanNaplesFT"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanNaplesFT"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:MilanNaplesFT"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:MilanNaplesGM")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanNaplesGM")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanNaplesGM"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanNaplesGM"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanNaplesGM"), RDFVocabulary.GEOSPARQL.SF.MULTI_POINT));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanNaplesGM"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanNaplesGM"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>14.2681244 40.8517746</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(null, new List<(double, double)>() { (0, 0), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(null, new RDFResource("ex:geom"), new List<(double, double)>() { (0, 0), (1, 1) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseNullPoints()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), null));
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(new RDFResource("ex:feat"), null, new List<(double, double)>() { (0, 0), (1, 1) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0) }));
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseNullPoints()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), null, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (0, 91), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseLessThan2Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (181, 0) }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPointBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPoint(new RDFResource("ex:Milan"), new List<(double, double)>() { (181, 0), (1, 1) }));
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (0, 91), (1, 1) }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiPointFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPointFeature(new RDFResource("ex:feat"), new RDFResource("ex:geom"), new List<(double, double)>() { (181, 0), (1, 1) }, false));
 
         //sf:MultiLineString
         [TestMethod]
-        public void ShouldDeclareMultiLineString()
+        public void ShouldDeclareMultiLineFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiLineString(new RDFResource("ex:MilanRomeAndRomeNaples"), new List<List<(double, double)>>() {
+            geoOnt.DeclareMultiLineFeature(new RDFResource("ex:FT1"), new RDFResource("ex:GM1"), new List<List<(double, double)>>() {
                 new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782) },
-                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746) } });
+                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746) } }, true);
+            geoOnt.DeclareMultiLineFeature(new RDFResource("ex:FT2"), new RDFResource("ex:GM2"), new List<List<(double, double)>>() {
+                new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782) },
+                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746) } }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeAndRomeNaples")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeAndRomeNaples"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeAndRomeNaples"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeAndRomeNaples"), RDFVocabulary.GEOSPARQL.SF.MULTI_LINESTRING));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeAndRomeNaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTILINESTRING ((9.18854 45.464664, 12.496365 41.902782), (12.496365 41.902782, 14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeAndRomeNaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiCurve xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:curveMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>12.496365 41.902782 14.2681244 40.8517746</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SF.MULTI_LINESTRING));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTILINESTRING ((9.18854 45.464664, 12.496365 41.902782), (12.496365 41.902782, 14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiCurve xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:curveMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>12.496365 41.902782 14.2681244 40.8517746</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SF.MULTI_LINESTRING));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTILINESTRING ((9.18854 45.464664, 12.496365 41.902782), (12.496365 41.902782, 14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiCurve xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:curveMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>12.496365 41.902782 14.2681244 40.8517746</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(null, new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(null, new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseNullLineStrings()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), null));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), null, new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseLessThan2LineStrings()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0), (1, 1) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseNullLineStrings()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), null, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseHavingNullLineString()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
-                null, new List<(double,double)>() { (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseLessThan2LineStrings()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseHavingLineStringWithLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(null, new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseHavingNullLineString()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                null, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 91), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseHavingLineStringWithLessThan2Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0) }, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiLineStringBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineString(new RDFResource("ex:MLS"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (181, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 91), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiLineFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiLineFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (181, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) } }, false));
 
         //sf:MultiPolygon
         [TestMethod]
-        public void ShouldDeclareMultiPolygon()
+        public void ShouldDeclareMultiAreaFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareMultiPolygon(new RDFResource("ex:MilanRomeNaples"), new List<List<(double, double)>>() {
+            geoOnt.DeclareMultiAreaFeature(new RDFResource("ex:FT1"), new RDFResource("ex:GM1"), new List<List<(double, double)>>() {
                 new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
-                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) } });
+                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) } }, true);
+            geoOnt.DeclareMultiAreaFeature(new RDFResource("ex:FT2"), new RDFResource("ex:GM2"), new List<List<(double, double)>>() {
+                new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
+                new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) } }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:MilanRomeNaples")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOLYGON (((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:MilanRomeNaples"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiSurface xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOLYGON (((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiSurface xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SF.MULTI_POLYGON));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("MULTIPOLYGON (((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiSurface xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(null, new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(null, new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseNullPolygons()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), null));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), null, new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseLessThan2Polygons()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseNullPolygons()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), null, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingNullPolygon()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
-                null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseLessThan2Polygons()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1), (2, 2) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseHavingPolygonWithLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseHavingNullPolygon()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseHavingPolygonWithLessThan3Points()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringMultiPolygonBecauseInvalideLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiPolygon(new RDFResource("ex:MPL"), new List<List<(double, double)>>() {
-                new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (2, 2) } }));
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseInvalideLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) } }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringMultiAreaFeatureBecauseInvalideLongitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareMultiAreaFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"), new List<List<(double, double)>>() {
+                new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (2, 2) } }, false));
 
         //sf:GeometryCollection
         [TestMethod]
-        public void ShouldDeclareGeometryCollection()
+        public void ShouldDeclareCollectionFeature()
         {
             GEOOntology geoOnt = new GEOOntology("ex:geoOnt");
-            geoOnt.DeclareGeometryCollection(new RDFResource("ex:GC"),
+            geoOnt.DeclareCollectionFeature(new RDFResource("ex:FT1"), new RDFResource("ex:GM1"),
                 new List<(double, double)>() {
                     { (9.188540, 45.464664) },
                     { (12.496365, 41.902782) },
@@ -394,24 +433,52 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 new List<List<(double, double)>>() {
                     new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
 					new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) }
-                });
+                }, true);
+            geoOnt.DeclareCollectionFeature(new RDFResource("ex:FT2"), new RDFResource("ex:GM2"),
+                new List<(double, double)>() {
+                    { (9.188540, 45.464664) },
+                    { (12.496365, 41.902782) },
+                    { (14.2681244, 40.8517746) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782) },
+                    new List<(double, double)>() { (14.2681244, 40.8517746), (9.188540, 45.464664) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double, double)>() { (9.188540, 45.464664), (12.496365, 41.902782), (14.2681244, 40.8517746) }, //These polygons will be automatically closed
+					new List<(double, double)>() { (12.496365, 41.902782), (14.2681244, 40.8517746), (9.188540, 45.464664) }
+                }, false);
 
             //Test evolution of GEO knowledge
             Assert.IsTrue(geoOnt.URI.Equals(geoOnt.URI));
             Assert.IsTrue(geoOnt.Model.ClassModel.ClassesCount == 19);
             Assert.IsTrue(geoOnt.Model.PropertyModel.PropertiesCount == 34);
-            Assert.IsTrue(geoOnt.Data.IndividualsCount == 1);
-            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GC")));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.GEOMETRY));
-            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.SF.GEOMETRY_COLLECTION));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("GEOMETRYCOLLECTION (POINT (9.18854 45.464664), POINT (12.496365 41.902782), POINT (14.2681244 40.8517746), LINESTRING (9.18854 45.464664, 12.496365 41.902782), LINESTRING (14.2681244 40.8517746, 9.18854 45.464664), POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), POLYGON ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
-            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GC"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiGeometry xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:geometryMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>14.2681244 40.8517746</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember></gml:MultiGeometry>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.IndividualsCount == 4);
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT1"), RDFVocabulary.GEOSPARQL.DEFAULT_GEOMETRY, new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM1")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.SF.GEOMETRY_COLLECTION));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("GEOMETRYCOLLECTION (POINT (9.18854 45.464664), POINT (12.496365 41.902782), POINT (14.2681244 40.8517746), LINESTRING (9.18854 45.464664, 12.496365 41.902782), LINESTRING (14.2681244 40.8517746, 9.18854 45.464664), POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), POLYGON ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM1"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiGeometry xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:geometryMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>14.2681244 40.8517746</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember></gml:MultiGeometry>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:FT2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.FEATURE));
+            Assert.IsTrue(geoOnt.Data.CheckHasObjectAssertion(new RDFResource("ex:FT2"), RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckHasIndividual(new RDFResource("ex:GM2")));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SPATIAL_OBJECT));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.GEOMETRY));
+            Assert.IsTrue(geoOnt.Data.CheckIsIndividualOf(geoOnt.Model, new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.SF.GEOMETRY_COLLECTION));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_WKT, new RDFTypedLiteral("GEOMETRYCOLLECTION (POINT (9.18854 45.464664), POINT (12.496365 41.902782), POINT (14.2681244 40.8517746), LINESTRING (9.18854 45.464664, 12.496365 41.902782), LINESTRING (14.2681244 40.8517746, 9.18854 45.464664), POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664)), POLYGON ((12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(geoOnt.Data.CheckHasDatatypeAssertion(new RDFResource("ex:GM2"), RDFVocabulary.GEOSPARQL.AS_GML, new RDFTypedLiteral("<gml:MultiGeometry xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:geometryMember><gml:Point><gml:pos>9.18854 45.464664</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>12.496365 41.902782</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point><gml:pos>14.2681244 40.8517746</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList>14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>9.18854 45.464664 12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember></gml:MultiGeometry>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(null,
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseNullFeatureUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(null, new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -420,11 +487,24 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+        public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseNullGeometryUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), null,
+                new List<(double, double)>() {
+                    { (0, 0) }, { (1, 1) }, { (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2) }
+                },
+                new List<List<(double, double)>>() {
+                    new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
+                }, false));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeclaringCollectionFeatureBecauseHavingPointWithInvalidLatitude()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                new List<(double, double)>() {
                     { (0, 91) }, { (1, 1) }, { (2, 2) }
                 },
@@ -433,11 +513,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPointWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (181, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -446,11 +526,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullLineString()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -459,11 +539,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithLessThan2Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -472,11 +552,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -485,11 +565,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingLineStringWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -498,11 +578,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingNullPolygon()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -511,11 +591,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     null, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithLessThan3Points()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -524,11 +604,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 0), (1, 1) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLatitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -537,11 +617,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (0, 91), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
 
         [TestMethod]
         public void ShouldThrowExceptionOnDeclaringGeometryCollectionBecauseHavingPolygonWithInvalidLongitude()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareGeometryCollection(new RDFResource("ex:GC"),
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").DeclareCollectionFeature(new RDFResource("ex:FT"), new RDFResource("ex:GM"),
                 new List<(double, double)>() {
                     { (0, 0) }, { (1, 1) }, { (2, 2) }
                 },
@@ -550,7 +630,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
                 },
                 new List<List<(double, double)>>() {
                     new List<(double,double)>() { (181, 0), (1, 1), (2, 2) }, new List<(double,double)>() { (1, 1), (2, 2), (3, 3) }
-                }));
+                }, false));
         #endregion
 
         #region Tests (Analyzer)
@@ -558,8 +638,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldGetDefaultGeometryFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
             (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326  && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
@@ -570,8 +649,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldGetDefaultGeometryFromGML()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeom"), 9.188540, 45.464664);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
             (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
@@ -583,7 +661,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldNotGetDefaultGeometry()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareDefaultGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), false);
             (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNull(milanDefaultGeometry.Item1);
@@ -594,10 +672,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldGetSecondaryGeometriesFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomA"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeomA"), 9.188540, 45.464664);
-            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeomB"), 9.588540, 45.864664);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomA"), (9.188540, 45.464664), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"), (9.588540, 45.864664), false);
             List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNotNull(milanSecondaryGeometries);
@@ -612,10 +688,8 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldGetSecondaryGeometriesFromGML()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomA"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeomA"), 9.188540, 45.464664);
-            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"));
-            geoOntology.DeclarePoint(new RDFResource("ex:milanGeomB"), 9.588540, 45.864664);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomA"), (9.188540, 45.464664), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomB"), (9.588540, 45.864664), false);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
             List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
@@ -631,7 +705,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldNotGetSecondaryGeometries()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
-            geoOntology.DeclareSecondaryGeometry(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"));
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeomA"), (9.188540, 45.464664), true);
             List<(Geometry, Geometry)> milanSecondaryGeometries = geoOntology.GetSecondaryGeometriesOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsNotNull(milanSecondaryGeometries);

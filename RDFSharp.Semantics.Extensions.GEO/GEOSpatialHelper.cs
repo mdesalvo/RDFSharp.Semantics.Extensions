@@ -44,7 +44,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Methods
         /// <summary>
-        /// Gets the distance, expressed in meters, between the given geosparql:Feature instances
+        /// Gets the distance, expressed in meters, between the given features
         /// </summary>
         public double? GetDistanceBetweenFeatures(RDFResource fromFeatureUri, RDFResource toFeatureUri)
         {
@@ -81,9 +81,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given search meters 
+        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given meters 
         /// </summary>
-        public List<RDFResource> GetFeaturesNearPoint((double, double) wgs84LonLat, double radiusMeters)
+        public List<RDFResource> GetFeaturesNearPoint((double,double) wgs84LonLat, double radiusMeters)
         {
             if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
@@ -113,7 +113,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features located north of the given WGS84 Lon/Lat point
         /// </summary>
-        public List<RDFResource> GetFeaturesNorthOfPoint((double, double) wgs84LonLat)
+        public List<RDFResource> GetFeaturesNorthOfPoint((double,double) wgs84LonLat)
         {
             if (wgs84LonLat.Item1 < -180 || wgs84LonLat.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid longitude for WGS84");
@@ -143,7 +143,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the features within the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
         /// </summary>
-        public List<RDFResource> GetFeaturesWithinBox((double, double) wgs84LonLat_LowerLeft, (double, double) wgs84LonLat_UpperRight)
+        public List<RDFResource> GetFeaturesWithinBox((double,double) wgs84LonLat_LowerLeft, (double,double) wgs84LonLat_UpperRight)
         {
             if (wgs84LonLat_LowerLeft.Item1 < -180 || wgs84LonLat_LowerLeft.Item1 > 180)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LonMin\" parameter is not a valid longitude for WGS84");
