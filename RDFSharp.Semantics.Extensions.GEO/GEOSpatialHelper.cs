@@ -81,7 +81,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Gets the features around the given WGS84 Lon/Lat point in a radius of given meters 
+        /// Gets the features near the given WGS84 Lon/Lat point within a radius of given meters 
         /// </summary>
         public List<RDFResource> GetFeaturesNearPoint((double,double) wgs84LonLat, double radiusMeters)
         {
