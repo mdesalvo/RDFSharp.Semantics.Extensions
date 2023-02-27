@@ -146,11 +146,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((9.03879405, 44.45787556)); //Genoa
+            List<RDFResource> featuresNorthOfPoint = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((9.03879405, 44.45787556)); //Genoa
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 1);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+            Assert.IsNotNull(featuresNorthOfPoint);
+            Assert.IsTrue(featuresNorthOfPoint.Count == 1);
+            Assert.IsTrue(featuresNorthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
         }
 
         [TestMethod]
@@ -162,11 +162,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((9.03879405, 44.45787556)); //Genoa
+            List<RDFResource> featuresNorthOfPoint = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((9.03879405, 44.45787556)); //Genoa
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 1);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+            Assert.IsNotNull(featuresNorthOfPoint);
+            Assert.IsTrue(featuresNorthOfPoint.Count == 1);
+            Assert.IsTrue(featuresNorthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
         }
 
         [TestMethod]
@@ -177,10 +177,10 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((10.20883090, 45.56077293)); //Brescia
+            List<RDFResource> featuresNorthOfPoint = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((10.20883090, 45.56077293)); //Brescia
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
+            Assert.IsNotNull(featuresNorthOfPoint);
+            Assert.IsTrue(featuresNorthOfPoint.Count == 0);
         }
 
         [TestMethod]
@@ -189,10 +189,10 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
             geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((11.53860090, 45.54896859));
+            List<RDFResource> featuresNorthOfPoint = geoOntology.SpatialHelper.GetFeaturesNorthOfPoint((11.53860090, 45.54896859));
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
+            Assert.IsNotNull(featuresNorthOfPoint);
+            Assert.IsTrue(featuresNorthOfPoint.Count == 0);
         }
 
         [TestMethod]
@@ -211,12 +211,12 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((9.03879405, 44.45787556)); //Genoa
+            List<RDFResource> featuresSouthOfPoint = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((9.03879405, 44.45787556)); //Genoa
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 2);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+            Assert.IsNotNull(featuresSouthOfPoint);
+            Assert.IsTrue(featuresSouthOfPoint.Count == 2);
+            Assert.IsTrue(featuresSouthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
+            Assert.IsTrue(featuresSouthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
         }
 
         [TestMethod]
@@ -228,12 +228,12 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((9.03879405, 44.45787556)); //Genoa
+            List<RDFResource> featuresSouthOfPoint = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((9.03879405, 44.45787556)); //Genoa
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 2);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+            Assert.IsNotNull(featuresSouthOfPoint);
+            Assert.IsTrue(featuresSouthOfPoint.Count == 2);
+            Assert.IsTrue(featuresSouthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
+            Assert.IsTrue(featuresSouthOfPoint.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
         }
 
         [TestMethod]
@@ -244,10 +244,10 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((15.80512362, 40.64259592)); //Potenza
+            List<RDFResource> featuresSouthOfPoint = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((15.80512362, 40.64259592)); //Potenza
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
+            Assert.IsNotNull(featuresSouthOfPoint);
+            Assert.IsTrue(featuresSouthOfPoint.Count == 0);
         }
 
         [TestMethod]
@@ -256,10 +256,10 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
             geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((11.53860090, 45.54896859));
+            List<RDFResource> featuresSouthOfPoint = geoOntology.SpatialHelper.GetFeaturesSouthOfPoint((11.53860090, 45.54896859));
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 0);
+            Assert.IsNotNull(featuresSouthOfPoint);
+            Assert.IsTrue(featuresSouthOfPoint.Count == 0);
         }
 
         [TestMethod]
