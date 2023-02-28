@@ -104,6 +104,39 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetLengthOfFeature(null));
 
         [TestMethod]
+        public void ShouldGetAreaOfFeature()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:milanCentreFeat"), new RDFResource("ex:milanCentreGeom"), new List<(double, double)>() {
+                (9.18217536, 45.46819347), (9.19054385, 45.46819347), (9.19054385, 45.46003666), (9.18217536, 45.46003666), (9.18217536, 45.46819347) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom"), new List<(double, double)>() {
+                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.16778508, 45.46481222), false);
+            double? brebemiArea = geoOntology.SpatialHelper.GetAreaOfFeature(new RDFResource("ex:brebemiFeat"));
+            double? milanArea = geoOntology.SpatialHelper.GetAreaOfFeature(new RDFResource("ex:milanFeat"));
+            double? milanCentreArea = geoOntology.SpatialHelper.GetAreaOfFeature(new RDFResource("ex:milanCentreFeat"));
+
+            Assert.IsTrue(milanCentreArea >= 590000 && milanCentreArea <= 600000);
+            Assert.IsTrue(brebemiArea == 0); //lines have no area
+            Assert.IsTrue(milanArea == 0); //points have no area
+        }
+
+        [TestMethod]
+        public void ShouldNotGetAreaOfFeatureBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            double? milanArea = geoOntology.SpatialHelper.GetAreaOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNull(milanArea);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingAreaOfFeatureBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null));
+
+        [TestMethod]
         public void ShouldGetFeaturesNearPointFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");

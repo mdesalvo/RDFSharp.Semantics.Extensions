@@ -106,6 +106,32 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
+        /// Gets the area, expressed in square meters, of the given feature
+        /// </summary>
+        public double? GetAreaOfFeature(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get area of feature because given \"featureUri\" parameter is null");
+
+            //Collect geometries of feature
+            (Geometry, Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            List<(Geometry, Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+
+            //Perform spatial analysis between collected geometries (calibrate maximum length)
+            double? featureArea = double.MinValue;
+            secondaryGeometriesOfFeature.ForEach(geom => {
+                double tempArea = geom.Item2.Area;
+                if (tempArea > featureArea)
+                    featureArea = tempArea;
+            });
+
+            //Give null in case area could not be calculated (no available geometries)
+            return featureArea == double.MinValue ? null : featureArea;
+        }
+
+        /// <summary>
         /// Gets the features near the given WGS84 Lon/Lat point within a radius of given meters 
         /// </summary>
         public List<RDFResource> GetFeaturesNearPoint((double,double) wgs84LonLat, double radiusMeters)
