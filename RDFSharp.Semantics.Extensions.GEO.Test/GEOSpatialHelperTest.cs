@@ -73,6 +73,37 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:from"), null));
 
         [TestMethod]
+        public void ShouldGetLengthOfFeature()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom1"), new List<(double, double)>() {
+                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom2"), new List<(double, double)>() {
+                (9.16778508, 45.46481222), (9.62118352, 45.65014585), (10.26423284, 45.59758259) }, true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.16778508, 45.46481222), false);
+            double? brebemiLength = geoOntology.SpatialHelper.GetLengthOfFeature(new RDFResource("ex:brebemiFeat"));
+            double? milanLength = geoOntology.SpatialHelper.GetLengthOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsTrue(brebemiLength >= 90000 && brebemiLength <= 100000); //BreBeMi is about 90-100KM lineair
+            Assert.IsTrue(milanLength == 0); //points have no length
+        }
+
+        [TestMethod]
+        public void ShouldNotGetLengthOfFeatureBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            double? milanLength = geoOntology.SpatialHelper.GetLengthOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNull(milanLength);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingLengthOfFeatureBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetLengthOfFeature(null));
+
+        [TestMethod]
         public void ShouldGetFeaturesNearPointFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");

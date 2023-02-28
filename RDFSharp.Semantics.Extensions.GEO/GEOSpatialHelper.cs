@@ -54,19 +54,18 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureUri\" parameter is null");
 
             //Collect geometries of "From" feature
-            (Geometry, Geometry) defaultGeometryOfFromFeature = Ontology.GetDefaultGeometryOfFeature(fromFeatureUri);
-            List<(Geometry, Geometry)> secondaryGeometriesOfFromFeature = Ontology.GetSecondaryGeometriesOfFeature(fromFeatureUri);
+            (Geometry,Geometry) defaultGeometryOfFromFeature = Ontology.GetDefaultGeometryOfFeature(fromFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfFromFeature = Ontology.GetSecondaryGeometriesOfFeature(fromFeatureUri);
             if (defaultGeometryOfFromFeature.Item1 != null && defaultGeometryOfFromFeature.Item2 != null)
                 secondaryGeometriesOfFromFeature.Add(defaultGeometryOfFromFeature);
 
             //Collect geometries of "To" feature
-            (Geometry, Geometry) defaultGeometryOfToFeature = Ontology.GetDefaultGeometryOfFeature(toFeatureUri);
-            List<(Geometry, Geometry)> secondaryGeometriesOfToFeature = Ontology.GetSecondaryGeometriesOfFeature(toFeatureUri);
+            (Geometry,Geometry) defaultGeometryOfToFeature = Ontology.GetDefaultGeometryOfFeature(toFeatureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfToFeature = Ontology.GetSecondaryGeometriesOfFeature(toFeatureUri);
             if (defaultGeometryOfToFeature.Item1 != null && defaultGeometryOfToFeature.Item2 != null)
                 secondaryGeometriesOfToFeature.Add(defaultGeometryOfToFeature);
 
-            //Perform spatial analysis between collected geometries:
-            //iterate from/to geometries and calibrate minimal distance
+            //Perform spatial analysis between collected geometries (calibrate minimum distance)
             double? featuresDistance = double.MaxValue;
             secondaryGeometriesOfFromFeature.ForEach(fromGeom => {
                 secondaryGeometriesOfToFeature.ForEach(toGeom => {
@@ -78,6 +77,32 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             //Give null in case distance could not be calculated (no available geometries from any sides)
             return featuresDistance == double.MaxValue ? null : featuresDistance;
+        }
+
+        /// <summary>
+        /// Gets the length, expressed in meters, of the given feature (the perimeter in case of area)
+        /// </summary>
+        public double? GetLengthOfFeature(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get length of feature because given \"featureUri\" parameter is null");
+
+            //Collect geometries of feature
+            (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+
+            //Perform spatial analysis between collected geometries (calibrate maximum length)
+            double? featureLength = double.MinValue;
+            secondaryGeometriesOfFeature.ForEach(geom => {
+                double tempLength = geom.Item2.Length;
+                if (tempLength > featureLength)
+                    featureLength = tempLength;
+            });
+
+            //Give null in case length could not be calculated (no available geometries)
+            return featureLength == double.MinValue ? null : featureLength;
         }
 
         /// <summary>
@@ -98,7 +123,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries: iterate geometries and collect those within given radius
             List<RDFResource> featuresNearPoint = new List<RDFResource>();
@@ -176,7 +201,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries: iterate geometries and collect those having longitudes lower than given point
             List<RDFResource> featuresWestOfPoint = new List<RDFResource>();
@@ -250,7 +275,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries:
             //iterate geometries and collect those inside given box
@@ -295,7 +320,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
-            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries:
             //iterate geometries and collect those outside given box
