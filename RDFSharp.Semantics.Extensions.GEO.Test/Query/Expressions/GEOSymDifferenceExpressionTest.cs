@@ -203,7 +203,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOLYGON (((9.06813271 45.00103738, 8.91677856 44.40631625, 7.66708374 45.05606124, 9.18869019 45.46590974, 9.11344367 45.17667037, 8.21258185 44.913726, 9.06813271 45.00103738)), ((9.06813271 45.00103738, 9.11344367 45.17667037, 9.15740607 45.18925924, 9.70122931 45.0613596, 9.06813271 45.00103738)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOLYGON (((9.068707 44.99966885, 8.91677856 44.40631625, 7.66708374 45.05606124, 9.18869019 45.46590974, 9.11421696 45.17676565, 8.21258185 44.91372599, 9.068707 44.99966885)), ((9.068707 44.99966885, 9.11421696 45.17676565, 9.15740607 45.18925924, 9.70122931 45.06135959, 9.068707 44.99966885)))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -243,7 +243,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);//This is a polygon with hole
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((9.18869019 45.46590974, 8.91677856 44.40631625, 7.66708374 45.05606124, 9.18869019 45.46590974), (8.48831177 45.1336176, 8.20541382 44.89479576, 8.59268188 44.90841398, 8.48831177 45.1336176))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((9.18869019 45.46590974, 8.91677856 44.40631625, 7.66708374 45.05606124, 9.18869019 45.46590974), (8.48831177 45.1336176, 8.20541382 44.89479576, 8.59268188 44.90841397, 8.48831177 45.1336176))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]

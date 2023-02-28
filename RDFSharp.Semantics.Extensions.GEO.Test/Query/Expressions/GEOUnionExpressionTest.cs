@@ -174,7 +174,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             table.Columns.Add("?ROME", typeof(string));
             DataRow row = table.NewRow();
             row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
+            row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.90278199</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
@@ -184,7 +184,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((6.496365 41.902782), (9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((9.18854 45), (12.496365 41.90278198))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -264,7 +264,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((9.18854 48.89), (9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((9.18854 45), (9.18854 48.89))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -302,7 +302,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((9.18854 48.89), (9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("MULTIPOINT ((9.18854 45), (9.18854 48.89))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]

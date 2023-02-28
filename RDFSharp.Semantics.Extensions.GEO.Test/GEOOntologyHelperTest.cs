@@ -642,7 +642,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326  && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
-            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 42106 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(-899167.1609069, 4413535.43188373)));
         }
 
         [TestMethod]
@@ -654,7 +654,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             (Geometry, Geometry) milanDefaultGeometry = geoOntology.GetDefaultGeometryOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanDefaultGeometry.Item1.SRID == 4326 && milanDefaultGeometry.Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
-            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 32632 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+            Assert.IsTrue(milanDefaultGeometry.Item2.SRID == 42106 && milanDefaultGeometry.Item2.EqualsTopologically(new Point(-899167.1609069, 4413535.43188373)));
         }
 
         [TestMethod]
@@ -679,9 +679,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsNotNull(milanSecondaryGeometries);
             Assert.IsTrue(milanSecondaryGeometries.Count == 2);
             Assert.IsTrue(milanSecondaryGeometries[0].Item1.SRID == 4326  && milanSecondaryGeometries[0].Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
-            Assert.IsTrue(milanSecondaryGeometries[0].Item2.SRID == 32632 && milanSecondaryGeometries[0].Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+            Assert.IsTrue(milanSecondaryGeometries[0].Item2.SRID == 42106 && milanSecondaryGeometries[0].Item2.EqualsTopologically(new Point(-899167.1609069, 4413535.43188373)));
             Assert.IsTrue(milanSecondaryGeometries[1].Item1.SRID == 4326  && milanSecondaryGeometries[1].Item1.EqualsTopologically(new Point(9.588540, 45.864664)));
-            Assert.IsTrue(milanSecondaryGeometries[1].Item2.SRID == 32632 && milanSecondaryGeometries[1].Item2.EqualsTopologically(new Point(545682.9698859, 5079179.30709953)));
+            Assert.IsTrue(milanSecondaryGeometries[1].Item2.SRID == 42106 && milanSecondaryGeometries[1].Item2.EqualsTopologically(new Point(-861009.18576767, 4453576.61617377)));
         }
 
         [TestMethod]
@@ -696,9 +696,9 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsNotNull(milanSecondaryGeometries);
             Assert.IsTrue(milanSecondaryGeometries.Count == 2);
             Assert.IsTrue(milanSecondaryGeometries[0].Item1.SRID == 4326 && milanSecondaryGeometries[0].Item1.EqualsTopologically(new Point(9.188540, 45.464664)));
-            Assert.IsTrue(milanSecondaryGeometries[0].Item2.SRID == 32632 && milanSecondaryGeometries[0].Item2.EqualsTopologically(new Point(514739.23764243, 5034588.07621425)));
+            Assert.IsTrue(milanSecondaryGeometries[0].Item2.SRID == 42106 && milanSecondaryGeometries[0].Item2.EqualsTopologically(new Point(-899167.1609069, 4413535.43188373)));
             Assert.IsTrue(milanSecondaryGeometries[1].Item1.SRID == 4326 && milanSecondaryGeometries[1].Item1.EqualsTopologically(new Point(9.588540, 45.864664)));
-            Assert.IsTrue(milanSecondaryGeometries[1].Item2.SRID == 32632 && milanSecondaryGeometries[1].Item2.EqualsTopologically(new Point(545682.9698859, 5079179.30709953)));
+            Assert.IsTrue(milanSecondaryGeometries[1].Item2.SRID == 42106 && milanSecondaryGeometries[1].Item2.EqualsTopologically(new Point(-861009.18576767, 4453576.61617377)));
         }
 
         [TestMethod]

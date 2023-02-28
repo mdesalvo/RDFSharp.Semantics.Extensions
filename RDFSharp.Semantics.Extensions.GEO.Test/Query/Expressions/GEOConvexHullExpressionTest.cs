@@ -97,7 +97,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POINT (12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POINT (12.496365 41.90278199)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.90278199)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -137,7 +137,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((14.2681244 40.85177459, 9.18854 45.464664, 12.496365 41.90278199, 14.2681244 40.85177459))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]
@@ -155,7 +155,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((14.2681244 40.8517746, 9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((14.2681244 40.85177459, 9.18854 45.464664, 12.496365 41.90278199, 14.2681244 40.85177459))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]

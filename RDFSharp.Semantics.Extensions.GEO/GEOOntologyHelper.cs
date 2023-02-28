@@ -444,11 +444,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project default geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project default geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
-                        return (wgs84Geometry, utmGeometry);
+                        return (wgs84Geometry, lazGeometry);
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
@@ -463,11 +462,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project default geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project default geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
-                        return (wgs84Geometry, utmGeometry);
+                        return (wgs84Geometry, lazGeometry);
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
@@ -511,12 +509,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
                         geometryCollected = true;
-                        secondaryGeometries.Add((wgs84Geometry, utmGeometry));
+                        secondaryGeometries.Add((wgs84Geometry, lazGeometry));
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
@@ -531,11 +528,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project default geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project default geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
-                        secondaryGeometries.Add((wgs84Geometry, utmGeometry));
+                        secondaryGeometries.Add((wgs84Geometry, lazGeometry));
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
@@ -593,12 +589,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new WKTReader().Read(wktGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
                         geometryCollected = true;
-                        featuresWithGeometry.Add((featureUri, wgs84Geometry, utmGeometry));
+                        featuresWithGeometry.Add((featureUri, wgs84Geometry, lazGeometry));
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }
@@ -616,11 +611,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         Geometry wgs84Geometry = new GMLReader().Read(gmlGeometryLiteral.Value);
                         wgs84Geometry.SRID = 4326;
 
-                        //Project default geometry from WGS84 to UTM
-                        (int, bool) utmZone = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84Geometry.Coordinates[0].X, wgs84Geometry.Coordinates[0].Y);
-                        Geometry utmGeometry = GEOConverter.GetUTMGeometryFromWGS84(wgs84Geometry, utmZone);
+                        //Project default geometry from WGS84 to Lambert Azimuthal
+                        Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
 
-                        featuresWithGeometry.Add((featureUri, wgs84Geometry, utmGeometry));
+                        featuresWithGeometry.Add((featureUri, wgs84Geometry, lazGeometry));
                     }
                     catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
                 }

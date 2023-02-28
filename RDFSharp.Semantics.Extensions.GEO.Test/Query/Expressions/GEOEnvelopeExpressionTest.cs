@@ -93,7 +93,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((10.39965817 45.2226772, 10.40146964 45.29634499, 10.66236805 45.29284487, 10.6602197 45.21918601, 10.39965817 45.2226772))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((10.39965817 45.2226772, 10.39002572 45.29217802, 10.65424624 45.30159609, 10.66361721 45.23207186, 10.39965817 45.2226772))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
         }
 
         [TestMethod]

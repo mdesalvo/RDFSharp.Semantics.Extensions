@@ -145,8 +145,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Create UTM geometry from given center of search
-            (int, bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat.Item1, wgs84LonLat.Item2);
-            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
+            Geometry lazSearchPoint = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
@@ -154,7 +153,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Perform spatial analysis between collected geometries: iterate geometries and collect those within given radius
             List<RDFResource> featuresNearPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item3.IsWithinDistance(utmSearchPoint, radiusMeters))
+                if (featureWithGeometry.Item3.IsWithinDistance(lazSearchPoint, radiusMeters))
                     featuresNearPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -252,17 +251,13 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Create WGS84 geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
-            //Create UTM geometry from given point
-            (int, bool) utmZoneSearchPoint = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat.Item1, wgs84LonLat.Item2);
-            Geometry utmSearchPoint = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchPoint, utmZoneSearchPoint);
-
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
             //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes lower than given point
             List<RDFResource> featuresSouthOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y < utmSearchPoint.Coordinate.Y))
+                if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y < wgs84SearchPoint.Coordinate.Y))
                     featuresSouthOfPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -296,9 +291,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
             })) { SRID = 4326 };
 
-            //Create UTM geometry from given box corners
-            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2);
-            Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
+            //Create Lambert Azimuthal geometry from given box corners
+            Geometry lazSearchBox = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
@@ -307,7 +301,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //iterate geometries and collect those inside given box
             List<RDFResource> featuresInsideBox = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (utmSearchBox.Contains(featureWithGeometry.Item3))
+                if (lazSearchBox.Contains(featureWithGeometry.Item3))
                     featuresInsideBox.Add(featureWithGeometry.Item1);
             });
 
@@ -341,9 +335,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
             })) { SRID = 4326 };
 
-            //Create UTM geometry from given box corners
-            (int, bool) utmZoneSearchBox = GEOConverter.GetUTMZoneFromWGS84Coordinates(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2);
-            Geometry utmSearchBox = GEOConverter.GetUTMGeometryFromWGS84(wgs84SearchBox, utmZoneSearchBox);
+            //Create Lambert Azimuthal geometry from given box corners
+            Geometry lazSearchBox = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
@@ -352,7 +345,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //iterate geometries and collect those outside given box
             List<RDFResource> featuresOutsideBox = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (!utmSearchBox.Contains(featureWithGeometry.Item3))
+                if (!lazSearchBox.Contains(featureWithGeometry.Item3))
                     featuresOutsideBox.Add(featureWithGeometry.Item1);
             });
 

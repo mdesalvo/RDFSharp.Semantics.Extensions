@@ -88,7 +88,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             double? milanLength = geoOntology.SpatialHelper.GetLengthOfFeature(new RDFResource("ex:milanFeat"));
 
             Assert.IsTrue(milanCentreLength >= 3000 && milanCentreLength <= 3300); //Perimeter of milan centre is about 3KM lineair
-            Assert.IsTrue(brebemiLength >= 90000 && brebemiLength <= 95000); //BreBeMi is about 90-95KM lineair
+            Assert.IsTrue(brebemiLength >= 95000 && brebemiLength <= 100000); //BreBeMi is about 95-100KM lineair
             Assert.IsTrue(milanLength == 0); //points have no length
         }
 

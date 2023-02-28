@@ -109,9 +109,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
                 #region Calculate Result
                 Geometry leftGeometry = null;
-                Geometry leftGeometryUTM = null;
+                Geometry leftGeometryLAZ = null;
                 Geometry rightGeometry = null;
-                Geometry rightGeometryUTM = null;
+                Geometry rightGeometryLAZ = null;
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && (leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) || 
                           leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
@@ -125,9 +125,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     if (this is GEOIsEmptyExpression)
                         return leftGeometry.IsEmpty ? RDFTypedLiteral.True : RDFTypedLiteral.False;
 
-                    //Project left geometry from WGS84 to UTM
-                    (int, bool) utmZoneOfLeftGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(leftGeometry.Coordinates[0].X, leftGeometry.Coordinates[0].Y);
-                    leftGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(leftGeometry, utmZoneOfLeftGeometry);
+                    //Project left geometry from WGS84 to Lambert Azimuthal
+                    leftGeometryLAZ = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(leftGeometry);
 
                     //Determine if requested GEO function needs right geometry
                     if (HasRightArgument)
@@ -142,9 +141,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
                                 WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
                             rightGeometry.SRID = 4326;
 
-                            //Project right geometry from WGS84 to UTM
-                            (int, bool) utmZoneOfRightGeometry = GEOConverter.GetUTMZoneFromWGS84Coordinates(rightGeometry.Coordinates[0].X, rightGeometry.Coordinates[0].Y);
-                            rightGeometryUTM = GEOConverter.GetUTMGeometryFromWGS84(rightGeometry, utmZoneOfRightGeometry);
+                            //Project right geometry from WGS84 to Lambert Azimuthal
+                            rightGeometryLAZ = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(rightGeometry);
                         }
 
                         //Otherwise, return null to signal binding error
@@ -152,50 +150,50 @@ namespace RDFSharp.Semantics.Extensions.GEO
                             return expressionResult;
                     }
 
-                    //Execute GEO functions on UTM geometries
+                    //Execute GEO functions on LAZ geometries
                     if (this is GEOBoundaryExpression)
                     {
-                        Geometry boundaryGeometryUTM = leftGeometryUTM.Boundary;
-                        Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(boundaryGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry boundaryGeometryLAZ = leftGeometryLAZ.Boundary;
+                        Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(boundaryGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(boundaryGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOBufferExpression geoBufferExpression)
                     {
-                        Geometry bufferGeometryUTM = leftGeometryUTM.Buffer(geoBufferExpression.BufferMeters);
-                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(bufferGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry bufferGeometryLAZ = leftGeometryLAZ.Buffer(geoBufferExpression.BufferMeters);
+                        Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOContainsExpression)
                     {
-                        expressionResult = leftGeometryUTM.Contains(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Contains(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOConvexHullExpression)
                     {
-                        Geometry convexHullGeometryUTM = leftGeometryUTM.ConvexHull();
-                        Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(convexHullGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry convexHullGeometryLAZ = leftGeometryLAZ.ConvexHull();
+                        Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(convexHullGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOCrossesExpression)
                     {
-                        expressionResult = leftGeometryUTM.Crosses(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Crosses(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }   
                     else if (this is GEODifferenceExpression)
                     {
-                        Geometry differenceGeometryUTM = leftGeometryUTM.Difference(rightGeometryUTM);
-                        Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(differenceGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry differenceGeometryLAZ = leftGeometryLAZ.Difference(rightGeometryLAZ);
+                        Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(differenceGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODimensionExpression)
                     {
-                        expressionResult = new RDFTypedLiteral(Convert.ToString((int)leftGeometryUTM.Dimension, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        expressionResult = new RDFTypedLiteral(Convert.ToString((int)leftGeometryLAZ.Dimension, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                     }
                     else if (this is GEODisjointExpression)
                     {
-                        expressionResult = leftGeometryUTM.Disjoint(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Disjoint(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEODistanceExpression)
                     {
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryLAZ.Distance(rightGeometryLAZ), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                     }
                     else if (this is GEOEgenhoferExpression geoEgenhoferExpression)
                     {
@@ -203,43 +201,43 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         switch (geoEgenhoferExpression.EgenhoferRelation)
                         {
                             case GEOEnums.GEOEgenhoferRelations.Contains:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*TFF*FF*");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "T*TFF*FF*");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.CoveredBy:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFF*TFT**");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFF*TFT**");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Covers:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*TFT*FF*");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "T*TFT*FF*");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Disjoint:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "FF*FF****");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "FF*FF****");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Equals:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFFTFFFT");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFFFTFFFT");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Inside:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "TFF*FFT**");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFF*FFT**");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Meet:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "FT*******")
-                                                     || leftGeometryUTM.Relate(rightGeometryUTM, "F**T*****")
-                                                      || leftGeometryUTM.Relate(rightGeometryUTM, "F***T****");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "FT*******")
+                                                     || leftGeometryLAZ.Relate(rightGeometryLAZ, "F**T*****")
+                                                      || leftGeometryLAZ.Relate(rightGeometryLAZ, "F***T****");
                                 break;
                             case GEOEnums.GEOEgenhoferRelations.Overlap:
-                                sfEgenhoferRelate = leftGeometryUTM.Relate(rightGeometryUTM, "T*T***T**");
+                                sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "T*T***T**");
                                 break;
                         }
                         expressionResult = sfEgenhoferRelate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOEnvelopeExpression)
                     {
-                        Geometry envelopeGeometryUTM = leftGeometryUTM.Envelope;
-                        Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(envelopeGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry envelopeGeometryLAZ = leftGeometryLAZ.Envelope;
+                        Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(envelopeGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOEqualsExpression)
                     {
-                        expressionResult = leftGeometryUTM.EqualsTopologically(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.EqualsTopologically(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOGetSRIDExpression)
                     {
@@ -247,21 +245,21 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     }
                     else if (this is GEOIntersectionExpression)
                     {
-                        Geometry intersectionGeometryUTM = leftGeometryUTM.Intersection(rightGeometryUTM);
-                        Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(intersectionGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry intersectionGeometryLAZ = leftGeometryLAZ.Intersection(rightGeometryLAZ);
+                        Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(intersectionGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOIntersectsExpression)
                     {
-                        expressionResult = leftGeometryUTM.Intersects(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Intersects(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOIsSimpleExpression)
                     {
-                        expressionResult = leftGeometryUTM.IsSimple ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.IsSimple ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOOverlapsExpression)
                     {
-                        expressionResult = leftGeometryUTM.Overlaps(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Overlaps(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEORCC8Expression geoRCC8Expression)
                     {
@@ -269,55 +267,55 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         switch (geoRCC8Expression.RCC8Relation)
                         {
                             case GEOEnums.GEORCC8Relations.RCC8DC:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "FFTFFTTTT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "FFTFFTTTT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8EC:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "FFTFTTTTT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "FFTFTTTTT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8EQ:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFFTFFFT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFFFTFFFT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8NTPP:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFTFFTTT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFFTFFTTT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8NTPPI:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTFFTFFT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TTTFFTFFT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8PO:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTTTTTTT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TTTTTTTTT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8TPP:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TFFTTFTTT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TFFTTFTTT");
                                 break;
                             case GEOEnums.GEORCC8Relations.RCC8TPPI:
-                                sfRCSS8Relate = leftGeometryUTM.Relate(rightGeometryUTM, "TTTFTTFFT");
+                                sfRCSS8Relate = leftGeometryLAZ.Relate(rightGeometryLAZ, "TTTFTTFFT");
                                 break;
                         }
                         expressionResult = sfRCSS8Relate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEORelateExpression geoRelateExpression)
                     {
-                        expressionResult = leftGeometryUTM.Relate(rightGeometryUTM, geoRelateExpression.DE9IMRelation) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Relate(rightGeometryLAZ, geoRelateExpression.DE9IMRelation) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOSymDifferenceExpression)
                     {
-                        Geometry symDifferenceGeometryUTM = leftGeometryUTM.SymmetricDifference(rightGeometryUTM);
-                        Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(symDifferenceGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry symDifferenceGeometryLAZ = leftGeometryLAZ.SymmetricDifference(rightGeometryLAZ);
+                        Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(symDifferenceGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOTouchesExpression)
                     {
-                        expressionResult = leftGeometryUTM.Touches(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Touches(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEOUnionExpression)
                     {
-                        Geometry unionGeometryUTM = leftGeometryUTM.Union(rightGeometryUTM);
-                        Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromUTM(unionGeometryUTM, utmZoneOfLeftGeometry);
+                        Geometry unionGeometryLAZ = leftGeometryLAZ.Union(rightGeometryLAZ);
+                        Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(unionGeometryLAZ);
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOWithinExpression)
                     {
-                        expressionResult = leftGeometryUTM.Within(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        expressionResult = leftGeometryLAZ.Within(rightGeometryLAZ) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                 }
                 #endregion
