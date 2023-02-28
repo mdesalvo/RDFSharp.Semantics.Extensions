@@ -516,21 +516,16 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             Assert.IsTrue(featuresOutsideSearchBox.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
         }
 
-        /*TODO: ENABLE AGAIN
         [TestMethod]
         public void ShouldNotGetFeaturesOutsideBox()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
             geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
-            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
-            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
-            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresOutsideSearchBox = geoOntology.SpatialHelper.GetFeaturesOutsideBox((8.28327563, 40.67714954), (13.99853701, 47.90728360));
+            List<RDFResource> featuresOutsideSearchBox = geoOntology.SpatialHelper.GetFeaturesOutsideBox((9.12149722, 45.18770380), (9.82530581, 45.77780892));
 
             Assert.IsNotNull(featuresOutsideSearchBox);
             Assert.IsTrue(featuresOutsideSearchBox.Count == 0);
         }
-        */
 
         [TestMethod]
         public void ShouldNotGetFeaturesOutsideBoxBecauseMissingGeometries()
