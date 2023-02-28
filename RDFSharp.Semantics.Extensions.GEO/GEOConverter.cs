@@ -18,6 +18,7 @@ using NetTopologySuite.Geometries;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
 using System;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.Extensions.GEO
 {
@@ -27,6 +28,17 @@ namespace RDFSharp.Semantics.Extensions.GEO
     internal static class GEOConverter
     {
         #region Methods
+        /// <summary>
+        /// Determines if the coordinates of the given WGS84 geometry fits single UTM zones
+        /// </summary>
+        internal static bool CheckWGS84GeometryFitsSingleUTMZone(Geometry wgs84Geometry)
+        {
+            HashSet<(int, bool)> wgs84CoordinateUTMZones = new HashSet<(int,bool)>();
+            foreach (Coordinate wgs84Coordinate in wgs84Geometry.Coordinates)
+                wgs84CoordinateUTMZones.Add(GetUTMZoneFromWGS84Coordinates(wgs84Coordinate.X, wgs84Coordinate.Y));
+            return wgs84CoordinateUTMZones.Count == 1;
+        }
+
         /// <summary>
         /// Projects the given WGS84 geometry to an equivalent UTM geometry
         /// </summary>

@@ -16,7 +16,6 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Geometries;
-using RDFSharp.Model;
 
 namespace RDFSharp.Semantics.Extensions.GEO.Test
 {
@@ -24,6 +23,30 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
     public class GEOConverterTest
     {
         #region Tests
+        [TestMethod]
+        public void CheckWGS84GeometryFitsSingleUTMZone()
+        {
+            Geometry milanWGS84 = new Point(9.188540, 45.464664);
+            bool milanFitsUTM = GEOConverter.CheckWGS84GeometryFitsSingleUTMZone(milanWGS84);
+
+            Assert.IsTrue(milanFitsUTM);
+        }
+
+        [TestMethod]
+        public void ShouldCheckWGS84GeometryDoesNotFitSingleUTMZone()
+        {
+            Geometry northItalyLineWGS84 = new LineString(new Coordinate[] {
+                new Coordinate(9.18801422,  45.47725289),
+                new Coordinate(10.01198883, 45.14502743),
+                new Coordinate(10.95681305, 45.43872208),
+                new Coordinate(11.90163727, 45.41559096),
+                new Coordinate(13.19802399, 46.09016569)
+            });
+            bool northItalyLineWGS84FitsUTM = GEOConverter.CheckWGS84GeometryFitsSingleUTMZone(northItalyLineWGS84);
+
+            Assert.IsFalse(northItalyLineWGS84FitsUTM);
+        }
+
         [TestMethod]
         public void ShouldGetUTMGeometryFromWGS84()
         {
