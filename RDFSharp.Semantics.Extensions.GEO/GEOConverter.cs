@@ -27,6 +27,30 @@ namespace RDFSharp.Semantics.Extensions.GEO
     /// </summary>
     internal static class GEOConverter
     {
+        #region Properties
+        /// <summary>
+        /// Projected system used when coordinates of geometries span across multiple UTM zones
+        /// </summary>
+        internal static CoordinateSystem LambertAzimutalEAWGS84 = new CoordinateSystemFactory().CreateFromWkt(
+@"PROJCS[""WGS84 / Lambert Azim Mozambique"",
+    GEOGCS[""WGS 84"",
+        DATUM[""WGS_1984"",
+            SPHEROID[""WGS_1984"",6378137.0,298.257223563]],
+        PRIMEM[""Greenwich"",0.0],
+        UNIT[""degree"",0.017453292519943295],
+        AXIS[""Longitude"",EAST],
+        AXIS[""Latitude"",NORTH]],
+    PROJECTION[""Lambert_Azimuthal_Equal_Area""],
+    PARAMETER[""latitude_of_center"",5.0],
+    PARAMETER[""longitude_of_center"",20.0],
+    PARAMETER[""false_easting"",0.0],
+    PARAMETER[""false_northing"",0.0],
+    UNIT[""m"",1.0],
+    AXIS[""x"",EAST],
+    AXIS[""y"",NORTH],
+    AUTHORITY[""EPSG"",""42106""]]");
+        #endregion
+
         #region Methods
         /// <summary>
         /// Determines if the coordinates of the given WGS84 geometry fits single UTM zones
@@ -40,25 +64,31 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Projects the given WGS84 geometry to an equivalent UTM geometry
+        /// Projects the given WGS84 geometry to an equivalent UTM/Lambert geometry
         /// </summary>
         internal static Geometry GetUTMGeometryFromWGS84(Geometry wgs84Geometry, (int,bool) utmZone)
         {
+            //Depending if the given WGS84 geometry fits within one UTM zone or spans over multiple ones,
+            //we may decide to project to Lambert Azimuthal EA WGS84 (which handles these scenarios better)
+            bool wgs84GeometryFitsSingleUTMZone = CheckWGS84GeometryFitsSingleUTMZone(wgs84Geometry);
             ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
-                GeographicCoordinateSystem.WGS84, ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2));
+                GeographicCoordinateSystem.WGS84, 
+                wgs84GeometryFitsSingleUTMZone ? ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2) 
+                                               : LambertAzimutalEAWGS84);
             Geometry utmGeometry = Transform(wgs84Geometry, coordinateTransformation.MathTransform);
             utmGeometry.SRID = Convert.ToInt32(coordinateTransformation.TargetCS.AuthorityCode);
             return utmGeometry;
         }
 
         /// <summary>
-        /// Projects the given UTM geometry to an equivalent WGS84 geometry
+        /// Projects the given UTM/Lambert geometry to an equivalent WGS84 geometry
         /// </summary>
-        internal static Geometry GetWGS84GeometryFromUTM(Geometry utmGeometry, (int, bool) utmZone)
+        internal static Geometry GetWGS84GeometryFromUTM(Geometry projectedGeometry, (int,bool) utmZone)
         {
             ICoordinateTransformation coordinateTransformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(
-                ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2), GeographicCoordinateSystem.WGS84);
-            Geometry wgs84Geometry = Transform(utmGeometry, coordinateTransformation.MathTransform);
+                projectedGeometry.SRID == 42106 ? LambertAzimutalEAWGS84 
+                                                : ProjectedCoordinateSystem.WGS84_UTM(utmZone.Item1, utmZone.Item2), GeographicCoordinateSystem.WGS84);
+            Geometry wgs84Geometry = Transform(projectedGeometry, coordinateTransformation.MathTransform);
             wgs84Geometry.SRID = Convert.ToInt32(coordinateTransformation.TargetCS.AuthorityCode);
             return wgs84Geometry;
         }
