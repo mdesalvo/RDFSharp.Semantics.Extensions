@@ -166,7 +166,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOContainsExpression)
+                    {
                         expressionResult = leftGeometryUTM.Contains(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOConvexHullExpression)
                     {
                         Geometry convexHullGeometryUTM = leftGeometryUTM.ConvexHull();
@@ -174,7 +176,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOCrossesExpression)
+                    {
                         expressionResult = leftGeometryUTM.Crosses(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }   
                     else if (this is GEODifferenceExpression)
                     {
                         Geometry differenceGeometryUTM = leftGeometryUTM.Difference(rightGeometryUTM);
@@ -182,11 +186,17 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODimensionExpression)
+                    {
                         expressionResult = new RDFTypedLiteral(Convert.ToString((int)leftGeometryUTM.Dimension, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                    }
                     else if (this is GEODisjointExpression)
+                    {
                         expressionResult = leftGeometryUTM.Disjoint(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEODistanceExpression)
+                    {
                         expressionResult = new RDFTypedLiteral(Convert.ToString(leftGeometryUTM.Distance(rightGeometryUTM), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    }
                     else if (this is GEOEgenhoferExpression geoEgenhoferExpression)
                     {
                         bool sfEgenhoferRelate = false;
@@ -228,9 +238,13 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOEqualsExpression)
+                    {
                         expressionResult = leftGeometryUTM.EqualsTopologically(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOGetSRIDExpression)
+                    {
                         expressionResult = new RDFTypedLiteral($"http://www.opengis.net/def/crs/EPSG/0/{leftGeometry.SRID}", RDFModelEnums.RDFDatatypes.XSD_ANYURI);
+                    }
                     else if (this is GEOIntersectionExpression)
                     {
                         Geometry intersectionGeometryUTM = leftGeometryUTM.Intersection(rightGeometryUTM);
@@ -238,11 +252,17 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOIntersectsExpression)
+                    {
                         expressionResult = leftGeometryUTM.Intersects(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOIsSimpleExpression)
+                    {
                         expressionResult = leftGeometryUTM.IsSimple ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOOverlapsExpression)
+                    {
                         expressionResult = leftGeometryUTM.Overlaps(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEORCC8Expression geoRCC8Expression)
                     {
                         bool sfRCSS8Relate = false;
@@ -276,7 +296,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = sfRCSS8Relate ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                     }
                     else if (this is GEORelateExpression geoRelateExpression)
+                    {
                         expressionResult = leftGeometryUTM.Relate(rightGeometryUTM, geoRelateExpression.DE9IMRelation) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOSymDifferenceExpression)
                     {
                         Geometry symDifferenceGeometryUTM = leftGeometryUTM.SymmetricDifference(rightGeometryUTM);
@@ -284,7 +306,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOTouchesExpression)
+                    {
                         expressionResult = leftGeometryUTM.Touches(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                     else if (this is GEOUnionExpression)
                     {
                         Geometry unionGeometryUTM = leftGeometryUTM.Union(rightGeometryUTM);
@@ -292,7 +316,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOWithinExpression)
+                    {
                         expressionResult = leftGeometryUTM.Within(rightGeometryUTM) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                 }
                 #endregion
             }
