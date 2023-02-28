@@ -119,7 +119,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
                 secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
 
-            //Perform spatial analysis between collected geometries (calibrate maximum length)
+            //Perform spatial analysis between collected geometries (calibrate maximum area)
             double? featureArea = double.MinValue;
             secondaryGeometriesOfFeature.ForEach(geom => {
                 double tempArea = geom.Item2.Area;
