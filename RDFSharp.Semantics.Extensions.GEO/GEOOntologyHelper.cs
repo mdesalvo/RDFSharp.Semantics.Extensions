@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclarePointFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, Point geometry, bool isDefaultGeometry)
         {
             //Build sf:Point serializations
-            string wgs84PointWKT = new WKTWriter().Write(geometry);
+            string wgs84PointWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84PointGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -100,7 +100,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareLineFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, LineString geometry, bool isDefaultGeometry)
         {
             //Build sf:LineString serializations
-            string wgs84LineStringWKT = new WKTWriter().Write(geometry);
+            string wgs84LineStringWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84LineStringGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -149,7 +149,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareAreaFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, Polygon geometry, bool isDefaultGeometry)
         {
             //Build sf:Polygon serializations
-            string wgs84PolygonWKT = new WKTWriter().Write(geometry);
+            string wgs84PolygonWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84PolygonGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -193,7 +193,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareMultiPointFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, MultiPoint geometry, bool isDefaultGeometry)
         {
             //Build sf:MultiPoint serializations
-            string wgs84MultiPointWKT = new WKTWriter().Write(geometry);
+            string wgs84MultiPointWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84MultiPointGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -246,7 +246,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareMultiLineFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, MultiLineString geometry, bool isDefaultGeometry)
         {
             //Build sf:MultiLineString serializations
-            string wgs84MultiLineStringWKT = new WKTWriter().Write(geometry);
+            string wgs84MultiLineStringWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84MultiLineStringGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -305,7 +305,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareMultiAreaFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, MultiPolygon geometry, bool isDefaultGeometry)
         {
             //Build sf:MultiPolygon serializations
-            string wgs84MultiPolygonWKT = new WKTWriter().Write(geometry);
+            string wgs84MultiPolygonWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84MultiPolygonGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {
@@ -389,7 +389,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         internal static GEOOntology DeclareCollectionFeatureInternal(this GEOOntology geoOntology, RDFResource featureUri, RDFResource geometryUri, GeometryCollection geometry, bool isDefaultGeometry)
         {
             //Build sf:GeometryCollection serializations
-            string wgs84GeometryCollectionWKT = new WKTWriter().Write(geometry);
+            string wgs84GeometryCollectionWKT = GEOSpatialHelper.WKTWriter.Write(geometry);
             string wgs84GeometryCollectionGML = null;
             using (XmlReader gmlReader = new GML3Writer().Write(geometry))
             {

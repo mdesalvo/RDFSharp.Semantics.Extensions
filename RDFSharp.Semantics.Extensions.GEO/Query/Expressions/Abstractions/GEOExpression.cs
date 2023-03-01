@@ -33,26 +33,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
     {
         #region Properties
         /// <summary>
-        /// Reader for WKT spatial representation
-        /// </summary>
-        protected WKTReader WKTReader { get; set; }
-
-        /// <summary>
-        /// Writer for WKT spatial representation
-        /// </summary>
-        protected WKTWriter WKTWriter { get; set; }
-
-        /// <summary>
-        /// Reader for GML spatial representation
-        /// </summary>
-        protected GMLReader GMLReader { get; set; }
-
-        /// <summary>
-        /// Writer for GML spatial representation
-        /// </summary>
-        protected GMLWriter GMLWriter { get; set; }
-
-        /// <summary>
         /// Answers if this is a geographic expression using right argument
         /// </summary>
         protected bool HasRightArgument => RightArgument != null;
@@ -63,13 +43,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
         public GEOExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            WKTReader = new WKTReader();
-            WKTWriter = new WKTWriter();
-            GMLReader = new GMLReader();
-            GMLWriter = new GML3Writer(); 
-        }
+            : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Methods
@@ -118,7 +92,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 {
                     //Parse WGS84 WKT/GML left geometry
                     leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
-                        WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
+                        GEOSpatialHelper.WKTReader.Read(leftArgumentTypedLiteral.Value) : GEOSpatialHelper.GMLReader.Read(leftArgumentTypedLiteral.Value);
                     leftGeometry.SRID = 4326;
 
                     //Short-circuit empty geometry evaluation
@@ -138,7 +112,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                         {
                             //Parse WGS84 WKT/GML right geometry
                             rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
-                                WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
+                                GEOSpatialHelper.WKTReader.Read(rightArgumentTypedLiteral.Value) : GEOSpatialHelper.GMLReader.Read(rightArgumentTypedLiteral.Value);
                             rightGeometry.SRID = 4326;
 
                             //Project right geometry from WGS84 to Lambert Azimuthal
@@ -155,13 +129,15 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry boundaryGeometryLAZ = leftGeometryLAZ.Boundary;
                         Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(boundaryGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(boundaryGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        string wktBoundaryGeometryWGS84 = GEOSpatialHelper.WKTWriter.Write(boundaryGeometryWGS84)
+                                                            .Replace("LINEARRING", "LINESTRING");
+                        expressionResult = new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOBufferExpression geoBufferExpression)
                     {
                         Geometry bufferGeometryLAZ = leftGeometryLAZ.Buffer(geoBufferExpression.BufferMeters);
                         Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOContainsExpression)
                     {
@@ -171,7 +147,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry convexHullGeometryLAZ = leftGeometryLAZ.ConvexHull();
                         Geometry convexHullGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(convexHullGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(convexHullGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOCrossesExpression)
                     {
@@ -181,7 +157,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry differenceGeometryLAZ = leftGeometryLAZ.Difference(rightGeometryLAZ);
                         Geometry differenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(differenceGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(differenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEODimensionExpression)
                     {
@@ -233,7 +209,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry envelopeGeometryLAZ = leftGeometryLAZ.Envelope;
                         Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(envelopeGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(envelopeGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOEqualsExpression)
                     {
@@ -247,7 +223,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry intersectionGeometryLAZ = leftGeometryLAZ.Intersection(rightGeometryLAZ);
                         Geometry intersectionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(intersectionGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(intersectionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOIntersectsExpression)
                     {
@@ -301,7 +277,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry symDifferenceGeometryLAZ = leftGeometryLAZ.SymmetricDifference(rightGeometryLAZ);
                         Geometry symDifferenceGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(symDifferenceGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(symDifferenceGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOTouchesExpression)
                     {
@@ -311,7 +287,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                     {
                         Geometry unionGeometryLAZ = leftGeometryLAZ.Union(rightGeometryLAZ);
                         Geometry unionGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(unionGeometryLAZ);
-                        expressionResult = new RDFTypedLiteral(WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+                        expressionResult = new RDFTypedLiteral(GEOSpatialHelper.WKTWriter.Write(unionGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                     }
                     else if (this is GEOWithinExpression)
                     {

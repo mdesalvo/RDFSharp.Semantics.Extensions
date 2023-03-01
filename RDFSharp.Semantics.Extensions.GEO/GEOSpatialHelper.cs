@@ -15,6 +15,8 @@
 */
 
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using NetTopologySuite.IO.GML2;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
@@ -28,6 +30,26 @@ namespace RDFSharp.Semantics.Extensions.GEO
     public class GEOSpatialHelper
     {
         #region Properties
+        /// <summary>
+        /// Reader for WKT spatial representation
+        /// </summary>
+        internal static WKTReader WKTReader = new WKTReader();
+
+        /// <summary>
+        /// Writer for WKT spatial representation
+        /// </summary>
+        internal static WKTWriter WKTWriter = new WKTWriter();
+
+        /// <summary>
+        /// Reader for GML spatial representation
+        /// </summary>
+        internal static GMLReader GMLReader = new GMLReader();
+
+        /// <summary>
+        /// Writer for GML spatial representation
+        /// </summary>
+        internal static GMLWriter GMLWriter = new GMLWriter();
+
         /// <summary>
         /// The wrapped ontology on which performing spatial analysis
         /// </summary>
@@ -129,6 +151,39 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             //Give null in case area could not be calculated (no available geometries)
             return featureArea == double.MinValue ? null : featureArea;
+        }
+
+        /// <summary>
+        /// Calculates geof:boundary of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetBoundaryOfFeature(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get geof:boundary of feature because given \"featureUri\" parameter is null");
+
+            //Analyze default geometry of feature
+            (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+            {
+                Geometry boundaryGeometryAZ = defaultGeometryOfFeature.Item2.Boundary;
+                Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(boundaryGeometryAZ);
+                string wktBoundaryGeometryWGS84 = WKTWriter.Write(boundaryGeometryWGS84)
+                                                    .Replace("LINEARRING", "LINESTRING");
+                return new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            //Analyze secondary geometries of feature: if any, just work on the first available
+            List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (secondaryGeometriesOfFeature.Any())
+            {
+                Geometry boundaryGeometryAZ = secondaryGeometriesOfFeature.First().Item2.Boundary;
+                Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(boundaryGeometryAZ);
+                string wktBoundaryGeometryWGS84 = WKTWriter.Write(boundaryGeometryWGS84)
+                                                    .Replace("LINEARRING", "LINESTRING");
+                return new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            return null;
         }
 
         /// <summary>
