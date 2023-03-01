@@ -193,11 +193,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingWKTBoundaryOfFeatureBecauseNullLiteral()
+        public void ShouldThrowExceptionOnGettingBoundaryOfWKTFeatureBecauseNullLiteral()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(null as RDFTypedLiteral));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnGettingWKTBoundaryOfFeatureBecauseNotGeographicLiteral()
+        public void ShouldThrowExceptionOnGettingBoundaryOfWKTFeatureBecauseNotGeographicLiteral()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
@@ -234,7 +234,31 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingBufferAroundFeatureBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(null, 650));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(null as RDFResource, 650));
+
+        [TestMethod]
+        public void ShouldGetBufferAroundWKTFeature()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            RDFTypedLiteral milanCentreBuffer = spatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("POLYGON((9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), 5000);
+            RDFTypedLiteral brebemiBuffer = spatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("LINESTRING(9.16778508 45.46481222, 9.6118352 45.68014585, 10.21423284 45.54758259)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), 5000);
+            RDFTypedLiteral milanBuffer = spatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("POINT(9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), 5000);
+
+            Assert.IsNotNull(milanCentreBuffer);
+            Assert.IsTrue(milanCentreBuffer.Equals(new RDFTypedLiteral("POLYGON ((9.12167581 45.47166215, 9.12272511 45.48045166, 9.12585291 45.48881321, 9.13095057 45.49645448, 9.13784041 45.50310824, 9.14628183 45.50854175, 9.15597971 45.5125649, 9.16659471 45.51503687, 9.17775522 45.51587112, 9.18612951 45.51587156, 9.19854003 45.51486882, 9.21061331 45.51190188, 9.22184051 45.50709563, 9.23174866 45.50065245, 9.23992067 45.49284362, 9.24601291 45.48399789, 9.24976966 45.47448762, 9.25103377 45.46471308, 9.25102652 45.45655599, 9.24996149 45.44776617, 9.24682014 45.43940575, 9.24171298 45.43176688, 9.234819 45.42511643, 9.22637941 45.41968668, 9.2166891 45.41566723, 9.20608644 45.41319837, 9.19494141 45.41236626, 9.18657871 45.4123667, 9.17418592 45.41336954, 9.16212839 45.41633501, 9.15091245 45.42113841, 9.14100927 45.42757784, 9.1328352 45.43538264, 9.12673428 45.44422471, 9.12296373 45.4537323, 9.12168305 45.46350562, 9.12167581 45.47166215))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiBuffer);
+            Assert.IsTrue(brebemiBuffer.Equals(new RDFTypedLiteral("POLYGON ((9.57750259 45.7213073, 9.58820757 45.72531047, 9.59986996 45.72748624, 9.61201717 45.72774644, 9.62415683 45.72608045, 10.22695044 45.5934877, 10.23824673 45.59004725, 10.24861827 45.58497436, 10.25766599 45.57846416, 10.26504204 45.57076707, 10.27046316 45.56217912, 10.27372157 45.55303054, 10.27469286 45.54367306, 10.27334062 45.53446636, 10.26971773 45.52576421, 10.26396419 45.51790094, 10.25630159 45.51117854, 10.24702456 45.50585511, 10.2364894 45.50213501, 10.22510042 45.50016099, 10.21329451 45.50000875, 10.20152443 45.50168408, 9.62481345 45.62869051, 9.20220303 45.4237427, 9.19184348 45.41981076, 9.18056095 45.41760779, 9.16878828 45.41721828, 9.15697698 45.41865711, 9.14558001 45.42186899, 9.13503456 45.42673058, 9.12574534 45.43305522, 9.11806912 45.44060008, 9.11230103 45.44907545, 9.10866322 45.45815585, 9.10729626 45.46749248, 9.1082536 45.47672665, 9.11149935 45.48550347, 9.11690961 45.49348557, 9.12427699 45.50036604, 9.1333186 45.50588024, 9.57750259 45.7213073))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanBuffer);
+            Assert.IsTrue(milanBuffer.Equals(new RDFTypedLiteral("POLYGON ((9.22781127 45.46725521, 9.22811497 45.45791943, 9.22610039 45.44884908, 9.22184584 45.44039267, 9.21551552 45.43287506, 9.2073531 45.42658493, 9.1976723 45.4217638, 9.18684485 45.41859669, 9.17528622 45.41720513, 9.16343974 45.41764244, 9.15175974 45.41989179, 9.14069419 45.42386676, 9.13066764 45.42941474, 9.122065 45.43632272, 9.1152168 45.44432546, 9.11038653 45.45311564, 9.10776044 45.46235567, 9.10744029 45.4716906, 9.10943931 45.48076173, 9.11368159 45.48922043, 9.12000477 45.49674149, 9.12816629 45.5030357, 9.13785255 45.50786094, 9.14869099 45.51103154, 9.16026449 45.51242547, 9.17212743 45.511989, 9.18382298 45.50973888, 9.1949008 45.50576162, 9.20493449 45.50021018, 9.21353803 45.49329812, 9.22038077 45.48529128, 9.22520004 45.4764976, 9.22781127 45.46725521))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingBufferAroundWKTFeatureBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(null as RDFTypedLiteral, 20000));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingBufferAroundWKTFeatureBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL), 12000));
 
         [TestMethod]
         public void ShouldGetFeaturesNearPointFromWKT()

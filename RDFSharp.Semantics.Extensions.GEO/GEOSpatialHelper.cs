@@ -25,7 +25,7 @@ using System.Linq;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// SpatialHelper represents an helper for common spatial analysis on features
+    /// SpatialHelper represents an helper for spatial analysis on features
     /// </summary>
     public class GEOSpatialHelper
     {
@@ -154,7 +154,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
+        /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBoundaryOfFeature(RDFResource featureUri)
         {
@@ -187,7 +187,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates the boundaries of the given WKT feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
+        /// Calculates the boundaries of the given WKT feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBoundaryOfFeature(RDFTypedLiteral featureWKT)
         {
@@ -209,7 +209,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
+        /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBufferAroundFeature(RDFResource featureUri, double bufferMeters)
         {
@@ -237,6 +237,27 @@ namespace RDFSharp.Semantics.Extensions.GEO
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Calculates a buffer of the given meters on the given WKT feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetBufferAroundFeature(RDFTypedLiteral featureWKT, double bufferMeters)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get buffer around feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get buffer around feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            //Analyze geometry
+            Geometry bufferGeometryAZ = lazGeometry.Buffer(bufferMeters);
+            Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryAZ);
+            string wktBufferGeometryWGS84 = WKTWriter.Write(bufferGeometryWGS84);
+            return new RDFTypedLiteral(wktBufferGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
         }
 
         /// <summary>
