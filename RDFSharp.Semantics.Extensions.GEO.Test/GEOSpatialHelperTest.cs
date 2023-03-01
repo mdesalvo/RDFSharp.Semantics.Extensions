@@ -147,7 +147,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclareAreaFeature(new RDFResource("ex:milanCentreFeat"), new RDFResource("ex:milanCentreGeom"), new List<(double, double)>() {
                 (9.18217536, 45.46819347), (9.19054385, 45.46819347), (9.19054385, 45.46003666), (9.18217536, 45.46003666), (9.18217536, 45.46819347) }, true);
             geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom"), new List<(double, double)>() {
-                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, true);
+                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.16778508, 45.46481222), false);
             RDFTypedLiteral milanCentreBoundary = geoOntology.SpatialHelper.GetBoundaryOfFeature(new RDFResource("ex:milanCentreFeat"));
             RDFTypedLiteral brebemiBoundary = geoOntology.SpatialHelper.GetBoundaryOfFeature(new RDFResource("ex:brebemiFeat"));
