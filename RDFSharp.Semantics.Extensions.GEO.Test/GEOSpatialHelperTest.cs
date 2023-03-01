@@ -70,7 +70,47 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingDistanceBetweenFeaturesBecauseNullTo()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:from"), null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:from"), null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetDistanceBetweenWKTFeatures()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanDefGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanSecGeom"), (9.19193456, 45.46420722), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            double? milanTriesteDistance = geoOntology.SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //Trieste
+            double? romeTriesteDistance = geoOntology.SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:romeFeat"), new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //Trieste
+
+            Assert.IsTrue(milanTriesteDistance >= 380000 && milanTriesteDistance <= 3900000); //milan-trieste should be between 380km and 390km
+            Assert.IsTrue(romeTriesteDistance >= 410000 && romeTriesteDistance <= 4200000); //rome-trieste should be between 410km and 420km
+        }
+
+        [TestMethod]
+        public void ShouldNotGetDistanceBetweenWKTFeaturesBecauseMissingFromGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            double? milanTriesteDistance = geoOntology.SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //Trieste
+
+            Assert.IsNull(milanTriesteDistance);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenWKTFeaturesBecauseNullFrom()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(null, new RDFResource("ex:to")));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenWKTFeaturesBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenWKTFeaturesBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
         public void ShouldGetLengthOfFeature()
