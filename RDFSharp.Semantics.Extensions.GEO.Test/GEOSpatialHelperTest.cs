@@ -140,7 +140,6 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         public void ShouldThrowExceptionOnGettingAreaOfFeatureBecauseNullUri()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null));
 
-
         [TestMethod]
         public void ShouldGetBoundaryOfFeature()
         {
