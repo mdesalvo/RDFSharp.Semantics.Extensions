@@ -154,7 +154,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates geof:boundary of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBoundaryOfFeature(RDFResource featureUri)
         {
@@ -181,6 +181,37 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 string wktBoundaryGeometryWGS84 = WKTWriter.Write(boundaryGeometryWGS84)
                                                     .Replace("LINEARRING", "LINESTRING");
                 return new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetBufferAroundFeature(RDFResource featureUri, double bufferMeters)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get geof:buffer of feature because given \"featureUri\" parameter is null");
+
+            //Analyze default geometry of feature
+            (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+            {
+                Geometry bufferGeometryAZ = defaultGeometryOfFeature.Item2.Buffer(bufferMeters);
+                Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryAZ);
+                string wktBufferGeometryWGS84 = WKTWriter.Write(bufferGeometryWGS84);
+                return new RDFTypedLiteral(wktBufferGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            //Analyze secondary geometries of feature: if any, just work on the first available
+            List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (secondaryGeometriesOfFeature.Any())
+            {
+                Geometry bufferGeometryAZ = secondaryGeometriesOfFeature.First().Item2.Buffer(bufferMeters);
+                Geometry bufferGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryAZ);
+                string wktBufferGeometryWGS84 = WKTWriter.Write(bufferGeometryWGS84);
+                return new RDFTypedLiteral(wktBufferGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
             }
 
             return null;
