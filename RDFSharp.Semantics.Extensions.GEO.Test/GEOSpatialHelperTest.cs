@@ -181,6 +181,67 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null));
 
         [TestMethod]
+        public void ShouldGetCentroidOfFeature()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:milanCentreFeat"), new RDFResource("ex:milanCentreGeom"), new List<(double, double)>() {
+                (9.18217536, 45.46819347), (9.19054385, 45.46819347), (9.19054385, 45.46003666), (9.18217536, 45.46003666), (9.18217536, 45.46819347) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom"), new List<(double, double)>() {
+                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), 
+                (9.16778508, 45.46481222), false);
+            RDFTypedLiteral milanCentreCentroid = geoOntology.SpatialHelper.GetCentroidOfFeature(new RDFResource("ex:milanCentreFeat"));
+            RDFTypedLiteral brebemiCentroid = geoOntology.SpatialHelper.GetCentroidOfFeature(new RDFResource("ex:brebemiFeat"));
+            RDFTypedLiteral milanCentroid = geoOntology.SpatialHelper.GetCentroidOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNotNull(milanCentreCentroid);
+            Assert.IsTrue(milanCentreCentroid.Equals(new RDFTypedLiteral("POINT (9.18635964 45.46411499)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiCentroid);
+            Assert.IsTrue(brebemiCentroid.Equals(new RDFTypedLiteral("POINT (9.66872097 45.59479136)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanCentroid);
+            Assert.IsTrue(milanCentroid.Equals(new RDFTypedLiteral("POINT (9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetCentroidOfFeatureBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            RDFTypedLiteral milanCentroid = geoOntology.SpatialHelper.GetCentroidOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNull(milanCentroid);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingCentroidOfFeatureBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetCentroidOfFeature(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetCentroidOfWKTFeature()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            RDFTypedLiteral milanCentreCentroid = spatialHelper.GetCentroidOfFeature(new RDFTypedLiteral("POLYGON((9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral brebemiCentroid = spatialHelper.GetCentroidOfFeature(new RDFTypedLiteral("LINESTRING(9.16778508 45.46481222, 9.6118352 45.68014585, 10.21423284 45.54758259)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral milanCentroid = spatialHelper.GetCentroidOfFeature(new RDFTypedLiteral("POINT(9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(milanCentreCentroid);
+            Assert.IsTrue(milanCentreCentroid.Equals(new RDFTypedLiteral("POINT (9.18635964 45.46411499)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiCentroid);
+            Assert.IsTrue(brebemiCentroid.Equals(new RDFTypedLiteral("POINT (9.66872097 45.59479136)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanCentroid);
+            Assert.IsTrue(milanCentroid.Equals(new RDFTypedLiteral("POINT (9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingCentroidOfWKTFeatureBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetCentroidOfFeature(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingCentroidOfWKTFeatureBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetCentroidOfFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
         public void ShouldGetBoundaryOfFeature()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
