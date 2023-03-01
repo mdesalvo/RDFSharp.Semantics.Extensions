@@ -148,12 +148,12 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNearPoint((12.496365, 41.902782), 100000); //100km around Rome (DefGeom)
+            List<RDFResource> featuresNearPoint = geoOntology.SpatialHelper.GetFeaturesNearPoint((12.496365, 41.902782), 100000); //100km around Rome (DefGeom)
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 2);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+            Assert.IsNotNull(featuresNearPoint);
+            Assert.IsTrue(featuresNearPoint.Count == 2);
+            Assert.IsTrue(featuresNearPoint.Any(ft => ft.Equals(new RDFResource("ex:romeFeat"))));
+            Assert.IsTrue(featuresNearPoint.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
         }
 
         [TestMethod]
@@ -165,11 +165,11 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
             geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
             geoOntology.Data.ABoxGraph.RemoveTriplesByPredicate(RDFVocabulary.GEOSPARQL.AS_WKT);
-            List<RDFResource> featuresWithin100KmFromRome = geoOntology.SpatialHelper.GetFeaturesNearPoint((9.06462722, 45.47551406), 10000); //10Km around Settimo Milanese
+            List<RDFResource> featuresNearPoint = geoOntology.SpatialHelper.GetFeaturesNearPoint((9.15513558, 45.46777408), 10000); //10Km around Milan De Angeli
 
-            Assert.IsNotNull(featuresWithin100KmFromRome);
-            Assert.IsTrue(featuresWithin100KmFromRome.Count == 1);
-            Assert.IsTrue(featuresWithin100KmFromRome.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
+            Assert.IsNotNull(featuresNearPoint);
+            Assert.IsTrue(featuresNearPoint.Count == 1);
+            Assert.IsTrue(featuresNearPoint.Any(ft => ft.Equals(new RDFResource("ex:milanFeat"))));
         }
 
         [TestMethod]

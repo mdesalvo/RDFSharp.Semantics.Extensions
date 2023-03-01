@@ -144,13 +144,14 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Create WGS84 geometry from given center of search
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
-            //Create UTM geometry from given center of search
+            //Create Lambert Azimuthal geometry from given center of search
             Geometry lazSearchPoint = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
-            //Perform spatial analysis between collected geometries: iterate geometries and collect those within given radius
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those within given radius
             List<RDFResource> featuresNearPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
                 if (featureWithGeometry.Item3.IsWithinDistance(lazSearchPoint, radiusMeters))
@@ -176,10 +177,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
-            //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes higher than given point
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those having latitudes higher than given point
             List<RDFResource> featuresNorthOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.Y > wgs84SearchPoint.Coordinate.Y))
+                if (featureWithGeometry.Item2.Coordinates.Any(c => c.Y > wgs84SearchPoint.Coordinate.Y))
                     featuresNorthOfPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -202,10 +204,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
-            //Perform spatial analysis between collected geometries: iterate geometries and collect those having longitudes greater than given point
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those having longitudes greater than given point
             List<RDFResource> featuresEastOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.X > wgs84SearchPoint.Coordinate.X))
+                if (featureWithGeometry.Item2.Coordinates.Any(c => c.X > wgs84SearchPoint.Coordinate.X))
                     featuresEastOfPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -228,10 +231,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
-            //Perform spatial analysis between collected geometries: iterate geometries and collect those having longitudes lower than given point
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those having longitudes lower than given point
             List<RDFResource> featuresWestOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item2.Coordinates.Any(coordinate => coordinate.X < wgs84SearchPoint.Coordinate.X))
+                if (featureWithGeometry.Item2.Coordinates.Any(c => c.X < wgs84SearchPoint.Coordinate.X))
                     featuresWestOfPoint.Add(featureWithGeometry.Item1);
             });
 
@@ -254,10 +258,11 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
 
-            //Perform spatial analysis between collected geometries: iterate geometries and collect those having latitudes lower than given point
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those having latitudes lower than given point
             List<RDFResource> featuresSouthOfPoint = new List<RDFResource>();
             featuresWithGeometry.ForEach(featureWithGeometry => {
-                if (featureWithGeometry.Item3.Coordinates.Any(coordinate => coordinate.Y < wgs84SearchPoint.Coordinate.Y))
+                if (featureWithGeometry.Item2.Coordinates.Any(c => c.Y < wgs84SearchPoint.Coordinate.Y))
                     featuresSouthOfPoint.Add(featureWithGeometry.Item1);
             });
 
