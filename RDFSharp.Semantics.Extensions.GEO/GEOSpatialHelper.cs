@@ -65,6 +65,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
         #endregion
 
         #region Methods
+
+        #region Distance
         /// <summary>
         /// Gets the distance, expressed in meters, between the given features
         /// </summary>
@@ -100,7 +102,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Give null in case distance could not be calculated (no available geometries from any sides)
             return featuresDistance == double.MaxValue ? null : featuresDistance;
         }
+        #endregion
 
+        #region Measure
         /// <summary>
         /// Gets the length, expressed in meters, of the given feature (the perimeter in case of area)
         /// </summary>
@@ -152,7 +156,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Give null in case area could not be calculated (no available geometries)
             return featureArea == double.MinValue ? null : featureArea;
         }
+        #endregion
 
+        #region Boundary
         /// <summary>
         /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
@@ -207,7 +213,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
                                                 .Replace("LINEARRING", "LINESTRING");
             return new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
         }
+        #endregion
 
+        #region Buffer
         /// <summary>
         /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
         /// </summary>
@@ -259,7 +267,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
             string wktBufferGeometryWGS84 = WKTWriter.Write(bufferGeometryWGS84);
             return new RDFTypedLiteral(wktBufferGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
         }
+        #endregion
 
+        #region Proximity
         /// <summary>
         /// Gets the features near the given WGS84 Lon/Lat point within a radius of given meters 
         /// </summary>
@@ -289,7 +299,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             return RDFQueryUtilities.RemoveDuplicates(featuresNearPoint);
         }
+        #endregion
 
+        #region Direction
         /// <summary>
         /// Gets the features located north of the given WGS84 Lon/Lat point
         /// </summary>
@@ -397,7 +409,9 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             return RDFQueryUtilities.RemoveDuplicates(featuresSouthOfPoint);
         }
+        #endregion
 
+        #region Box
         /// <summary>
         /// Gets the features inside the given box represented by WGS84 Lon/Lat (lower-left, upper-right) corner points
         /// </summary>
@@ -485,6 +499,8 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             return RDFQueryUtilities.RemoveDuplicates(featuresOutsideBox);
         }
+        #endregion
+
         #endregion
     }
 }
