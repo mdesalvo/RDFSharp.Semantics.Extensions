@@ -174,7 +174,31 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingBoundaryOfFeatureBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetBoundaryOfWKTFeature()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            RDFTypedLiteral milanCentreBoundary = spatialHelper.GetBoundaryOfFeature(new RDFTypedLiteral("POLYGON((9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral brebemiBoundary = spatialHelper.GetBoundaryOfFeature(new RDFTypedLiteral("LINESTRING(9.16778508 45.46481222, 9.6118352 45.68014585, 10.21423284 45.54758259)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral milanBoundary = spatialHelper.GetBoundaryOfFeature(new RDFTypedLiteral("POINT(9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(milanCentreBoundary);
+            Assert.IsTrue(milanCentreBoundary.Equals(new RDFTypedLiteral("LINESTRING (9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiBoundary);
+            Assert.IsTrue(brebemiBoundary.Equals(new RDFTypedLiteral("MULTIPOINT ((9.16778508 45.46481222), (10.21423284 45.54758259))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanBoundary);
+            Assert.IsTrue(milanBoundary.Equals(new RDFTypedLiteral("GEOMETRYCOLLECTION EMPTY", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingWKTBoundaryOfFeatureBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingWKTBoundaryOfFeatureBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBoundaryOfFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
         public void ShouldGetBufferAroundFeature()

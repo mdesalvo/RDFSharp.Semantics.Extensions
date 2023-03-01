@@ -154,14 +154,14 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// Calculates the boundaries of the given feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBoundaryOfFeature(RDFResource featureUri)
         {
             if (featureUri == null)
-                throw new OWLSemanticsException("Cannot get geof:boundary of feature because given \"featureUri\" parameter is null");
+                throw new OWLSemanticsException("Cannot get boundary of feature because given \"featureUri\" parameter is null");
 
-            //Analyze default geometry of feature
+            //Analyze default wgs84Geometry of feature
             (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
             {
@@ -187,14 +187,36 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
-        /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// Calculates the boundaries of the given WKT feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetBoundaryOfFeature(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get boundary of feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get boundary of feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            //Analyze geometry
+            Geometry boundaryGeometryAZ = lazGeometry.Boundary;
+            Geometry boundaryGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(boundaryGeometryAZ);
+            string wktBoundaryGeometryWGS84 = WKTWriter.Write(boundaryGeometryWGS84)
+                                                .Replace("LINEARRING", "LINESTRING");
+            return new RDFTypedLiteral(wktBoundaryGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+        }
+
+        /// <summary>
+        /// Calculates a buffer of the given meters on the given feature, giving a WGS84 Lon/Lat wgs84Geometry expressed as WKT typed literal
         /// </summary>
         public RDFTypedLiteral GetBufferAroundFeature(RDFResource featureUri, double bufferMeters)
         {
             if (featureUri == null)
-                throw new OWLSemanticsException("Cannot get geof:buffer of feature because given \"featureUri\" parameter is null");
+                throw new OWLSemanticsException("Cannot get buffer around feature because given \"featureUri\" parameter is null");
 
-            //Analyze default geometry of feature
+            //Analyze default wgs84Geometry of feature
             (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
             {
@@ -227,10 +249,10 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features near point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
-            //Create WGS84 geometry from given center of search
+            //Create WGS84 wgs84Geometry from given center of search
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
-            //Create Lambert Azimuthal geometry from given center of search
+            //Create Lambert Azimuthal wgs84Geometry from given center of search
             Geometry lazSearchPoint = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchPoint);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -257,7 +279,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features north of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
-            //Create WGS84 geometry from given point
+            //Create WGS84 wgs84Geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -284,7 +306,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features east of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
-            //Create WGS84 geometry from given point
+            //Create WGS84 wgs84Geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -311,7 +333,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features west of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
-            //Create WGS84 geometry from given point
+            //Create WGS84 wgs84Geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -338,7 +360,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat.Item2 < -90 || wgs84LonLat.Item2 > 90)
                 throw new OWLSemanticsException("Cannot get features south of point because given \"wgs84LonLat\" parameter has not a valid latitude for WGS84");
 
-            //Create WGS84 geometry from given point
+            //Create WGS84 wgs84Geometry from given point
             Geometry wgs84SearchPoint = new Point(wgs84LonLat.Item1, wgs84LonLat.Item2) { SRID = 4326 };
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -373,7 +395,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat_LowerLeft.Item2 >= wgs84LonLat_UpperRight.Item2)
                 throw new OWLSemanticsException("Cannot get features within box because given \"wgs84LatMin\" parameter must be lower than given \"wgs84LatMax\" parameter");
 
-            //Create WGS84 geometry from given box corners
+            //Create WGS84 wgs84Geometry from given box corners
             Geometry wgs84SearchBox = new Polygon(new LinearRing(new Coordinate[] {
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2),
                 new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_LowerLeft.Item2),
@@ -382,7 +404,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
             })) { SRID = 4326 };
 
-            //Create Lambert Azimuthal geometry from given box corners
+            //Create Lambert Azimuthal wgs84Geometry from given box corners
             Geometry lazSearchBox = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
@@ -417,7 +439,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             if (wgs84LonLat_LowerLeft.Item2 >= wgs84LonLat_UpperRight.Item2)
                 throw new OWLSemanticsException("Cannot get features outside box because given \"wgs84LatMin\" parameter must be lower than given \"wgs84LatMax\" parameter");
 
-            //Create WGS84 geometry from given box corners
+            //Create WGS84 wgs84Geometry from given box corners
             Geometry wgs84SearchBox = new Polygon(new LinearRing(new Coordinate[] {
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2),
                 new Coordinate(wgs84LonLat_UpperRight.Item1, wgs84LonLat_LowerLeft.Item2),
@@ -426,7 +448,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
                 new Coordinate(wgs84LonLat_LowerLeft.Item1, wgs84LonLat_LowerLeft.Item2)
             })) { SRID = 4326 };
 
-            //Create Lambert Azimuthal geometry from given box corners
+            //Create Lambert Azimuthal wgs84Geometry from given box corners
             Geometry lazSearchBox = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84SearchBox);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
