@@ -167,6 +167,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
+        /// Gets the length, expressed in meters, of the given WKT feature (the perimeter in case of area)
+        /// </summary>
+        public double? GetLengthOfFeature(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get length of feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get length of feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            wgs84Geometry.SRID = 4326;
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            return lazGeometry.Length;
+        }
+
+        /// <summary>
         /// Gets the area, expressed in square meters, of the given feature
         /// </summary>
         public double? GetAreaOfFeature(RDFResource featureUri)
