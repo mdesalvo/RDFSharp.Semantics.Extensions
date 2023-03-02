@@ -141,7 +141,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the distance, expressed in meters, between the given WKT features
         /// </summary>
-        public double? GetDistanceBetweenFeatures(RDFTypedLiteral fromFeatureWKT, RDFTypedLiteral toFeatureWKT)
+        public double GetDistanceBetweenFeatures(RDFTypedLiteral fromFeatureWKT, RDFTypedLiteral toFeatureWKT)
         {
             if (fromFeatureWKT == null)
                 throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureWKT\" parameter is null");
@@ -197,7 +197,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the length, expressed in meters, of the given WKT feature (the perimeter in case of area)
         /// </summary>
-        public double? GetLengthOfFeature(RDFTypedLiteral featureWKT)
+        public double GetLengthOfFeature(RDFTypedLiteral featureWKT)
         {
             if (featureWKT == null)
                 throw new OWLSemanticsException("Cannot get length of feature because given \"featureWKT\" parameter is null");
@@ -241,7 +241,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
         /// <summary>
         /// Gets the area, expressed in square meters, of the given WKT feature
         /// </summary>
-        public double? GetAreaOfFeature(RDFTypedLiteral featureWKT)
+        public double GetAreaOfFeature(RDFTypedLiteral featureWKT)
         {
             if (featureWKT == null)
                 throw new OWLSemanticsException("Cannot get area of feature because given \"featureWKT\" parameter is null");
