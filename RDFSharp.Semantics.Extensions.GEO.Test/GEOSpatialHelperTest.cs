@@ -158,7 +158,7 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
             Assert.IsTrue(Math.Round(milanCentreLength.Value, 2) == 3102.63);
             Assert.IsTrue(Math.Round(brebemiLength.Value, 2) == 95357.31);
-            Assert.IsTrue(Math.Round(milanLength.Value) == 0);
+            Assert.IsTrue(milanLength.Value == 0);
         }
 
         [TestMethod]
@@ -200,7 +200,28 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingAreaOfFeatureBecauseNullUri()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetAreaOfWKTFeature()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            double? milanCentreArea = spatialHelper.GetAreaOfFeature(new RDFTypedLiteral("POLYGON((9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            double? brebemiArea = spatialHelper.GetAreaOfFeature(new RDFTypedLiteral("LINESTRING(9.16778508 45.46481222, 9.6118352 45.68014585, 10.21423284 45.54758259)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            double? milanArea = spatialHelper.GetAreaOfFeature(new RDFTypedLiteral("POINT(9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsTrue(Math.Round(milanCentreArea.Value, 2) == 593322.27);
+            Assert.IsTrue(brebemiArea.Value == 0);
+            Assert.IsTrue(milanArea.Value == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingAreaOfWKTFeatureBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingAreaOfWKTFeatureBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetAreaOfFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
         public void ShouldGetCentroidOfFeature()
