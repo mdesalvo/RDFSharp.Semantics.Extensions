@@ -114,6 +114,39 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFResource("ex:milanFeat"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
+        public void ShouldGetDistanceBetweenAllWKTFeatures()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            double? milanTriesteDistance = spatialHelper.GetDistanceBetweenFeatures(new RDFTypedLiteral("POINT(9.188540 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                                                                                    new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //Milan-Trieste
+            double? romeTriesteDistance = spatialHelper.GetDistanceBetweenFeatures(new RDFTypedLiteral("POINT(12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                                                                                   new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //Rome-Trieste
+
+            Assert.IsTrue(Math.Round(milanTriesteDistance.Value, 2) == 381798.39);
+            Assert.IsTrue(Math.Round(romeTriesteDistance.Value, 2) == 413508.13);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenAllWKTFeaturesBecauseNullFrom()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(null as RDFTypedLiteral,
+                                                                                                                                         new RDFTypedLiteral("POINT(9.188540 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenAllWKTFeaturesBecauseNotGeographicLiteralFrom()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL),
+                                                                                                                                         new RDFTypedLiteral("POINT(9.188540 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenAllWKTFeaturesBecauseNullTo()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFTypedLiteral("POINT(9.188540 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                                                                                                                                         null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingDistanceBetweenAllWKTFeaturesBecauseNotGeographicLiteralTo()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetDistanceBetweenFeatures(new RDFTypedLiteral("POINT(9.188540 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT),
+                                                                                                                                         new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
         public void ShouldGetLengthOfFeature()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
