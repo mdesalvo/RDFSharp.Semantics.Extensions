@@ -137,6 +137,34 @@ namespace RDFSharp.Semantics.Extensions.GEO
             //Give null in case distance could not be calculated (no available geometries)
             return featuresDistance == double.MaxValue ? null : featuresDistance;
         }
+
+        /// <summary>
+        /// Gets the distance, expressed in meters, between the given WKT features
+        /// </summary>
+        public double GetDistanceBetweenFeatures(RDFTypedLiteral fromFeatureWKT, RDFTypedLiteral toFeatureWKT)
+        {
+            if (fromFeatureWKT == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureWKT\" parameter is null");
+            if (!fromFeatureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get distance between features because given \"fromFeatureWKT\" parameter is not a WKT literal");
+            if (toFeatureWKT == null)
+                throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureWKT\" parameter is null");
+            if (!toFeatureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get distance between features because given \"toFeatureWKT\" parameter is not a WKT literal");
+
+            //Transform "From" feature into geometry
+            Geometry wgs84GeometryFrom = WKTReader.Read(fromFeatureWKT.Value);
+            wgs84GeometryFrom.SRID = 4326;
+            Geometry lazGeometryFrom = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84GeometryFrom);
+
+            //Transform "To" feature into geometry
+            Geometry wgs84GeometryTo = WKTReader.Read(toFeatureWKT.Value);
+            wgs84GeometryTo.SRID = 4326;
+            Geometry lazGeometryTo = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84GeometryTo);
+
+            //Perform spatial analysis between geometries
+            return lazGeometryFrom.Distance(lazGeometryTo);
+        }
         #endregion
 
         #region Measure
@@ -167,6 +195,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
 
         /// <summary>
+        /// Gets the length, expressed in meters, of the given WKT feature (the perimeter in case of area)
+        /// </summary>
+        public double GetLengthOfFeature(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get length of feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get length of feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            wgs84Geometry.SRID = 4326;
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            return lazGeometry.Length;
+        }
+
+        /// <summary>
         /// Gets the area, expressed in square meters, of the given feature
         /// </summary>
         public double? GetAreaOfFeature(RDFResource featureUri)
@@ -190,6 +236,24 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
             //Give null in case area could not be calculated (no available geometries)
             return featureArea == double.MinValue ? null : featureArea;
+        }
+
+        /// <summary>
+        /// Gets the area, expressed in square meters, of the given WKT feature
+        /// </summary>
+        public double GetAreaOfFeature(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get area of feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get area of feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            wgs84Geometry.SRID = 4326;
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            return lazGeometry.Area;
         }
         #endregion
 
