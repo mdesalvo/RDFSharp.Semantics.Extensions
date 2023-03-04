@@ -1,6 +1,7 @@
 ﻿/*
    Copyright 2012-2023 Marco De Salvo
 
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -426,6 +427,41 @@ namespace RDFSharp.Semantics.Extensions.GEO
         #endregion
 
         #region Proximity
+        /// <summary>
+        /// Gets the features near the given feature within a radius of given meters 
+        /// </summary>
+        public List<RDFResource> GetFeaturesNearBy(RDFResource featureUri, double radiusMeters)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get features nearby because given \"featureUri\" parameter is null");
+
+            //Get centroid of feature
+            RDFTypedLiteral centroidOfFeature = GetCentroidOfFeature(featureUri);
+            if (centroidOfFeature == null)
+                return null;
+
+            //Create WGS84 geometry from centroid of feature
+            Geometry wgs84CentroidOfFeature = WKTReader.Read(centroidOfFeature.Value);
+            wgs84CentroidOfFeature.SRID = 4326;
+
+            //Create Lambert Azimuthal geometry from centroid of feature
+            Geometry lazCentroidOfFeature = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84CentroidOfFeature);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries()
+                .Where(ft => !ft.Item1.Equals(featureUri)).ToList();
+
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those within given radius
+            List<RDFResource> featuresNearBy = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (featureWithGeometry.Item3.IsWithinDistance(lazCentroidOfFeature, radiusMeters))
+                    featuresNearBy.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresNearBy);
+        }
+
         /// <summary>
         /// Gets the features near the given WGS84 Lon/Lat point within a radius of given meters 
         /// </summary>

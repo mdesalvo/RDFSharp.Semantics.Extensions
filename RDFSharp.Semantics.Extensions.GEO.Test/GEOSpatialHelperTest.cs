@@ -438,6 +438,50 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL), 12000));
 
         [TestMethod]
+        public void ShouldGetFeaturesNearBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresNearBy = geoOntology.SpatialHelper.GetFeaturesNearBy(new RDFResource("ex:romeFeat"), 100000); //100km around Rome
+
+            Assert.IsNotNull(featuresNearBy);
+            Assert.IsTrue(featuresNearBy.Count == 1);
+            Assert.IsTrue(featuresNearBy.Any(ft => ft.Equals(new RDFResource("ex:tivoliFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesNearBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.188540, 45.464664), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeDefGeom"), (12.496365, 41.902782), true);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:romeFeat"), new RDFResource("ex:romeSecGeom"), (12.49221871, 41.89033014), false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:tivoliFeat"), new RDFResource("ex:tivoliDefGeom"), (12.79938661, 41.96217718), true);
+            List<RDFResource> featuresNearBy = geoOntology.SpatialHelper.GetFeaturesNearBy(new RDFResource("ex:milanFeat"), 20000); //20km around Milan
+
+            Assert.IsNotNull(featuresNearBy);
+            Assert.IsTrue(featuresNearBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesNearByBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresNearBy = geoOntology.SpatialHelper.GetFeaturesNearBy(new RDFResource("ex:milanFeat"), 20000); //20km around Milan
+
+            Assert.IsNull(featuresNearBy);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesNearByBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesNearBy(null, 1000));
+
+        [TestMethod]
         public void ShouldGetFeaturesNearPointFromWKT()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
