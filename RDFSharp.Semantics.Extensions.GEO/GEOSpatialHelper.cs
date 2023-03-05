@@ -67,39 +67,6 @@ namespace RDFSharp.Semantics.Extensions.GEO
 
         #region Methods
 
-        #region Coordinates
-        /// <summary>
-        /// Gets the WGS84 Lon/Lat coordinates of the given feature
-        /// </summary>
-        public List<(double,double)> GetWGS84CoordinatesOfFeature(RDFTypedLiteral featureWKT)
-        {
-            if (featureWKT == null)
-                throw new OWLSemanticsException("Cannot get WGS84 coordinates of WKT feature because given \"featureWKT\" parameter is null");
-
-            //Transform feature into geometry
-            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
-            wgs84Geometry.SRID = 4326;
-
-            return wgs84Geometry.Coordinates.Select(c => (c.X, c.Y)).ToList();
-        }
-
-        /// <summary>
-        /// Gets the Lambert Azimuthal (EPSG:42106) coordinates of the given WGS84 Lon/Lat feature
-        /// </summary>
-        public List<(double,double)> GetLambertAzimuthalCoordinatesOfFeature(RDFTypedLiteral featureWKT)
-        {
-            if (featureWKT == null)
-                throw new OWLSemanticsException("Cannot get Lambert Azimuthal coordinates of WKT feature because given \"featureWKT\" parameter is null");
-
-            //Transform feature into geometry
-            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
-            wgs84Geometry.SRID = 4326;
-            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
-
-            return lazGeometry.Coordinates.Select(c => (c.X, c.Y)).ToList();
-        }
-        #endregion
-
         #region Distance
         /// <summary>
         /// Gets the distance, expressed in meters, between the given features

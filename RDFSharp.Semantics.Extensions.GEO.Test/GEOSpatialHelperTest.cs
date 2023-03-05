@@ -27,36 +27,6 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
     {
         #region Tests
         [TestMethod]
-        public void ShouldGetWGS84CoordinatesOfFeature()
-        {
-            RDFTypedLiteral milanFeat = new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
-            List<(double,double)> milanGeomCoords = new GEOOntology("ex:geoOnt").SpatialHelper.GetWGS84CoordinatesOfFeature(milanFeat);
-
-            Assert.IsNotNull(milanGeomCoords);
-            Assert.IsTrue(milanGeomCoords.Count == 1);
-            Assert.IsTrue(milanGeomCoords[0] == (13.77197043,45.65248059));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnGettingWGS84CoordinatesOfFeatureBecauseNull()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetWGS84CoordinatesOfFeature(null));
-
-        [TestMethod]
-        public void ShouldGetLambertAzimuthalCoordinatesOfFeature()
-        {
-            RDFTypedLiteral milanFeat = new RDFTypedLiteral("POINT(13.77197043 45.65248059)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
-            List<(double, double)> milanGeomCoords = new GEOOntology("ex:geoOnt").SpatialHelper.GetLambertAzimuthalCoordinatesOfFeature(milanFeat);
-
-            Assert.IsNotNull(milanGeomCoords);
-            Assert.IsTrue(milanGeomCoords.Count == 1);
-            Assert.IsTrue(milanGeomCoords[0] == (-517392.39549372,4417783.11632051));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnGettingLambertAzimuthalCoordinatesOfFeatureBecauseNull()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetLambertAzimuthalCoordinatesOfFeature(null));
-
-        [TestMethod]
         public void ShouldGetDistanceBetweenFeatures()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
