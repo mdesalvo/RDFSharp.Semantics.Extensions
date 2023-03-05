@@ -1095,6 +1095,122 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesCrossedByWKTBecauseNotGeographicLiteral()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesCrossedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
+        public void ShouldGetFeaturesTouchedBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"), (10.090599060058592, 45.701863522304734), true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:IseoBiennoFeat"), new RDFResource("ex:IseoBiennoGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:IseoLevrangeFeat"), new RDFResource("ex:IseoLevrangeGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291),
+                (10.392609558105468, 45.73283147810295), (10.090599060058592, 45.701863522304734) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFResource("ex:IseoFeat"));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 2);
+            Assert.IsTrue(featuresTouchedBy.Any(ft => ft.Equals(new RDFResource("ex:IseoBiennoFeat"))));
+            Assert.IsTrue(featuresTouchedBy.Any(ft => ft.Equals(new RDFResource("ex:IseoLevrangeFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesTouchedBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:DomodossolaVerbaniaFeat"), new RDFResource("ex:DomodossolaVerbaniaGeom"), new List<(double, double)>() {
+                (8.287124633789062, 46.11703764257686), (8.561782836914062, 45.932050196856295) }, false);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:IseoBiennoFeat"), new RDFResource("ex:IseoBiennoGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:IseoLevrangeFeat"), new RDFResource("ex:IseoLevrangeGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291),
+                (10.392609558105468, 45.73283147810295), (10.090599060058592, 45.701863522304734) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFResource("ex:DomodossolaVerbaniaFeat"));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesTouchedByBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFResource("ex:poFeat"));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesTouchedByBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesTouchedBy(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetFeaturesTouchedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:IseoBiennoFeat"), new RDFResource("ex:IseoBiennoGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:IseoLevrangeFeat"), new RDFResource("ex:IseoLevrangeGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291),
+                (10.392609558105468, 45.73283147810295), (10.090599060058592, 45.701863522304734) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFTypedLiteral("POINT(10.090599060058592 45.701863522304734)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 2);
+            Assert.IsTrue(featuresTouchedBy.Any(ft => ft.Equals(new RDFResource("ex:IseoBiennoFeat"))));
+            Assert.IsTrue(featuresTouchedBy.Any(ft => ft.Equals(new RDFResource("ex:IseoLevrangeFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesTouchedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:IseoBiennoFeat"), new RDFResource("ex:IseoBiennoGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:IseoLevrangeFeat"), new RDFResource("ex:IseoLevrangeGeom"), new List<(double, double)>() {
+                (10.090599060058592, 45.701863522304734), (10.182609558105467, 45.89383147810295), (10.292609558105466, 45.93283147810291),
+                (10.392609558105468, 45.73283147810295), (10.090599060058592, 45.701863522304734) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFTypedLiteral("LINESTRING(8.287124633789062 46.11703764257686, " +
+                "8.561782836914062 45.932050196856295)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesTouchedByWKTBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresTouchedBy = geoOntology.SpatialHelper.GetFeaturesTouchedBy(new RDFTypedLiteral("POINT (9.15 45.15)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresTouchedBy);
+            Assert.IsTrue(featuresTouchedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesTouchedByWKTBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesTouchedBy(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesTouchedByWKTBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesTouchedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         #endregion
     }
 }
