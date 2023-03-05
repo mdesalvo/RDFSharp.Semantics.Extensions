@@ -1034,7 +1034,67 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
 
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesCrossedByBecauseNullFeature()
-            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesCrossedBy(null));
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesCrossedBy(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetFeaturesCrossedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:MontagnanaCentoFeat"), new RDFResource("ex:MontagnanaCentoGeom"), new List<(double, double)>() {
+                (11.492779242858825, 45.22633159406854), (11.514751899108825, 45.0539057320877), (11.448833930358825, 44.86538705476387),
+                (11.289532172546325, 44.734811449636325) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:NogaraPortoMaggioreFeat"), new RDFResource("ex:NogaraPortoMaggioreGeom"), new List<(double, double)>() {
+                (11.067059028015075, 45.17020515864295), (11.794903266296325, 45.06554633935097), (11.778423774108825, 44.68015498753276),
+                (10.710003363952575, 44.97818401794916), (11.067059028015075, 45.17020515864295) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresCrossedBy = geoOntology.SpatialHelper.GetFeaturesCrossedBy(new RDFTypedLiteral("LINESTRING(11.001141059265075 45.06554633935097, 11.058819281921325 45.036440377586516, " +
+                "11.127483832702575 45.05972633195962, 11.262066352233825 45.05002500301712, 11.421368110046325 44.960695556664774, 11.605389106140075 44.89068838827955, 11.814129340515075 44.97624111890936, " +
+                "12.069561469421325 44.98012685115769)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //PO river
+
+            Assert.IsNotNull(featuresCrossedBy);
+            Assert.IsTrue(featuresCrossedBy.Count == 2);
+            Assert.IsTrue(featuresCrossedBy.Any(ft => ft.Equals(new RDFResource("ex:MontagnanaCentoFeat"))));
+            Assert.IsTrue(featuresCrossedBy.Any(ft => ft.Equals(new RDFResource("ex:NogaraPortoMaggioreFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesCrossedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:MontagnanaCentoFeat"), new RDFResource("ex:MontagnanaCentoGeom"), new List<(double, double)>() {
+                (11.492779242858825, 45.22633159406854), (11.514751899108825, 45.0539057320877), (11.448833930358825, 44.86538705476387),
+                (11.289532172546325, 44.734811449636325) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:VeronaVillafrancaFeat"), new RDFResource("ex:VeronaVillafrancaGeom"), new List<(double, double)>() {
+                (11.270306098327575, 45.4078781070719), (10.992901313171325, 45.432939821462234), (10.866558539733825, 45.338418378714074),
+                (11.270306098327575, 45.4078781070719) }, false);
+            List<RDFResource> featuresCrossedBy = geoOntology.SpatialHelper.GetFeaturesCrossedBy(new RDFTypedLiteral("LINESTRING(10.177166449890075 45.53692325390463, 10.144207465515075 45.33648772403282," +
+                "10.388653266296325 45.201178314133756, 10.740215766296325 44.987897525678754)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)); //brescia-suzzara
+
+            Assert.IsNotNull(featuresCrossedBy);
+            Assert.IsTrue(featuresCrossedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesCrossedByWKTBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresCrossedBy = geoOntology.SpatialHelper.GetFeaturesCrossedBy(new RDFTypedLiteral("POINT (9.15 45.15)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresCrossedBy);
+            Assert.IsTrue(featuresCrossedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesCrossedByWKTBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesCrossedBy(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesCrossedByWKTBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesCrossedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         #endregion
     }
 }
