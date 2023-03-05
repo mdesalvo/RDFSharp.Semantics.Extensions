@@ -693,6 +693,39 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
         #endregion
 
+        #region Interaction
+        /// <summary>
+        /// Gets the features crossed by the given feature 
+        /// </summary>
+        public List<RDFResource> GetFeaturesCrossedBy(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get features crossed because given \"featureUri\" parameter is null");
+
+            //Collect geometries of feature
+            (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries()
+                .Where(ft => !ft.Item1.Equals(featureUri)).ToList();
+
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those crossed by given one
+            List<RDFResource> featuresCrossedBy = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                secondaryGeometriesOfFeature.ForEach(ftGeom => {
+                    if (ftGeom.Item2.Crosses(featureWithGeometry.Item3))
+                        featuresCrossedBy.Add(featureWithGeometry.Item1);
+                });
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresCrossedBy);
+        }
+        #endregion
+
         #endregion
     }
 }
