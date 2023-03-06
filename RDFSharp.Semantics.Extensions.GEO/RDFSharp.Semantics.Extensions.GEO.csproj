@@ -50,4 +50,7 @@
     <PackageReference Include="RDFSharp" Version="3.3.2" />
 	<PackageReference Include="RDFSharp.Semantics" Version="3.3.2" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reasoner\Rules\" />
+  </ItemGroup>
 </Project>

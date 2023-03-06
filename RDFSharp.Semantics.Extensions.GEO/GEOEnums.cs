@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using NetTopologySuite.Geometries;
-
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
@@ -99,6 +97,14 @@ namespace RDFSharp.Semantics.Extensions.GEO
             /// geosf:rcc8eq    -> geof:relate("TFFFTFFFT")
             /// </summary>
             RCC8EQ = 8
+        }
+    
+        /// <summary>
+        /// Represents an enumeration for the set of built-in geospatial reasoner rules
+        /// </summary>
+        public enum GEOSpatialReasonerRules
+        {
+
         }
     }
 }
