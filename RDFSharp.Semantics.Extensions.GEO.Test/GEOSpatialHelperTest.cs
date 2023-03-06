@@ -1385,6 +1385,119 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesOverlappedByWKTBecauseNotGeographicLiteral()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOverlappedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
+        public void ShouldGetFeaturesWithin()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioCivateFeat"), new RDFResource("ex:BallabioCivateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.346078615493791, 45.828624093492635), (9.455255251235979, 45.77932096932273),
+                (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioPescateFeat"), new RDFResource("ex:BallabioPescateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.392083864517229, 45.85254191756793), (9.346078615493791, 45.828624093492635),
+                (9.393457155532854, 45.82814563213719), (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:FornaciVillaFeat"), new RDFResource("ex:FornaciVillaGeom"), new List<(double, double)>() {
+                (9.370156172304162, 45.83948216157425), (9.390755537538537, 45.837807855535225) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFResource("ex:BallabioCivateFeat"));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 2);
+            Assert.IsTrue(featuresWithin.Any(ft => ft.Equals(new RDFResource("ex:BallabioPescateFeat"))));
+            Assert.IsTrue(featuresWithin.Any(ft => ft.Equals(new RDFResource("ex:FornaciVillaFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWithin()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:LaglioMoltrasioFeat"), new RDFResource("ex:LaglioMoltrasioGeom"), new List<(double, double)>() {
+                (9.138069990663537, 45.88108443556158), (9.101334455995568, 45.86196081911207), (9.128113630800256, 45.87343577859146),
+                (9.138069990663537, 45.88108443556158) }, false);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioPescateFeat"), new RDFResource("ex:BallabioPescateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.392083864517229, 45.85254191756793), (9.346078615493791, 45.828624093492635),
+                (9.393457155532854, 45.82814563213719), (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:FornaciVillaFeat"), new RDFResource("ex:FornaciVillaGeom"), new List<(double, double)>() {
+                (9.370156172304162, 45.83948216157425), (9.390755537538537, 45.837807855535225) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFResource("ex:LaglioMoltrasioFeat"));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWithinBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFResource("ex:poFeat"));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesWithinBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithin(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetFeaturesWithinWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioPescateFeat"), new RDFResource("ex:BallabioPescateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.392083864517229, 45.85254191756793), (9.346078615493791, 45.828624093492635),
+                (9.393457155532854, 45.82814563213719), (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:FornaciVillaFeat"), new RDFResource("ex:FornaciVillaGeom"), new List<(double, double)>() {
+                (9.370156172304162, 45.83948216157425), (9.390755537538537, 45.837807855535225) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFTypedLiteral("POLYGON((9.425042848892229 45.89413442236222," +
+                "9.346078615493791 45.828624093492635, 9.455255251235979 45.77932096932273,9.425042848892229 45.89413442236222))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 2);
+            Assert.IsTrue(featuresWithin.Any(ft => ft.Equals(new RDFResource("ex:BallabioPescateFeat"))));
+            Assert.IsTrue(featuresWithin.Any(ft => ft.Equals(new RDFResource("ex:FornaciVillaFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWithinWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareLineFeature(new RDFResource("ex:LeccoValseccaFeat"), new RDFResource("ex:LeccoValseccaGeom"), new List<(double, double)>() {
+                (9.406846742935198, 45.855650479509684), (9.435685854263323, 45.8271886970881), (9.475854616470354, 45.82694946075535) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFTypedLiteral("POLYGON((9.525979738540666 45.93092021340824," +
+                "9.461091738052385 45.94261967012623, 9.375604372329729 45.92709944804776,9.426416139907854 45.92136780653028, 9.525979738540666 45.93092021340824))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesWithinWKTBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresWithin = geoOntology.SpatialHelper.GetFeaturesWithin(new RDFTypedLiteral("POINT (9.15 45.15)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresWithin);
+            Assert.IsTrue(featuresWithin.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesWithinWKTBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithin(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesWithinWKTBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesWithin(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         #endregion
     }
 }
