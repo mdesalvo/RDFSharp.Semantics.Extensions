@@ -98,13 +98,5 @@ namespace RDFSharp.Semantics.Extensions.GEO
             /// </summary>
             RCC8EQ = 8
         }
-    
-        /// <summary>
-        /// Represents an enumeration for the set of built-in geospatial reasoner rules
-        /// </summary>
-        public enum GEOSpatialReasonerRules
-        {
-
-        }
     }
 }
