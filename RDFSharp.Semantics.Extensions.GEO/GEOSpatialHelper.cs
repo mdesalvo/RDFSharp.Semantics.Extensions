@@ -26,7 +26,7 @@ using System.Linq;
 namespace RDFSharp.Semantics.Extensions.GEO
 {
     /// <summary>
-    /// SpatialHelper represents an helper for spatial analysis on features
+    /// GEOSpatialHelper represents an helper for spatial analysis on features
     /// </summary>
     public class GEOSpatialHelper
     {
