@@ -438,6 +438,66 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetBufferAroundFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL), 12000));
 
         [TestMethod]
+        public void ShouldGetConvexHullOfFeature()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:milanCentreFeat"), new RDFResource("ex:milanCentreGeom"), new List<(double, double)>() {
+                (9.18217536, 45.46819347), (9.19054385, 45.46819347), (9.19054385, 45.46003666), (9.18217536, 45.46003666), (9.18217536, 45.46819347) }, true);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:brebemiFeat"), new RDFResource("ex:brebemiGeom"), new List<(double, double)>() {
+                (9.16778508, 45.46481222), (9.6118352, 45.68014585), (10.21423284, 45.54758259) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:milanFeat"), new RDFResource("ex:milanGeom"), (9.16778508, 45.46481222), false);
+            RDFTypedLiteral milanCentreConvexHull = geoOntology.SpatialHelper.GetConvexHullOfFeature(new RDFResource("ex:milanCentreFeat"));
+            RDFTypedLiteral brebemiConvexHull = geoOntology.SpatialHelper.GetConvexHullOfFeature(new RDFResource("ex:brebemiFeat"));
+            RDFTypedLiteral milanConvexHull = geoOntology.SpatialHelper.GetConvexHullOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNotNull(milanCentreConvexHull);
+            Assert.IsTrue(milanCentreConvexHull.Equals(new RDFTypedLiteral("POLYGON ((9.19054385 45.46003666, 9.19054385 45.46819347, 9.18217536 45.46819347, 9.18217536 45.46003666, 9.19054385 45.46003666))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiConvexHull);
+            Assert.IsTrue(brebemiConvexHull.Equals(new RDFTypedLiteral("POLYGON ((9.16778508 45.46481222, 10.21423284 45.54758259, 9.6118352 45.68014585, 9.16778508 45.46481222))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanConvexHull);
+            Assert.IsTrue(milanConvexHull.Equals(new RDFTypedLiteral("POINT (9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetConvexHullOfFeatureBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:milanFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:milanFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            RDFTypedLiteral milanConvexHull = geoOntology.SpatialHelper.GetConvexHullOfFeature(new RDFResource("ex:milanFeat"));
+
+            Assert.IsNull(milanConvexHull);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingConvexHullOfFeatureBecauseNullUri()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetConvexHullOfFeature(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetConvexHullOfWKTFeature()
+        {
+            GEOSpatialHelper spatialHelper = new GEOSpatialHelper(null);
+            RDFTypedLiteral milanCentreConvexHull = spatialHelper.GetConvexHullOfFeature(new RDFTypedLiteral("POLYGON((9.18217536 45.46819347, 9.19054385 45.46819347, 9.19054385 45.46003666, 9.18217536 45.46003666, 9.18217536 45.46819347))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral brebemiConvexHull = spatialHelper.GetConvexHullOfFeature(new RDFTypedLiteral("LINESTRING(9.16778508 45.46481222, 9.6118352 45.68014585, 10.21423284 45.54758259)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+            RDFTypedLiteral milanConvexHull = spatialHelper.GetConvexHullOfFeature(new RDFTypedLiteral("POINT(9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(milanCentreConvexHull);
+            Assert.IsTrue(milanCentreConvexHull.Equals(new RDFTypedLiteral("POLYGON ((9.19054385 45.46003666, 9.19054385 45.46819347, 9.18217536 45.46819347, 9.18217536 45.46003666, 9.19054385 45.46003666))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(brebemiConvexHull);
+            Assert.IsTrue(brebemiConvexHull.Equals(new RDFTypedLiteral("POLYGON ((9.16778508 45.46481222, 10.21423284 45.54758259, 9.6118352 45.68014585, 9.16778508 45.46481222))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+            Assert.IsNotNull(milanConvexHull);
+            Assert.IsTrue(milanConvexHull.Equals(new RDFTypedLiteral("POINT (9.16778508 45.46481222)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingConvexHullOfWKTFeatureBecauseNullLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetConvexHullOfFeature(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingConvexHullOfWKTFeatureBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetConvexHullOfFeature(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
         public void ShouldGetEnvelopeOfFeature()
         {
             GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
