@@ -181,7 +181,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
-                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+                secondaryGeometriesOfFeature.Insert(0, defaultGeometryOfFeature);
 
             //Perform spatial analysis between collected geometries (calibrate maximum length)
             double? featureLength = double.MinValue;
@@ -225,7 +225,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             (Geometry, Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             List<(Geometry, Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
-                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+                secondaryGeometriesOfFeature.Insert(0, defaultGeometryOfFeature);
 
             //Perform spatial analysis between collected geometries (calibrate maximum area)
             double? featureArea = double.MinValue;
@@ -762,7 +762,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
-                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+                secondaryGeometriesOfFeature.Insert(0, defaultGeometryOfFeature);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries()
@@ -822,7 +822,7 @@ namespace RDFSharp.Semantics.Extensions.GEO
             (Geometry,Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
             List<(Geometry,Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
             if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
-                secondaryGeometriesOfFeature.Add(defaultGeometryOfFeature);
+                secondaryGeometriesOfFeature.Insert(0, defaultGeometryOfFeature);
 
             //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
             List<(RDFResource,Geometry,Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries()
@@ -868,6 +868,66 @@ namespace RDFSharp.Semantics.Extensions.GEO
             });
 
             return RDFQueryUtilities.RemoveDuplicates(featuresTouchedBy);
+        }
+
+        /// <summary>
+        /// Gets the features overlapped by the given feature 
+        /// </summary>
+        public List<RDFResource> GetFeaturesOverlappedBy(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get features overlapped because given \"featureUri\" parameter is null");
+
+            //Collect geometries of feature
+            (Geometry, Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            List<(Geometry, Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+                secondaryGeometriesOfFeature.Insert(0, defaultGeometryOfFeature);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries()
+                .Where(ft => !ft.Item1.Equals(featureUri)).ToList();
+
+            //Perform spatial analysis between collected geometries:
+            //iterate geometries and collect those overlapped by given one
+            List<RDFResource> featuresOverlappedBy = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                secondaryGeometriesOfFeature.ForEach(ftGeom => {
+                    if (ftGeom.Item2.Overlaps(featureWithGeometry.Item3))
+                        featuresOverlappedBy.Add(featureWithGeometry.Item1);
+                });
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresOverlappedBy);
+        }
+
+        /// <summary>
+        /// Gets the features overlapped by the given WKT feature 
+        /// </summary>
+        public List<RDFResource> GetFeaturesOverlappedBy(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get features overlapped because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get features overlapped because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            wgs84Geometry.SRID = 4326;
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            //Execute SPARQL query to retrieve WKT/GML serialization of features having geometries
+            List<(RDFResource, Geometry, Geometry)> featuresWithGeometry = Ontology.GetFeaturesWithGeometries();
+
+            //Perform spatial analysis between retrieved geometries:
+            //iterate geometries and collect those overlapped by given one
+            List<RDFResource> featuresOverlappedBy = new List<RDFResource>();
+            featuresWithGeometry.ForEach(featureWithGeometry => {
+                if (lazGeometry.Overlaps(featureWithGeometry.Item3))
+                    featuresOverlappedBy.Add(featureWithGeometry.Item1);
+            });
+
+            return RDFQueryUtilities.RemoveDuplicates(featuresOverlappedBy);
         }
         #endregion
 

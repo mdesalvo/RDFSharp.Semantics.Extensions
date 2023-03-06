@@ -1271,6 +1271,120 @@ namespace RDFSharp.Semantics.Extensions.GEO.Test
         [TestMethod]
         public void ShouldThrowExceptionOnGettingFeaturesTouchedByWKTBecauseNotGeographicLiteral()
             => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesTouchedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
+        public void ShouldGetFeaturesOverlappedBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioCivateFeat"), new RDFResource("ex:BallabioCivateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.346078615493791, 45.828624093492635), (9.455255251235979, 45.77932096932273), 
+                (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:LaorcaVercuragoFeat"), new RDFResource("ex:LaorcaVercuragoGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.386934023208635, 45.87907866204932), (9.421609621353166, 45.81283269722657),
+                (9.425042848892229, 45.89413442236222) }, false);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:LeccoValseccaFeat"), new RDFResource("ex:LeccoValseccaGeom"), new List<(double, double)>() {
+                (9.406846742935198, 45.855650479509684), (9.435685854263323, 45.8271886970881), (9.475854616470354, 45.82694946075535) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"), 
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFResource("ex:BallabioCivateFeat"));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 1);
+            Assert.IsTrue(featuresOverlappedBy.Any(ft => ft.Equals(new RDFResource("ex:LaorcaVercuragoFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesOverlappedBy()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BallabioCivateFeat"), new RDFResource("ex:BallabioCivateGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.346078615493791, 45.828624093492635), (9.455255251235979, 45.77932096932273),
+                (9.425042848892229, 45.89413442236222) }, true);
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BorzioArtavaggioFeat"), new RDFResource("ex:BorzioArtavaggioGeom"), new List<(double, double)>() {
+                (9.525979738540666, 45.93092021340824), (9.461091738052385, 45.94261967012623), (9.375604372329729, 45.92709944804776), 
+                (9.426416139907854, 45.92136780653028), (9.525979738540666, 45.93092021340824) }, false);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:LeccoValseccaFeat"), new RDFResource("ex:LeccoValseccaGeom"), new List<(double, double)>() {
+                (9.406846742935198, 45.855650479509684), (9.435685854263323, 45.8271886970881), (9.475854616470354, 45.82694946075535) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFResource("ex:BallabioCivateFeat"));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesOverlappedByBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFResource("ex:poFeat"));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOverlappedByBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOverlappedBy(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldGetFeaturesOverlappedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:LaorcaVercuragoFeat"), new RDFResource("ex:LaorcaVercuragoGeom"), new List<(double, double)>() {
+                (9.425042848892229, 45.89413442236222), (9.386934023208635, 45.87907866204932), (9.421609621353166, 45.81283269722657),
+                (9.425042848892229, 45.89413442236222) }, false);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:LeccoValseccaFeat"), new RDFResource("ex:LeccoValseccaGeom"), new List<(double, double)>() {
+                (9.406846742935198, 45.855650479509684), (9.435685854263323, 45.8271886970881), (9.475854616470354, 45.82694946075535) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFTypedLiteral("POLYGON((9.425042848892229 45.89413442236222," +
+                "9.346078615493791 45.828624093492635, 9.455255251235979 45.77932096932273, 9.425042848892229 45.89413442236222))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 1);
+            Assert.IsTrue(featuresOverlappedBy.Any(ft => ft.Equals(new RDFResource("ex:LaorcaVercuragoFeat"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesOverlappedByWKT()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.DeclareAreaFeature(new RDFResource("ex:BorzioArtavaggioFeat"), new RDFResource("ex:BorzioArtavaggioGeom"), new List<(double, double)>() {
+                (9.525979738540666, 45.93092021340824), (9.461091738052385, 45.94261967012623), (9.375604372329729, 45.92709944804776),
+                (9.426416139907854, 45.92136780653028), (9.525979738540666, 45.93092021340824) }, false);
+            geoOntology.DeclareLineFeature(new RDFResource("ex:LeccoValseccaFeat"), new RDFResource("ex:LeccoValseccaGeom"), new List<(double, double)>() {
+                (9.406846742935198, 45.855650479509684), (9.435685854263323, 45.8271886970881), (9.475854616470354, 45.82694946075535) }, false);
+            geoOntology.DeclarePointFeature(new RDFResource("ex:IseoFeat"), new RDFResource("ex:IseoGeom"),
+                (10.090599060058592, 45.701863522304734), true);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFTypedLiteral("POLYGON((9.425042848892229 45.89413442236222," +
+                "9.346078615493791 45.828624093492635, 9.455255251235979 45.77932096932273, 9.425042848892229 45.89413442236222))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotGetFeaturesOverlappedByWKTBecauseMissingGeometries()
+        {
+            GEOOntology geoOntology = new GEOOntology("ex:geoOnt");
+            geoOntology.Data.DeclareIndividual(new RDFResource("ex:poFeat"));
+            geoOntology.Data.DeclareIndividualType(new RDFResource("ex:poFeat"), RDFVocabulary.GEOSPARQL.FEATURE);
+            List<RDFResource> featuresOverlappedBy = geoOntology.SpatialHelper.GetFeaturesOverlappedBy(new RDFTypedLiteral("POINT (9.15 45.15)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT));
+
+            Assert.IsNotNull(featuresOverlappedBy);
+            Assert.IsTrue(featuresOverlappedBy.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOverlappedByWKTBecauseNullFeature()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOverlappedBy(null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnGettingFeaturesOverlappedByWKTBecauseNotGeographicLiteral()
+            => Assert.ThrowsException<OWLSemanticsException>(() => new GEOOntology("ex:geoOnt").SpatialHelper.GetFeaturesOverlappedBy(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         #endregion
     }
 }
