@@ -426,6 +426,62 @@ namespace RDFSharp.Semantics.Extensions.GEO
         }
         #endregion
 
+        #region Envelope
+        /// <summary>
+        /// Calculates the envelope (bounding-box) of the given feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetEnvelopeOfFeature(RDFResource featureUri)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot get envelope of feature because given \"featureUri\" parameter is null");
+
+            //Analyze default geometry of feature
+            (Geometry, Geometry) defaultGeometryOfFeature = Ontology.GetDefaultGeometryOfFeature(featureUri);
+            if (defaultGeometryOfFeature.Item1 != null && defaultGeometryOfFeature.Item2 != null)
+            {
+                Geometry envelopeGeometryAZ = defaultGeometryOfFeature.Item2.Envelope;
+                Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(envelopeGeometryAZ);
+                string wktEnvelopeGeometryWGS84 = WKTWriter.Write(envelopeGeometryWGS84);
+                return new RDFTypedLiteral(wktEnvelopeGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            //Analyze secondary geometries of feature: if any, just work on the first available
+            List<(Geometry, Geometry)> secondaryGeometriesOfFeature = Ontology.GetSecondaryGeometriesOfFeature(featureUri);
+            if (secondaryGeometriesOfFeature.Any())
+            {
+                Geometry envelopeGeometryAZ = secondaryGeometriesOfFeature.First().Item2.Envelope;
+                Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(envelopeGeometryAZ);
+                string wktEnvelopeGeometryWGS84 = WKTWriter.Write(envelopeGeometryWGS84);
+                return new RDFTypedLiteral(wktEnvelopeGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Calculates the envelope (bounding-box) of the given WKT feature, giving a WGS84 Lon/Lat geometry expressed as WKT typed literal
+        /// </summary>
+        public RDFTypedLiteral GetEnvelopeOfFeature(RDFTypedLiteral featureWKT)
+        {
+            if (featureWKT == null)
+                throw new OWLSemanticsException("Cannot get envelope of feature because given \"featureWKT\" parameter is null");
+            if (!featureWKT.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT))
+                throw new OWLSemanticsException("Cannot get envelope of feature because given \"featureWKT\" parameter is not a WKT literal");
+
+            //Transform feature into geometry
+            Geometry wgs84Geometry = WKTReader.Read(featureWKT.Value);
+            wgs84Geometry.SRID = 4326;
+            Geometry lazGeometry = GEOConverter.GetLambertAzimuthalGeometryFromWGS84(wgs84Geometry);
+
+            //Analyze geometry
+            Geometry envelopeGeometryAZ = lazGeometry.Envelope;
+            Geometry envelopeGeometryWGS84 = GEOConverter.GetWGS84GeometryFromLambertAzimuthal(envelopeGeometryAZ);
+            string wktEnvelopeGeometryWGS84 = WKTWriter.Write(envelopeGeometryWGS84);
+            return new RDFTypedLiteral(wktEnvelopeGeometryWGS84, RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+        }
+
+        #endregion
+
         #region Proximity
         /// <summary>
         /// Gets the features near the given feature within a radius of given meters 

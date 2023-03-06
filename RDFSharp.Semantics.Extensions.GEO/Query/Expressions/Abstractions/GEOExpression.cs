@@ -15,9 +15,6 @@
 */
 
 using NetTopologySuite.Geometries;
-using NetTopologySuite.IO;
-using NetTopologySuite.IO.GML2;
-using NetTopologySuite.IO.GML3;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
