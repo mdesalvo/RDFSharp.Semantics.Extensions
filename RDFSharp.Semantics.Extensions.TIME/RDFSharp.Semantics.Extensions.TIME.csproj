@@ -46,6 +46,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="RDFSharp" Version="3.4.0" />
-	<PackageReference Include="RDFSharp.Semantics" Version="3.3.2" />
+	<PackageReference Include="RDFSharp.Semantics" Version="3.4.0" />
   </ItemGroup>
 </Project>
