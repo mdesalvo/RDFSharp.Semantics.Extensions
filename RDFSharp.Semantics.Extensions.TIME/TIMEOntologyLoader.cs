@@ -470,6 +470,7 @@ namespace RDFSharp.Semantics.Extensions.TIME
             data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_HOUR, RDFVocabulary.TIME.TEMPORAL_UNIT);
             data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_MINUTE, RDFVocabulary.TIME.TEMPORAL_UNIT);
             data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_SECOND, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(TIMEOntologyHelper.GregorianTRS, RDFVocabulary.TIME.TRS);
 
             return data;
         }
