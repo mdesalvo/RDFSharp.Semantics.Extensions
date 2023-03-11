@@ -414,7 +414,64 @@ namespace RDFSharp.Semantics.Extensions.TIME
             OWLOntologyData data = existingData ?? new OWLOntologyData();
 
             //W3C TIME            
-
+            data.DeclareIndividual(RDFVocabulary.TIME.MONDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.TUESDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.WEDNESDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.THURSDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.FRIDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.SATURDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.SUNDAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.JANUARY);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.FEBRUARY);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.MARCH);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.APRIL);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.MAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.JUNE);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.JULY);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.AUGUST);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.SEPTEMBER);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.OCTOBER);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.NOVEMBER);
+            data.DeclareIndividual(RDFVocabulary.TIME.GREG.DECEMBER);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_MILLENIUM);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_CENTURY);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_YEAR);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_MONTH);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_DECADE);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_WEEK);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_DAY);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_HOUR);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_MINUTE);
+            data.DeclareIndividual(RDFVocabulary.TIME.UNIT_SECOND);
+            data.DeclareIndividualType(RDFVocabulary.TIME.MONDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.TUESDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.WEDNESDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.THURSDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.FRIDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.SATURDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.SUNDAY, RDFVocabulary.TIME.DAY_OF_WEEK_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.JANUARY, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.FEBRUARY, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.MARCH, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.APRIL, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.MAY, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.JUNE, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.JULY, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.AUGUST, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.SEPTEMBER, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.OCTOBER, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.NOVEMBER, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.GREG.DECEMBER, RDFVocabulary.TIME.MONTH_OF_YEAR_CLASS);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_MILLENIUM, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_CENTURY, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_YEAR, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_MONTH, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_DECADE, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_WEEK, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_DAY, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_HOUR, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_MINUTE, RDFVocabulary.TIME.TEMPORAL_UNIT);
+            data.DeclareIndividualType(RDFVocabulary.TIME.UNIT_SECOND, RDFVocabulary.TIME.TEMPORAL_UNIT);
 
             return data;
         }
