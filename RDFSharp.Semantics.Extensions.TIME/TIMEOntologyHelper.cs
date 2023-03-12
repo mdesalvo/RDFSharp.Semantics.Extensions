@@ -27,5 +27,18 @@ namespace RDFSharp.Semantics.Extensions.TIME
         /// Represents the Gregorian Time Reference System
         /// </summary>
         public static RDFResource GregorianTRS = new RDFResource("http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
+
+        #region Declarer
+        /// <summary>
+        /// Declares the given instant to the temporal ontology
+        /// </summary>
+        public static TIMEOntology DeclareInstant(this TIMEOntology timeOntology, TIMEInstant timeInstant)
+        {
+            //TODO
+
+
+            return timeOntology;
+        }
+        #endregion
     }
 }
