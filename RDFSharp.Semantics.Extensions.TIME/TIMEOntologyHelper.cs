@@ -30,7 +30,7 @@ namespace RDFSharp.Semantics.Extensions.TIME
 
         #region Declarer
         /// <summary>
-        /// Declares the given instant feature to the temporal ontology (value is expressed as xsd:dateTimeStamp).
+        /// Declares the given instant feature to the temporal ontology (value of the instant is expressed as xsd:dateTimeStamp).
         /// </summary>
         public static TIMEOntology DeclareInstantFeature(this TIMEOntology timeOntology, RDFResource featureUri,
             RDFResource instantUri, RDFTypedLiteral instantValue)
@@ -55,8 +55,8 @@ namespace RDFSharp.Semantics.Extensions.TIME
         }
 
         /// <summary>
-        /// Declares the given instant feature to the temporal ontology (value is expressed as numeric coordinate in the given temporal reference system).<br/>
-        /// If TRS is not provided, Gregorian (http://www.opengis.net/def/uom/ISO-8601/0/Gregorian) will be used.
+        /// Declares the given instant feature to the temporal ontology (value of the instant is expressed as numeric coordinate in the given TRS).<br/>
+        /// If temporal reference system is not provided, Gregorian (http://www.opengis.net/def/uom/ISO-8601/0/Gregorian) will be used.
         /// </summary>
         public static TIMEOntology DeclareInstantFeature(this TIMEOntology timeOntology, RDFResource featureUri,
             RDFResource instantUri, RDFResource timePositionUri, RDFTypedLiteral numericPositionValue, RDFResource trsUri=null)
