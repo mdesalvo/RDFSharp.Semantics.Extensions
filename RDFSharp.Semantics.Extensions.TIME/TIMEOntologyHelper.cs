@@ -80,6 +80,11 @@ namespace RDFSharp.Semantics.Extensions.TIME
             timeOntology.Data.DeclareIndividualType(timePositionUri, RDFVocabulary.TIME.TIME_POSITION);
             timeOntology.Data.DeclareObjectAssertion(timePositionUri, RDFVocabulary.TIME.HAS_TRS, trsUri ?? GregorianTRS);
             timeOntology.Data.DeclareDatatypeAssertion(timePositionUri, RDFVocabulary.TIME.NUMERIC_POSITION, numericPositionValue);
+            if (trsUri != null)
+            {
+                timeOntology.Data.DeclareIndividual(trsUri);
+                timeOntology.Data.DeclareIndividualType(trsUri, RDFVocabulary.TIME.TRS);
+            }
 
             return timeOntology;
         }
