@@ -3,7 +3,7 @@
     <AssemblyTitle>RDFSharp.Semantics.Extensions.TIME</AssemblyTitle>
     <AssemblyName>RDFSharp.Semantics.Extensions.TIME</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.4.0</Version>
+    <Version>3.4.1</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>RDFSharp.Semantics extensions for modeling and querying temporal data</Description>
@@ -45,7 +45,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RDFSharp" Version="3.4.0" />
-	<PackageReference Include="RDFSharp.Semantics" Version="3.4.0" />
+    <PackageReference Include="RDFSharp" Version="3.4.1" />
+	<PackageReference Include="RDFSharp.Semantics" Version="3.4.1" />
   </ItemGroup>
 </Project>

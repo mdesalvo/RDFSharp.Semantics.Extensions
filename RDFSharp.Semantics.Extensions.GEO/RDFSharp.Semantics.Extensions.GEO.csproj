@@ -3,7 +3,7 @@
     <AssemblyTitle>RDFSharp.Semantics.Extensions.GEO</AssemblyTitle>
     <AssemblyName>RDFSharp.Semantics.Extensions.GEO</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.3.2</Version>
+    <Version>3.4.1</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>RDFSharp.Semantics extensions for modeling and querying geospatial data (GeoSPARQL)</Description>
@@ -47,7 +47,7 @@
     </PackageReference>
     <PackageReference Include="NetTopologySuite" Version="2.5.0" />
     <PackageReference Include="ProjNet" Version="2.0.0" />
-    <PackageReference Include="RDFSharp" Version="3.3.2" />
-	<PackageReference Include="RDFSharp.Semantics" Version="3.3.2" />
+    <PackageReference Include="RDFSharp" Version="3.4.1" />
+	<PackageReference Include="RDFSharp.Semantics" Version="3.4.1" />
   </ItemGroup>
 </Project>

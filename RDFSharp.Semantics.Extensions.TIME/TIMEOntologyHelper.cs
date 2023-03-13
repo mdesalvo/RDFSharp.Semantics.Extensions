@@ -30,12 +30,56 @@ namespace RDFSharp.Semantics.Extensions.TIME
 
         #region Declarer
         /// <summary>
-        /// Declares the given instant to the temporal ontology
+        /// Declares the given instant feature to the temporal ontology (value is expressed as xsd:dateTimeStamp).
         /// </summary>
-        public static TIMEOntology DeclareInstant(this TIMEOntology timeOntology, TIMEInstant timeInstant)
+        public static TIMEOntology DeclareInstantFeature(this TIMEOntology timeOntology, RDFResource featureUri,
+            RDFResource instantUri, RDFTypedLiteral instantValue)
         {
-            //TODO
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"featureUri\" parameter is null");
+            if (instantUri == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"instantUri\" parameter is null");
+            if (instantValue == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"instantValue\" parameter is null");
+            if (!instantValue.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP))
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"instantValue\" parameter must have \"xsd:dateTimeStamp\" datatype");
 
+            //Add knowledge to the A-BOX
+            timeOntology.Data.DeclareIndividual(featureUri);
+            timeOntology.Data.DeclareObjectAssertion(featureUri, RDFVocabulary.TIME.HAS_TIME, instantUri);
+            timeOntology.Data.DeclareIndividual(instantUri);
+            timeOntology.Data.DeclareIndividualType(instantUri, RDFVocabulary.TIME.INSTANT);
+            timeOntology.Data.DeclareDatatypeAssertion(instantUri, RDFVocabulary.TIME.IN_XSD_DATETIMESTAMP, instantValue);
+
+            return timeOntology;
+        }
+
+        /// <summary>
+        /// Declares the given instant feature to the temporal ontology (value is expressed as numeric coordinate in the given temporal reference system).<br/>
+        /// If TRS is not provided, Gregorian (http://www.opengis.net/def/uom/ISO-8601/0/Gregorian) will be used.
+        /// </summary>
+        public static TIMEOntology DeclareInstantFeature(this TIMEOntology timeOntology, RDFResource featureUri,
+            RDFResource instantUri, RDFResource timePositionUri, RDFTypedLiteral numericPositionValue, RDFResource trsUri=null)
+        {
+            if (featureUri == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"featureUri\" parameter is null");
+            if (instantUri == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"instantUri\" parameter is null");
+            if (timePositionUri == null)
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"timePositionUri\" parameter is null");
+            if (!numericPositionValue.HasDecimalDatatype())
+                throw new OWLSemanticsException("Cannot declare instant to the temporal ontology because given \"numericPositionValue\" parameter must have a numeric datatype");
+
+            //Add knowledge to the A-BOX
+            timeOntology.Data.DeclareIndividual(featureUri);
+            timeOntology.Data.DeclareObjectAssertion(featureUri, RDFVocabulary.TIME.HAS_TIME, instantUri);
+            timeOntology.Data.DeclareIndividual(instantUri);
+            timeOntology.Data.DeclareIndividualType(instantUri, RDFVocabulary.TIME.INSTANT);
+            timeOntology.Data.DeclareObjectAssertion(instantUri, RDFVocabulary.TIME.IN_TIME_POSITION, timePositionUri);
+            timeOntology.Data.DeclareIndividual(timePositionUri);
+            timeOntology.Data.DeclareIndividualType(timePositionUri, RDFVocabulary.TIME.TIME_POSITION);
+            timeOntology.Data.DeclareObjectAssertion(timePositionUri, RDFVocabulary.TIME.HAS_TRS, trsUri ?? GregorianTRS);
+            timeOntology.Data.DeclareDatatypeAssertion(timePositionUri, RDFVocabulary.TIME.NUMERIC_POSITION, numericPositionValue);
 
             return timeOntology;
         }

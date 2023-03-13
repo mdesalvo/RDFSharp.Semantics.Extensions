@@ -3,7 +3,7 @@
     <AssemblyTitle>RDFSharp.Semantics.Extensions.SKOS</AssemblyTitle>
     <AssemblyName>RDFSharp.Semantics.Extensions.SKOS</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.3.2</Version>
+    <Version>3.4.1</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>RDFSharp.Semantics extensions for modeling of SKOS taxonomies</Description>
@@ -45,7 +45,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RDFSharp" Version="3.3.2" />
-	<PackageReference Include="RDFSharp.Semantics" Version="3.3.2" />
+    <PackageReference Include="RDFSharp" Version="3.4.1" />
+	<PackageReference Include="RDFSharp.Semantics" Version="3.4.1" />
   </ItemGroup>
 </Project>
