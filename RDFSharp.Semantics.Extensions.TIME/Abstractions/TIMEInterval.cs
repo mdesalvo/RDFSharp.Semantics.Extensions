@@ -14,29 +14,36 @@
    limitations under the License.
 */
 
+using NodaTime;
 using RDFSharp.Model;
+using System;
 
 namespace RDFSharp.Semantics.Extensions.TIME
 {
     /// <summary>
     /// TIMEInterval represents a temporal entity with an extent or duration
     /// </summary>
-    public class TIMEInterval : TIMEEntity
+    public class TIMEInterval : RDFResource
     {
         #region Properties
-
+        /// <summary>
+        /// Value of the time interval
+        /// </summary>
+        internal Interval Value { get; set; }
         #endregion
 
         #region Ctors
+        /// <summary>
+        /// Default-ctor to build a time interval with the given Uri
+        /// </summary>
+        public TIMEInterval(RDFResource timeIntervalUri, DateTime timeIntervalStart, DateTime timeIntervalEnd) 
+            : base(timeIntervalUri?.ToString())
+        {
+            if (timeIntervalEnd < timeIntervalStart)
+                throw new OWLSemanticsException("Cannot represent time interval because given \"timeIntervalEnd\" parameter must be greater or equal than given \"timeIntervalStart\" parameter ");
 
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+            Value = new Interval(Instant.FromDateTimeUtc(timeIntervalStart), Instant.FromDateTimeUtc(timeIntervalEnd));
+        }
         #endregion
     }
 }

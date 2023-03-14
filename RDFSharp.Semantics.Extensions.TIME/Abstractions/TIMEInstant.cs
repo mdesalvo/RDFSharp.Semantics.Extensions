@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using NodaTime;
 using RDFSharp.Model;
 using System;
 
@@ -22,22 +23,24 @@ namespace RDFSharp.Semantics.Extensions.TIME
     /// <summary>
     /// TIMEInstant represents a temporal entity with zero extent or duration
     /// </summary>
-    public class TIMEInstant : TIMEEntity
+    public class TIMEInstant : RDFResource
     {
         #region Properties
-        
+        /// <summary>
+        /// Value of the time instant
+        /// </summary>
+        internal Instant Value { get; set; }
         #endregion
 
         #region Ctors
-        
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Default-ctor to build a time instant with the given Uri and value
+        /// </summary>
+        public TIMEInstant(RDFResource timeInstantUri, DateTime timeInstantValue)
+            : base(timeInstantUri?.ToString())
+        {
+            Value = Instant.FromDateTimeUtc(timeInstantValue);
+        }
         #endregion
     }
 }
