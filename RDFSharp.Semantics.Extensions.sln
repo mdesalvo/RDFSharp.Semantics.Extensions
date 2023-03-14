@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDFSharp.Semantics.Extensions.TIME.Test", "RDFSharp.Semantics.Extensions.TIME.Test\RDFSharp.Semantics.Extensions.TIME.Test.csproj", "{3CBA1BB8-A981-4A4A-833E-FBEB9F9906FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{16DFA0F1-F9FF-474D-A46B-761012B4C76B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3BBA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {16DFA0F1-F9FF-474D-A46B-761012B4C76B}
+		{3ABA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {16DFA0F1-F9FF-474D-A46B-761012B4C76B}
+		{3CBA1BB8-A981-4A4A-833E-FBEB9F9906FB} = {16DFA0F1-F9FF-474D-A46B-761012B4C76B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADD2B7E0-5BC5-4636-997B-778F43D467E8}
